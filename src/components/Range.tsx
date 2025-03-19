@@ -11,9 +11,10 @@ interface RangeProps {
   max?: number;
   /** Valor inicial por defecto */
   defaultValue?: number;
+  className?: string;
 }
 
-export const Range: FC<RangeProps> = ({ min = 0, max = 100, defaultValue = 50 }) => {
+export const Range: FC<RangeProps> = ({ min = 0, max = 100, defaultValue = 50, className = '' }) => {
   const [value, setValue] = useState<number>(defaultValue);
 
   const openModal = async () => {
@@ -76,14 +77,12 @@ export const Range: FC<RangeProps> = ({ min = 0, max = 100, defaultValue = 50 })
       style={{
         display: 'inline-flex',
         alignItems: 'center',
-        padding: '0.5rem 1rem',
         borderRadius: '9999px',
-        boxShadow: '0 0 4px rgba(0,0,0,0.2)',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
         cursor: 'pointer',
-        gap: '0.5rem',
-        maxWidth: '200px',
         justifyContent: 'space-between',
       }}
+      className={className}
     >
       <span>Precio</span>
       <span>{`${value}€`}</span>

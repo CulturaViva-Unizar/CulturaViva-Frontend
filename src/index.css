@@ -3,3 +3,7 @@
   box-shadow: none !important;
 }
 
+.react-datepicker__input-container input {
+  width: 100px;
+  background-color: transparent;
+}

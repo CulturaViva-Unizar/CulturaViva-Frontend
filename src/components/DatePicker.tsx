@@ -7,10 +7,12 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 interface DatePickerProps {
   onChange?: (date: Date | null) => void;
+  className?: string;
 }
 
 export const DatePicker: FC<DatePickerProps> = ({
-  onChange
+  onChange,
+  className = ''
 }) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
@@ -23,10 +25,10 @@ export const DatePicker: FC<DatePickerProps> = ({
 
   return (
     <div
-      className="input-group"
+      className={`d-flex align-items-center px-3 ${className}`}
       style={{
         borderRadius: '9999px',
-        boxShadow: '0 0px 4px rgba(0,0,0,0.2)'
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
       }}
     >
       <ReactDatePicker
@@ -34,16 +36,9 @@ export const DatePicker: FC<DatePickerProps> = ({
         onChange={handleChange}
         placeholderText='dd/mm/aaaa'
         dateFormat="dd/MM/yyyy"
-        className="form-control border-0"
+        className="border-0"
       />
-      <span
-        className="input-group-text border-0"
-        style={{
-          borderRadius: '9999px'
-        }}
-      >
-        <FontAwesomeIcon icon={faCalendar} />
-      </span>
+    <FontAwesomeIcon icon={faCalendar} className=''/>
     </div>
   );
 };

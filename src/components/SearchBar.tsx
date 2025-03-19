@@ -32,7 +32,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, className = '' }) => {
       style={{
         borderRadius: '9999px',
         padding: 0,
-        boxShadow: '0px 0px 4px rgba(0,0,0,0.2)'
+        boxShadow: '0px 2px 4px rgba(0,0,0,0.1)'
       }}
     >
       <input
