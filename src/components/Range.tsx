@@ -1,42 +1,36 @@
-import React, { FC, useState } from 'react';
+import { FC, useState } from 'react';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
 const MySwal = withReactContent(Swal);
 
 interface RangeProps {
-  /** Valor mínimo del slider */
   min?: number;
-  /** Valor máximo del slider */
   max?: number;
-  /** Valor inicial por defecto */
-  defaultValue?: number;
+  initialValue?: number;
   className?: string;
+  hideWhenMaxValue?: boolean;
 }
 
-export const Range: FC<RangeProps> = ({ min = 0, max = 100, defaultValue = 50, className = '' }) => {
-  const [value, setValue] = useState<number>(defaultValue);
+export const Range: FC<RangeProps> = ({ min = 0, max = 100, initialValue = 50, className = '', hideWhenMaxValue = false }) => {
+  const [value, setValue] = useState<number>(initialValue);
 
   const openModal = async () => {
     const { value: newValue } = await MySwal.fire({
       title: 'Seleccione un rango',
       html: `
-        <div style="display: flex; flex-direction: column; align-items: center;">
-          <div style="position: relative; width: 80%; margin: 1rem 0;">
-            <input id="swal-range" type="range" min="${min}" max="${max}" value="${value}" class="form-range" style="width: 100%;" />
-            <span id="swal-tooltip" style="
-              position: absolute;
-              top: -30px;
-              left: 0;
-              transform: translateX(-50%);
-              background-color: #333;
-              color: #fff;
-              padding: 2px 6px;
-              border-radius: 4px;
-              font-size: 0.8rem;
-            ">${value}€</span>
+        <div class="d-flex flex-column align-items-center">
+          <div class="position-relative my-3" style="width: 80%;">
+            <input id="swal-range" type="range" min="${min}" max="${max}" value="${value}" class="form-range w-100" />
+            <span
+              id="swal-tooltip"
+              class="position-absolute text-white text-nowrap rounded"
+              style="top: -30px; left: 0; transform: translateX(-50%); background-color: #333; padding: 2px 6px; font-size: 0.8rem;"
+            >
+              ${value}€
+            </span>
           </div>
-          <div style="width: 80%; display: flex; justify-content: space-between;">
+          <div class="d-flex justify-content-between" style="width: 80%;">
             <span>${min}€</span>
             <span>${max}€</span>
           </div>
@@ -72,20 +66,11 @@ export const Range: FC<RangeProps> = ({ min = 0, max = 100, defaultValue = 50, c
   };
 
   return (
-    <div
+    <button
       onClick={openModal}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        borderRadius: '9999px',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        cursor: 'pointer',
-        justifyContent: 'space-between',
-      }}
-      className={className}
+      className={`btn rounded-pill shadow-sm text-nowrap ${className}`}
     >
-      <span>Precio</span>
-      <span>{`${value}€`}</span>
-    </div>
+      Precio {(value < max || !hideWhenMaxValue) && ` ${value}`}€
+    </button>
   );
 };

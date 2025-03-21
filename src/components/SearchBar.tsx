@@ -28,11 +28,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, className = '' }) => {
 
   return (
     <div
-      className={`input-group ${className}`}
+      className={`input-group rounded-pill shadow-sm ${className}`}
       style={{
-        borderRadius: '9999px',
-        padding: 0,
-        boxShadow: '0px 2px 4px rgba(0,0,0,0.1)'
       }}
     >
       <input
@@ -40,10 +37,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, className = '' }) => {
         className="form-control border-0"
         placeholder="Buscar"
         aria-label="Buscar"
-        style={{
-          borderRadius: '9999px 0 0 9999px',
-          backgroundColor: 'transparent'
-        }}
         value={searchText}
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
@@ -51,9 +44,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, className = '' }) => {
       <button
         className="btn border-0"
         type="button"
-        style={{
-          borderRadius: '0 9999px 9999px 0'
-        }}
         onClick={handleSearch}
       >
         <FontAwesomeIcon icon={faMagnifyingGlass} />
