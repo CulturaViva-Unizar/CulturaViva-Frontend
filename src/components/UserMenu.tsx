@@ -1,13 +1,17 @@
 import { faCircleUser, faComments, faBookmark, faCalendarDays, faChevronUp, faChevronDown, faThumbsUp, faFire, faCheckCircle, faClock, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { FC, useState } from "react";
+import { Link, Links } from "react-router";
 
+interface UserMenuProps {
+    className?: string;
+  }
 
-export const UserMenu = () => {
+export const UserMenu: FC<UserMenuProps> = ({ className = '' }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className='dropdown col-2 col-md text-end order-2 order-md-3'>
+        <div className={`dropdown ${className}`}>
             <button className='btn rounded-circle p-0 h-100' type='button' data-bs-toggle="dropdown" aria-expanded="false">
                 <FontAwesomeIcon icon={faCircleUser} className='h-100' />
             </button>
@@ -17,17 +21,17 @@ export const UserMenu = () => {
                 </li>
                 <li><hr className="dropdown-divider mx-3" /></li>
                 <li>
-                    <button className="dropdown-item py-2 btn" type="button">
+                    <Link to="/chats" className="dropdown-item py-2 btn" type="button">
                         <FontAwesomeIcon icon={faComments} className='col-1 me-2' />
                         <span className='col'>Chats</span>
-                    </button>
+                    </Link>
                 </li>
                 <li><hr className="dropdown-divider mx-3" /></li>
                 <li>
-                    <button className="dropdown-item py-2 btn" type="button">
+                    <Link to="/guardados" className="dropdown-item py-2 btn" type="button">
                         <FontAwesomeIcon icon={faBookmark} className='col-1 me-2' />
                         <span className='col'>Guardados</span>
-                    </button>
+                    </Link>
                 </li>
                 <li><hr className="dropdown-divider mx-3" /></li>
 
@@ -56,31 +60,31 @@ export const UserMenu = () => {
                     <ul className="list-unstyled">
                         <li><hr className="dropdown-divider mx-3" /></li>
                         <li>
-                            <button className="dropdown-item py-2 btn" type="button">
+                            <Link to="/eventos/recomendados" className="dropdown-item py-2 btn" type="button">
                                 <FontAwesomeIcon icon={faThumbsUp} className="col-1 me-2" />
                                 <span className='col'>Recomendaciones</span>
-                            </button>
+                            </Link>
                         </li>
                         <li><hr className="dropdown-divider mx-3" /></li>
                         <li>
-                            <button className="dropdown-item py-2 btn" type="button">
+                            <Link to="/eventos/populares" className="dropdown-item py-2 btn" type="button">
                                 <FontAwesomeIcon icon={faFire} className="col-1 me-2" />
                                 <span className='col'>Populares</span>
-                            </button>
+                            </Link>
                         </li>
                         <li><hr className="dropdown-divider mx-3" /></li>
                         <li>
-                            <button className="dropdown-item py-2 btn" type="button">
+                            <Link to="/eventos/asistidos" className="dropdown-item py-2 btn" type="button">
                                 <FontAwesomeIcon icon={faCheckCircle} className="col-1 me-2" />
                                 <span className='col'>Asistidos</span>
-                            </button>
+                            </Link>
                         </li>
                         <li><hr className="dropdown-divider mx-3" /></li>
                         <li>
-                            <button className="dropdown-item py-2 btn" type="button">
+                            <Link to="/eventos/proximos" className="dropdown-item py-2 btn" type="button">
                                 <FontAwesomeIcon icon={faClock} className="col-1 me-2" />
                                 <span className='col'>Próximos</span>
-                            </button>
+                            </Link>
                         </li>
                     </ul>
                 </div>

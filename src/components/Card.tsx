@@ -27,8 +27,9 @@ export const Card: FC<CardProps> = ({ image, title, location, rating, reviews, d
           <div className='col-3'>
             <img 
               src={image} 
-              className='img-fluid rounded-start' 
+              className='img-fluid rounded-start h-100' 
               alt={title}
+              style={{ objectFit: 'cover' }}
             />
           </div>
         )}

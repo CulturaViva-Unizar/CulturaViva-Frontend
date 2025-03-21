@@ -1,17 +1,18 @@
-import SearchBar from './components/SearchBar'
-import { Select } from './components/Select'
+import SearchBar from '../components/SearchBar'
+import { Select } from '../components/Select'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faArrowDownWideShort } from '@fortawesome/free-solid-svg-icons'
-import { Card } from './components/Card'
+import { faArrowDownWideShort } from '@fortawesome/free-solid-svg-icons'
+import { Card } from '../components/Card'
+import { GoBackBtn } from '../components/GoBackBtn'
 
 function Events() {
   return (
-    <div className='p-5'>
-      <div className='d-flex justify-content-between'>
-        <button className='btn btn-light rounded-circle h-100'>
-          <FontAwesomeIcon icon={faArrowLeft} />
-        </button>
-        <h1>Eventos</h1>
+    <div className='p-3 p-md-5'>
+      <div className='row'>
+        <div className='col h-100'>
+          <GoBackBtn />
+        </div>
+        <h1 className='col-8 text-center'>Eventos</h1>
         <button className='btn btn-light'>Avatar</button>
       </div>
       <div className='mt-3 mb-5 d-flex flex-column align-items-start align-items-md-center justify-content-center'>
