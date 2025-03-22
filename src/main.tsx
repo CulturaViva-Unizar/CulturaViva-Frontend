@@ -21,6 +21,7 @@ import { AuthProvider } from './context/AuthContext.tsx';
 import Unauthorized from './pages/Unauthorized.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import { ADMIN_ROLE, ALL_ROLES } from './common/constants.ts';
+import ChatConversation from './pages/ChatConversation.tsx';
 
 const root = document.getElementById("root");
 
@@ -36,7 +37,10 @@ createRoot(root!).render(
           <Route element={<ProtectedRoute allowedRoles={ALL_ROLES} />}>
             <Route path="/" element={<App />} />
             <Route path="guardados" element={<Bookmarks />} />
-            <Route path="chats" element={<Chats />} />
+            <Route path="chats" element={<Chats />}>
+              <Route index element={<h3 className='d-flex bg-light align-items-center justify-content-center'>Selecciona un chat</h3>} />
+              <Route path=":chatId" element={<ChatConversation />} />
+            </Route>
           </Route>
 
           <Route path="eventos">
