@@ -39,7 +39,7 @@ export const Card: FC<CardProps> = ({ image, title, location, rating, reviews, d
             <p className='card-text text-muted mb-0'>{location}</p>
             <div className='d-flex align-items-center gap-1'>
               <p className='card-text text-muted mb-0'>{rating}</p>
-              <FontAwesomeIcon icon={faStar} style={{ color: 'yellow'}}/>
+              <FontAwesomeIcon icon={faStar} color='yellow' />
               <p className='card-text text-muted mb-0'>({reviews})</p>
             </div>
             <p className='card-text text-truncate'>{description}</p>
