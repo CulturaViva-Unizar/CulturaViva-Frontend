@@ -1,40 +1,73 @@
-import { UserCard } from '../components/UserCard'
+import { UserCard, UserCardProps } from '../components/UserCard'
 import SearchBar from '../components/SearchBar'
 import { Select } from '../components/Select'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowDownWideShort } from '@fortawesome/free-solid-svg-icons'
-import { GoBackBtn } from '../components/GoBackBtn'
+import { useState } from 'react'
+import BootstrapPagination from '../components/BootstrapPagination'
+import MainLayout from '../layouts/MainLayout'
+
+const simulatedData: UserCardProps[] = Array.from({ length: 27 }, (_, index) => ({
+  user: `User ${index + 1}`,
+  isEnabledInit: true,
+  totalComments: 40,
+  deletedComments: 10
+}))
 
 function Users() {
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const itemsPerPage = 9
+  const totalPages = Math.ceil(simulatedData.length / itemsPerPage)
+
+  const currentCards = simulatedData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  )
+
   return (
-    <div className='p-3 p-md-5'>
-      <div className='row'>
-        <div className='col h-100'>
-          <GoBackBtn />
-        </div>
-        <h1 className='col-8 text-center'>Usuarios</h1>
-        <button className='btn btn-light'>Avatar</button>
-      </div>
-      <div className='mt-3 mb-5 d-flex flex-column align-items-start align-items-md-center justify-content-center'>
-        <div className='col-12 col-md-5'>
+    <MainLayout title="Usuarios">
+      <div className="py-3 row gap-2 justify-content-center">
+        <div className="row col-12 col-md-3">
           <SearchBar />
         </div>
-        <div className='d-flex gap-3 mt-3'>
-          <Select options={[{ value: '1', label: 'Habilitados' }, { value: '2', label: 'Deshabilitados' }]} placeholder='Todos' onChange={(newValue) => console.log(newValue)} />
-          <button className='btn btn-light rounded-pill text-nowrap'>
+        <div
+          className="row col-12 col-md-3 gap-2 gx-2 py-1 flex-nowrap overflow-x-auto hide-scrollbar"
+          style={{ WebkitOverflowScrolling: 'touch' }}
+        >
+          <Select
+            className="col"
+            options={[
+              { value: '1', label: 'Eventos' },
+              { value: '2', label: 'Lugares culturales' }
+            ]}
+            placeholder="Todos"
+            onChange={(newValue) => console.log(newValue)}
+          />
+          <button className="col btn rounded-pill shadow-sm text-nowrap">
             Comentarios
-            <FontAwesomeIcon icon={faArrowDownWideShort} className='ps-2' />
+            <FontAwesomeIcon icon={faArrowDownWideShort} className="ps-2" />
           </button>
         </div>
       </div>
-      <div className='row g-5'>
-        {[...Array(24)].map(() =>
-          <div className='col-md-3'>
-            <UserCard user='User' totalComments={40} deletedComments={10} isEnabledInit={true} className='rounded bg-light shadow' />
+      <div className="row g-4">
+        {currentCards.map((card, i) => (
+          <div className="col-md-4" key={i}>
+            <UserCard
+              className="rounded bg-light shadow"
+              user={card.user}
+              totalComments={card.totalComments}
+              deletedComments={card.deletedComments}
+              isEnabledInit={card.isEnabledInit}
+            />
           </div>
-        )}
+        ))}
       </div>
-    </div>
+      <BootstrapPagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={(page: number) => setCurrentPage(page)}
+      />
+    </MainLayout>
   )
 }
 

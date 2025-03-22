@@ -1,53 +1,90 @@
+// src/pages/PopularEvents.tsx
 import { Select } from '../components/Select'
-import { Card } from '../components/Card'
-import { UserMenu } from '../components/UserMenu'
-import { GoBackBtn } from '../components/GoBackBtn'
+import { Card, CardProps } from '../components/Card'
 import PieChart from '../components/PieChart'
+import BootstrapPagination from '../components/BootstrapPagination'
+import { useState } from 'react'
+import MainLayout from '../layouts/MainLayout'
+
+const simulatedData: CardProps[] = Array.from({ length: 27 }, (_, index) => ({
+  image: 'https://www.zaragoza.es/cont/paginas/actividades/imagen/2360.png_1070x713.png',
+  title: `Regálame esta noche. Albena Teatro ${index + 1}`,
+  location: 'Teatro de las Esquinas',
+  rating: 4.1,
+  reviews: 116,
+  description:
+    'Dos viejos amantes se reencuentran después de más de veinticinco años. Una comedia romántica para preguntarnos con quién desearíamos pasar la última noche de nuestra vida.',
+}))
+
+const pieData = {
+  labels: ['Rojo', 'Azul', 'Amarillo'],
+  datasets: [
+    {
+      data: [40, 35, 25],
+      backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+      hoverBackgroundColor: ['#FF4F74', '#2A92D6', '#FFB400'],
+    },
+  ],
+}
+
+const pieOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'bottom' as const,
+    },
+  },
+}
 
 function PopularEvents() {
-  const pieData = {
-    labels: ["Rojo", "Azul", "Amarillo"],
-    datasets: [
-      {
-        data: [40, 35, 25],
-        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
-        hoverBackgroundColor: ["#FF4F74", "#2A92D6", "#FFB400"],
-      },
-    ],
-  };
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const itemsPerPage = 6
+  const totalPages = Math.ceil(simulatedData.length / itemsPerPage)
 
-  const pieOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "bottom" as const, // TypeScript requiere 'as const'
-      },
-    },
-  };
+  const currentCards = simulatedData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  )
 
   return (
-    <div className='p-3 p-md-5'>
-      <div className='row mb-4'>
-        <div className='col h-100'>
-          <GoBackBtn />
-        </div>
-        <h1 className='col-8 text-center'>Populares</h1>
-        <UserMenu className='col text-end'/>
-      </div>
-      <div className='d-md-flex'>
-        <div className='col-md-6 d-flex flex-column align-items-center'>
-          <Select options={[{ value: '1', label: 'Categoría 1' }, { value: '2', label: 'Categoría 2' }, { value: '2', label: 'Categoría 3' }]} placeholder='Categoría' onChange={(newValue) => console.log(newValue)} />
+    <MainLayout title="Populares">
+      <div className="d-md-flex">
+        <div className="col-md-4 d-flex flex-column align-items-center">
+          <Select
+            options={[
+              { value: '1', label: 'Categoría 1' },
+              { value: '2', label: 'Categoría 2' },
+              { value: '3', label: 'Categoría 3' },
+            ]}
+            placeholder="Categoría"
+            onChange={(newValue) => console.log(newValue)}
+          />
           <PieChart data={pieData} options={pieOptions} className="m-4" />
         </div>
-        <div className='col-md-6 row g-4'>
-          {[...Array(24)].map(() =>
-            <div className='col-md-6'>
-              <Card image='https://www.zaragoza.es/cont/paginas/actividades/imagen/2360.png_1070x713.png' title='Regálame esta noche. Albena Teatro' location='Teatro de las Esquinas' rating={4.1} reviews={116} description='Dos viejos amantes se reencuentran después de más de veinticinco años desde la última vez que estuvieron juntos. Sus vidas han evolucionado de forma muy diferente, pero ambos coinciden con quien desearían pasar la última noche de su vida. Una comedia romántica que nos hace preguntarnos con quién desearíamos pasar la última noche de nuestra vida.' className='rounded bg-light shadow' />
-            </div>
-          )}
+        <div className="flex-column col-md-8 row">
+          <div className="row g-4 m-0">
+            {currentCards.map((card, i) => (
+              <div className="col-md-6" key={i}>
+                <Card
+                  image={card.image}
+                  title={card.title}
+                  location={card.location}
+                  rating={card.rating}
+                  reviews={card.reviews}
+                  description={card.description}
+                  className="rounded bg-light shadow"
+                />
+              </div>
+            ))}
+          </div>
+          <BootstrapPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(page: number) => setCurrentPage(page)}
+          />
         </div>
       </div>
-    </div>
+    </MainLayout>
   )
 }
 

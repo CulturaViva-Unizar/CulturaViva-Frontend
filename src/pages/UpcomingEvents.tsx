@@ -1,6 +1,7 @@
-// src/pages/AssistedEvents.tsx
 import { Select } from '../components/Select'
 import { Card, CardProps } from '../components/Card'
+import { UserMenu } from '../components/UserMenu'
+import { GoBackBtn } from '../components/GoBackBtn'
 import PieChart from '../components/PieChart'
 import BootstrapPagination from '../components/BootstrapPagination'
 import { useState } from 'react'
@@ -18,26 +19,26 @@ const simulatedData: CardProps[] = Array.from({ length: 27 }, (_, index) => ({
 }))
 
 const pieData = {
-  labels: ['Rojo', 'Azul', 'Amarillo'],
+  labels: ["Rojo", "Azul", "Amarillo"],
   datasets: [
     {
       data: [40, 35, 25],
-      backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-      hoverBackgroundColor: ['#FF4F74', '#2A92D6', '#FFB400'],
+      backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
+      hoverBackgroundColor: ["#FF4F74", "#2A92D6", "#FFB400"],
     },
   ],
-}
+};
 
 const pieOptions = {
   responsive: true,
   plugins: {
     legend: {
-      position: 'bottom' as const,
+      position: "bottom" as const, // TypeScript requiere 'as const'
     },
   },
-}
+};
 
-function AssistedEvents() {
+function UpcomingEvents() {
   const [currentPage, setCurrentPage] = useState<number>(1)
   const itemsPerPage = 6
   const totalPages = Math.ceil(simulatedData.length / itemsPerPage)
@@ -48,24 +49,16 @@ function AssistedEvents() {
   )
 
   return (
-    <MainLayout title="Asistidos">
-      <div className="d-md-flex">
-        <div className="col-md-4 d-flex flex-column align-items-center">
-          <Select
-            options={[
-              { value: '1', label: 'Categoría 1' },
-              { value: '2', label: 'Categoría 2' },
-              { value: '3', label: 'Categoría 3' },
-            ]}
-            placeholder="Categoría"
-            onChange={(newValue) => console.log(newValue)}
-          />
+    <MainLayout title="Próximos">
+      <div className='d-md-flex'>
+        <div className='col-md-4 d-flex flex-column align-items-center'>
+          <Select options={[{ value: '1', label: 'Categoría 1' }, { value: '2', label: 'Categoría 2' }, { value: '2', label: 'Categoría 3' }]} placeholder='Categoría' onChange={(newValue) => console.log(newValue)} />
           <PieChart data={pieData} options={pieOptions} className="m-4" />
         </div>
-        <div className="flex-column col-md-8 row">
-          <div className="row g-4 m-0">
+        <div className='flex-column col-md-8 row'>
+          <div className='row g-4 m-0'>
             {currentCards.map((card, i) => (
-              <div className="col-md-6" key={i}>
+              <div className='col-md-6' key={i}>
                 <Card
                   image={card.image}
                   title={card.title}
@@ -73,7 +66,7 @@ function AssistedEvents() {
                   rating={card.rating}
                   reviews={card.reviews}
                   description={card.description}
-                  className="rounded bg-light shadow"
+                  className='rounded bg-light shadow'
                 />
               </div>
             ))}
@@ -89,4 +82,4 @@ function AssistedEvents() {
   )
 }
 
-export default AssistedEvents
+export default UpcomingEvents
