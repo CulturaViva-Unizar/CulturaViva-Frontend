@@ -13,6 +13,7 @@ import AssistedEvents from './pages/AssistedEvents.tsx';
 import SuggestedEvents from './pages/SuggestedEvents.tsx';
 import Bookmarks from './pages/Bookmarks.tsx';
 import Chats from './pages/Chats.tsx';
+import ChatConversation from './pages/ChatConversation.tsx';
 
 const root = document.getElementById("root");
 
@@ -24,7 +25,10 @@ createRoot(root!).render(
 
         <Route path='guardados' element={<Bookmarks />} />
         
-        <Route path='chats' element={<Chats />} />
+        <Route path="chats" element={<Chats />}>
+          <Route index element={<h3 className='d-flex bg-light align-items-center justify-content-center'>Selecciona un chat</h3>} />
+          <Route path=":chatId" element={<ChatConversation />} />
+        </Route>
 
         <Route path="eventos">
           <Route path="recomendados" element={<SuggestedEvents />} />
