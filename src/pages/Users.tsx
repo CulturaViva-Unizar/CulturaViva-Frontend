@@ -35,12 +35,13 @@ function Users() {
           style={{ WebkitOverflowScrolling: 'touch' }}
         >
           <Select
-            className="col"
+            className='col'
             options={[
-              { value: '1', label: 'Eventos' },
-              { value: '2', label: 'Lugares culturales' }
+              { value: 'todos', label: 'Todos' },
+              { value: 'habilitados', label: 'Habilitados' },
+              { value: 'deshabilitados', label: 'Deshabilitados' }
             ]}
-            placeholder="Todos"
+            initialValue='todos'
             onChange={(newValue) => console.log(newValue)}
           />
           <button className="col btn rounded-pill shadow-sm text-nowrap">

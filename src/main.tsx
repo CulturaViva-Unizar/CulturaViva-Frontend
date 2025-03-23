@@ -22,6 +22,10 @@ import Unauthorized from './pages/Unauthorized.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import { ADMIN_ROLE, ALL_ROLES } from './common/constants.ts';
 import ChatConversation from './pages/ChatConversation.tsx';
+import CulturalPlaces from './pages/CulturalPlaces.tsx';
+import SuggestedCulturalPlaces from './pages/SuggestedCulturalPlaces.tsx';
+import PopularCulturalPlaces from './pages/PopularCulturalPlaces.tsx';
+import Analytics from './pages/Analytics.tsx';
 
 const root = document.getElementById("root");
 
@@ -51,7 +55,14 @@ createRoot(root!).render(
             <Route path="proximos" element={<ProtectedRoute allowedRoles={ALL_ROLES}><Upcomingevents /></ProtectedRoute>} />
           </Route>
 
+          <Route path="lugares-culturales">
+            <Route index element={<ProtectedRoute allowedRoles={[ADMIN_ROLE]}><CulturalPlaces /></ProtectedRoute>} />
+            <Route path="recomendados" element={<ProtectedRoute allowedRoles={ALL_ROLES}><SuggestedCulturalPlaces /></ProtectedRoute>} />
+            <Route path="populares" element={<ProtectedRoute allowedRoles={ALL_ROLES}><PopularCulturalPlaces /></ProtectedRoute>} />
+          </Route>
+
           <Route path="users" element={<ProtectedRoute allowedRoles={[ADMIN_ROLE]}><Users /></ProtectedRoute>} />
+          <Route path="analiticas" element={<ProtectedRoute allowedRoles={[ADMIN_ROLE]}><Analytics /></ProtectedRoute>} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

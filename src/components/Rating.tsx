@@ -34,7 +34,7 @@ export const Rating: React.FC<RatingProps> = ({ rating, totalReviews, ratingDist
             <div className="col-2 text-end pe-0 w-auto">
               <span className="text-muted">{star} </span>
             </div>
-            <div className="col-8">
+            <div className="col-10">
               <div className="progress">
                 <div
                   className="progress-bar bg-warning"

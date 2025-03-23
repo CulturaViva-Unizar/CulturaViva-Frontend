@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar, faReply, faCircleUser, faComment } from "@fortawesome/free-solid-svg-icons";
+import {
+  faStar,
+  faReply,
+  faCircleUser,
+  faComment,
+} from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { Link } from "react-router";
@@ -15,7 +20,7 @@ type Reply = {
 };
 
 type ReviewProps = {
-  userId: number
+  userId: number;
   user: string;
   rating?: number;
   comment: string;
@@ -23,15 +28,29 @@ type ReviewProps = {
   replies?: Reply[];
 };
 
-export const Review: React.FC<ReviewProps> = ({ userId, user, rating = 0, comment, date, replies = [] }) => {
+export const Review: React.FC<ReviewProps> = ({
+  userId,
+  user,
+  rating = 0,
+  comment,
+  date,
+  replies = [],
+}) => {
   const [allReplies, setAllReplies] = useState<Reply[]>(replies);
 
-  const addReply = (replyList: Reply[], parentReply: Reply, newReply: Reply): Reply[] => {
+  const addReply = (
+    replyList: Reply[],
+    parentReply: Reply,
+    newReply: Reply
+  ): Reply[] => {
     return replyList.map((reply) => {
       if (reply === parentReply) {
         return { ...reply, replies: [...(reply.replies || []), newReply] };
       } else if (reply.replies) {
-        return { ...reply, replies: addReply(reply.replies, parentReply, newReply) };
+        return {
+          ...reply,
+          replies: addReply(reply.replies, parentReply, newReply),
+        };
       }
       return reply;
     });
@@ -71,7 +90,10 @@ export const Review: React.FC<ReviewProps> = ({ userId, user, rating = 0, commen
         <div className="d-flex align-items-center gap-2">
           <FontAwesomeIcon icon={faCircleUser} />
           <strong>{reply.user}</strong>
-          <Link to={`/chats/${reply.userId}`} className="btn btn-light rounded-circle">
+          <Link
+            to={`/chats/${reply.userId}`}
+            className="btn btn-light rounded-circle"
+          >
             <FontAwesomeIcon icon={faComment} />
           </Link>
         </div>
@@ -88,7 +110,7 @@ export const Review: React.FC<ReviewProps> = ({ userId, user, rating = 0, commen
   };
 
   return (
-    <div className="card p-3 mb-3">
+    <div className="mb-3">
       <div className="d-flex align-items-center gap-2">
         <FontAwesomeIcon icon={faCircleUser} />
         <strong>{user}</strong>
@@ -98,7 +120,11 @@ export const Review: React.FC<ReviewProps> = ({ userId, user, rating = 0, commen
       </div>
       <div className="mb-2">
         {[...Array(5)].map((_, i) => (
-          <FontAwesomeIcon key={i} icon={faStar} className={i < rating ? "text-warning" : "text-secondary"} />
+          <FontAwesomeIcon
+            key={i}
+            icon={faStar}
+            className={i < rating ? "text-warning" : "text-secondary"}
+          />
         ))}
         <span className="text-muted ms-2">{date}</span>
       </div>

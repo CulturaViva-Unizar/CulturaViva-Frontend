@@ -5,9 +5,9 @@ import { faArrowDownWideShort } from "@fortawesome/free-solid-svg-icons";
 import { Card } from "../components/Card";
 import MainLayout from "../layouts/MainLayout";
 
-function Events() {
+function CulturalPlaces() {
   return (
-    <MainLayout title="Eventos">
+    <MainLayout title="Lugares culturales">
       <div className="mt-3 mb-5 d-flex flex-column align-items-start align-items-md-center justify-content-center">
         <div className="col-12 col-md-5">
           <SearchBar />
@@ -51,4 +51,4 @@ function Events() {
   );
 }
 
-export default Events;
+export default CulturalPlaces;

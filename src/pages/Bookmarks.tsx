@@ -35,8 +35,26 @@ function Bookmarks() {
           <SearchBar />
         </div>
         <div className="row col-12 col-md-6 gap-2 gx-2 py-1 flex-nowrap overflow-x-auto hide-scrollbar" style={{ WebkitOverflowScrolling: 'touch' }}>
-          <Select className="col" options={[{ value: '1', label: 'Eventos' }, { value: '2', label: 'Lugares culturales' }]} placeholder="Todos" onChange={(newValue) => console.log(newValue)} />
-          <Select className="col" options={[{ value: '1', label: 'Categoría 1' }, { value: '2', label: 'Categoría 2' }, { value: '3', label: 'Categoría 3' }]} placeholder="Categoría" onChange={(newValue) => console.log(newValue)} />
+          <Select
+            className='col'
+            options={[
+              { value: 'todos', label: 'Todos' },
+              { value: 'eventos', label: 'Eventos' },
+              { value: 'lugares', label: 'Lugares culturales' }
+            ]}
+            initialValue='todos'
+            onChange={(newValue) => console.log(newValue)}
+          />
+          <Select
+            className='col'
+            options={[
+              { value: 'categoria', label: 'Categoría' },
+              { value: 'arte', label: 'Arte' },
+              { value: 'ocio', label: 'Ocio' }
+            ]}
+            initialValue='categoria'
+            onChange={(newValue) => console.log(newValue)}
+          />
           <button className="col btn rounded-pill shadow-sm text-nowrap">
             Fecha
             <FontAwesomeIcon icon={faArrowDownWideShort} className="ps-2" />

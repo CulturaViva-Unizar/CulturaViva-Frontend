@@ -1,4 +1,3 @@
-// src/pages/AssistedEvents.tsx
 import { Select } from '../components/Select'
 import { Card, CardProps } from '../components/Card'
 import PieChart from '../components/PieChart'
@@ -7,8 +6,7 @@ import { useState } from 'react'
 import MainLayout from '../layouts/MainLayout'
 
 const simulatedData: CardProps[] = Array.from({ length: 27 }, (_, index) => ({
-  image:
-    'https://www.zaragoza.es/cont/paginas/actividades/imagen/2360.png_1070x713.png',
+  image: 'https://www.zaragoza.es/cont/paginas/actividades/imagen/2360.png_1070x713.png',
   title: `Regálame esta noche. Albena Teatro ${index + 1}`,
   location: 'Teatro de las Esquinas',
   rating: 4.1,
@@ -37,7 +35,7 @@ const pieOptions = {
   },
 }
 
-function AssistedEvents() {
+function PopularCulturalPlaces() {
   const [currentPage, setCurrentPage] = useState<number>(1)
   const itemsPerPage = 6
   const totalPages = Math.ceil(simulatedData.length / itemsPerPage)
@@ -48,7 +46,7 @@ function AssistedEvents() {
   )
 
   return (
-    <MainLayout title="Asistidos">
+    <MainLayout title="Populares">
       <div className="d-md-flex">
         <div className="col-md-4 d-flex flex-column align-items-center">
           <Select
@@ -89,4 +87,4 @@ function AssistedEvents() {
   )
 }
 
-export default AssistedEvents
+export default PopularCulturalPlaces

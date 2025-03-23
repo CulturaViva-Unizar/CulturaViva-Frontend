@@ -1,7 +1,5 @@
 import { Select } from '../components/Select'
 import { Card, CardProps } from '../components/Card'
-import { UserMenu } from '../components/UserMenu'
-import { GoBackBtn } from '../components/GoBackBtn'
 import PieChart from '../components/PieChart'
 import BootstrapPagination from '../components/BootstrapPagination'
 import { useState } from 'react'
@@ -19,7 +17,7 @@ const simulatedData: CardProps[] = Array.from({ length: 27 }, (_, index) => ({
 }))
 
 const pieData = {
-  labels: ["Rojo", "Azul", "Amarillo"],
+  labels: ["Arte", "Ocio", "Otros"],
   datasets: [
     {
       data: [40, 35, 25],
@@ -52,7 +50,15 @@ function UpcomingEvents() {
     <MainLayout title="Próximos">
       <div className='d-md-flex'>
         <div className='col-md-4 d-flex flex-column align-items-center'>
-          <Select options={[{ value: '1', label: 'Categoría 1' }, { value: '2', label: 'Categoría 2' }, { value: '2', label: 'Categoría 3' }]} placeholder='Categoría' onChange={(newValue) => console.log(newValue)} />
+          <Select
+            options={[
+              { value: 'categoria', label: 'Categoría' },
+              { value: 'arte', label: 'Arte' },
+              { value: 'ocio', label: 'Ocio' }
+            ]}
+            initialValue='categoria'
+            onChange={(newValue) => console.log(newValue)}
+          />
           <PieChart data={pieData} options={pieOptions} className="m-4" />
         </div>
         <div className='flex-column col-md-8 row'>
