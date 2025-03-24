@@ -1,10 +1,10 @@
 import { FC } from "react";
 
 interface MessageProps {
-    message: string;
-    dateTime: string;
-    isOwn: boolean;
-  }
+  message: string;
+  dateTime: string;
+  isOwn: boolean;
+}
 
 export const Message: FC<MessageProps> = ({ message, dateTime, isOwn }) => {
   return (

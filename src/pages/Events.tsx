@@ -4,8 +4,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDownWideShort } from "@fortawesome/free-solid-svg-icons";
 import { Card } from "../components/Card";
 import MainLayout from "../layouts/MainLayout";
+import { useNavigate } from "react-router";
 
 function Events() {
+  const navigate = useNavigate();
+
+  const showEventDetails = (eventId: number) => {
+    navigate(`/eventos/${eventId}`);
+  };
+
   return (
     <MainLayout title="Eventos">
       <div className="mt-3 mb-5 d-flex flex-column align-items-start align-items-md-center justify-content-center">
@@ -43,6 +50,7 @@ function Events() {
               reviews={116}
               description="Dos viejos amantes se reencuentran después de más de veinticinco años desde la última vez que estuvieron juntos. Sus vidas han evolucionado de forma muy diferente, pero ambos coinciden con quien desearían pasar la última noche de su vida. Una comedia romántica que nos hace preguntarnos con quién desearíamos pasar la última noche de nuestra vida."
               className="rounded bg-light shadow"
+              onClick={() => showEventDetails(index)}
             />
           </div>
         ))}

@@ -1,19 +1,28 @@
-import { faUser } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { FC } from 'react';
-import { Link } from 'react-router';
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FC } from "react";
+import { Link } from "react-router";
 
 interface ChatCardProps {
   userId: number;
-  username: string
+  username: string;
   lastMessage: string;
   date: string;
   unreadMessages: number;
 }
 
-export const ChatCard: FC<ChatCardProps> = ({ userId, username, lastMessage, date, unreadMessages }) => {
+export const ChatCard: FC<ChatCardProps> = ({
+  userId,
+  username,
+  lastMessage,
+  date,
+  unreadMessages,
+}) => {
   return (
-    <Link to={`/chats/${userId}`} className="dropdown-item btn d-flex align-items-center p-2">
+    <Link
+      to={`/chats/${userId}`}
+      className="dropdown-item btn d-flex align-items-center p-2"
+    >
       <div className="col-1">
         <FontAwesomeIcon icon={faUser} />
       </div>
@@ -24,7 +33,9 @@ export const ChatCard: FC<ChatCardProps> = ({ userId, username, lastMessage, dat
       <div className="col-3 d-flex flex-column align-items-end">
         <p className="small text-muted mb-1">{date}</p>
         {unreadMessages > 0 && (
-          <span className="badge bg-danger rounded-circle float-end">{unreadMessages}</span>
+          <span className="badge bg-danger rounded-circle float-end">
+            {unreadMessages}
+          </span>
         )}
       </div>
     </Link>

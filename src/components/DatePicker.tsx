@@ -1,9 +1,9 @@
-import { FC, useState } from 'react';
-import ReactDatePicker from 'react-datepicker';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendar } from '@fortawesome/free-solid-svg-icons';
+import { FC, useState } from "react";
+import ReactDatePicker from "react-datepicker";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 
-import 'react-datepicker/dist/react-datepicker.css';
+import "react-datepicker/dist/react-datepicker.css";
 
 interface DatePickerProps {
   onChange?: (date: Date | null) => void;
@@ -12,7 +12,7 @@ interface DatePickerProps {
 
 export const DatePicker: FC<DatePickerProps> = ({
   onChange,
-  className = ''
+  className = "",
 }) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
@@ -24,11 +24,13 @@ export const DatePicker: FC<DatePickerProps> = ({
   };
 
   return (
-    <div className={`d-flex align-items-center rounded-pill shadow-sm px-3 ${className}`}>
+    <div
+      className={`d-flex align-items-center rounded-pill shadow-sm px-3 ${className}`}
+    >
       <ReactDatePicker
         selected={selectedDate}
         onChange={handleChange}
-        placeholderText='dd/mm/aaaa'
+        placeholderText="dd/mm/aaaa"
         dateFormat="dd/MM/yyyy"
         className="border-0"
       />

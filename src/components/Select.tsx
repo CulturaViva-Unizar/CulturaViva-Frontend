@@ -1,4 +1,4 @@
-import { FC, useState, ChangeEvent } from 'react';
+import { FC, useState, ChangeEvent } from "react";
 
 interface SelectOption {
   value: string;
@@ -18,10 +18,12 @@ export const Select: FC<SelectProps> = ({
   placeholder,
   initialValue,
   onChange,
-  className = ''
+  className = "",
 }) => {
-  const initialSelectedValue = initialValue ?? (placeholder ? '' : options[0]?.value ?? '');
-  const [selectedValue, setSelectedValue] = useState<string>(initialSelectedValue);
+  const initialSelectedValue =
+    initialValue ?? (placeholder ? "" : options[0]?.value ?? "");
+  const [selectedValue, setSelectedValue] =
+    useState<string>(initialSelectedValue);
 
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const newValue = e.target.value;

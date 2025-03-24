@@ -1,9 +1,9 @@
-import { Outlet, useLocation } from "react-router"
-import { GoBackBtn } from "../components/GoBackBtn"
-import SearchBar from "../components/SearchBar"
-import { UserMenu } from "../components/UserMenu"
-import { useState, useEffect } from "react"
-import { ChatCard } from "../components/ChatCard"
+import { Outlet, useLocation } from "react-router";
+import { GoBackBtn } from "../components/GoBackBtn";
+import SearchBar from "../components/SearchBar";
+import { UserMenu } from "../components/UserMenu";
+import { useState, useEffect } from "react";
+import { ChatCard } from "../components/ChatCard";
 
 function Chats() {
   const location = useLocation();
@@ -11,27 +11,34 @@ function Chats() {
 
   useEffect(() => {
     setSelectedChat(location.pathname !== "/chats");
-    
+
     window.scrollTo(0, 0);
   }, [location]);
 
   return (
-    <div className='p-3 p-md-4'>
-      <div className={`row mb-4 ${selectedChat ? 'd-none d-md-flex' : ''}`}>
-        <div className='col h-100'>
+    <div className="p-3 p-md-4">
+      <div className={`row mb-4 ${selectedChat ? "d-none d-md-flex" : ""}`}>
+        <div className="col h-100">
           <GoBackBtn />
         </div>
-        <h1 className='col-8 text-center'>Chats</h1>
-        <UserMenu className='col text-end'/>
+        <h1 className="col-8 text-center">Chats</h1>
+        <UserMenu className="col text-end" />
       </div>
       <div className="row">
-        <div className={`col-12 col-md-3 ${selectedChat ? 'd-none d-md-block' : ''}`}>
-          <div className='mb-3'>
+        <div
+          className={`col-12 col-md-3 ${
+            selectedChat ? "d-none d-md-block" : ""
+          }`}
+        >
+          <div className="mb-3">
             <SearchBar />
           </div>
-          <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 12%)' }}>
-            {[...Array(24)].map((_, i) =>
-              <ChatCard 
+          <div
+            className="overflow-auto"
+            style={{ maxHeight: "calc(100vh - 12%)" }}
+          >
+            {[...Array(24)].map((_, i) => (
+              <ChatCard
                 key={i}
                 userId={i}
                 username={`User ${i}`}
@@ -39,16 +46,19 @@ function Chats() {
                 date="Hace 27 días"
                 unreadMessages={3}
               />
-            )}
+            ))}
           </div>
         </div>
-        <div className={`col-12 col-md-9 ${!selectedChat ? 'd-none d-md-block' : ''}`}>
+        <div
+          className={`col-12 col-md-9 ${
+            !selectedChat ? "d-none d-md-block" : ""
+          }`}
+        >
           <Outlet />
         </div>
       </div>
     </div>
-    )
-  }
-  
-  export default Chats
-  
+  );
+}
+
+export default Chats;

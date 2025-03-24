@@ -10,73 +10,44 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "react-bootstrap";
-import { Rating } from "../components/Rating";
-import { useState } from "react";
+import { Rating } from "./Rating";
+import { FC, useState } from "react";
 import {
   faFacebook,
   faInstagram,
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
-import { Review } from "../components/Review";
-import { Select } from "../components/Select";
+import { Review } from "./Review";
+import { Select } from "./Select";
+import { InfoEventProps } from "../common/interfaces";
+import { useAuth } from "../context/AuthContext";
+import { ADMIN_ROLE, USER_ROLE } from "../common/constants";
 
-const simulatedData = {
-  image:
-    "https://www.zaragoza.es/cont/paginas/actividades/imagen/2360.png_1070x713.png",
-  title: "Regálame esta noche. Albena Teatro",
-  location: "Teatro de las Esquinas",
-  rating: 4.1,
-  totalReviews: 116,
-  ratingDistribution: {
-    5: 30,
-    4: 80,
-    3: 5,
-    2: 1,
-    1: 0,
-  },
-  date: "18/06/2025",
-  description:
-    "Dos viejos amantes se reencuentran después de más de veinticinco años. Una comedia romántica para preguntarnos con quién desearíamos pasar la última noche de nuestra vida.",
-  price: 20,
-  organizer: "Ayuntamiento de Zaragoza",
-  attendees: 45,
-  facebook: "facebook",
-  instagram: "instagram",
-  twitter: "twitter",
-  reviews: [
-    {
-      userId: 1,
-      user: "User X",
-      rating: 3,
-      comment: "Gracias por tu reseña!",
-      date: "hace 3 meses",
-      replies: [
-        {
-          userId: 2,
-          user: "User Z",
-          comment: "De nada! 😊",
-          date: "hace 2 meses",
-        },
-      ],
-    },
-    {
-      userId: 3,
-      user: "User A",
-      rating: 5,
-      comment: "Me ha encantado!",
-      date: "hace 2 días",
-      replies: [],
-    },
-  ],
-};
-
-function InfoEvent() {
+const InfoEvent: FC<InfoEventProps> = ({
+  image,
+  title,
+  location,
+  rating,
+  totalReviews,
+  ratingDistribution,
+  date,
+  description,
+  price,
+  organizer,
+  attendeesInit,
+  facebook,
+  instagram,
+  twitter,
+  reviewsInit,
+  onClose,
+}) => {
   const [isAttending, setIsAttending] = useState(false);
-  const [attendees, setAttendees] = useState(simulatedData.attendees);
+  const [attendees, setAttendees] = useState(attendeesInit);
   const [saved, setSaved] = useState(false);
-  const [reviews, setReviews] = useState(simulatedData.reviews);
-  const [rating, setRating] = useState(0);
+  const [reviews, setReviews] = useState(reviewsInit);
+  const [myRating, setMyRating] = useState(0);
   const [comment, setComment] = useState("");
+  const { user } = useAuth();
 
   const handleAttendance = () => {
     if (isAttending) {
@@ -90,12 +61,12 @@ function InfoEvent() {
       }).then((result) => {
         if (result.isConfirmed) {
           setIsAttending(false);
-          setAttendees((prev) => prev - 1);
+          setAttendees((prev: number) => prev - 1);
         }
       });
     } else {
       setIsAttending(true);
-      setAttendees((prev) => prev + 1);
+      setAttendees((prev: number) => prev + 1);
       Swal.fire({
         title: "¡Asistencia confirmada!",
         text: "Has confirmado tu asistencia a esta exposición.",
@@ -129,26 +100,29 @@ function InfoEvent() {
   };
 
   const handleStarClick = (index: number) => {
-    setRating(index + 1);
+    setMyRating(index + 1);
   };
 
   const handleReviewSubmit = () => {
-    if (rating === 0) {
+    if (myRating === 0) {
       Swal.fire("Error", "La reseña debe tener una puntuación.", "error");
       return;
     }
 
     const newReview = {
       userId: 0,
-      user: "Tú",
-      rating,
+      username: "Tú",
+      rating: myRating,
       comment,
       date: "hace un momento",
       replies: [],
+      map: function (): React.ReactNode {
+        throw new Error("Function not implemented.");
+      },
     };
 
     setReviews([...reviews, newReview]);
-    setRating(0);
+    setMyRating(0);
     setComment("");
     Swal.fire("¡Gracias!", "Tu reseña ha sido añadida.", "success");
   };
@@ -156,7 +130,7 @@ function InfoEvent() {
   return (
     <div className="p-3">
       <div className="d-flex flex-row-reverse mb-2 gap-2">
-        <Button className="btn btn-light rounded-circle">
+        <Button className="btn btn-light rounded-circle" onClick={onClose}>
           <FontAwesomeIcon icon={faXmark} />
         </Button>
         <Button className="btn btn-light rounded-circle">
@@ -164,27 +138,27 @@ function InfoEvent() {
         </Button>
       </div>
       <div className="row g-3 mb-4">
-        {simulatedData.image && (
+        {image && (
           <div className="col-4 col-md-3">
             <img
-              src={simulatedData.image}
+              src={image}
               className="img-fluid rounded h-100 object-fit-cover"
-              alt={simulatedData.title}
+              alt={title}
             />
           </div>
         )}
         <div className="col">
           <div>
-            <h2>{simulatedData.title}</h2>
-            <p className="text-muted mb-0">{simulatedData.location}</p>
+            <h2>{title}</h2>
+            <p className="text-muted mb-0">{location}</p>
             <div className="d-flex align-items-center gap-1 mb-2">
-              <p className="text-muted mb-0">{simulatedData.rating}</p>
+              <p className="text-muted mb-0">{rating}</p>
               <FontAwesomeIcon icon={faStar} color="gold" />
-              <p className="text-muted mb-0">({simulatedData.totalReviews})</p>
+              <p className="text-muted mb-0">({totalReviews})</p>
             </div>
-            <p className="mb-0">{simulatedData.date}</p>
-            <p className="mb-0">{simulatedData.price} €</p>
-            <p>Organizado por: {simulatedData.organizer}</p>
+            <p className="mb-0">{date}</p>
+            <p className="mb-0">{price} €</p>
+            <p>Organizado por: {organizer}</p>
           </div>
         </div>
       </div>
@@ -213,65 +187,70 @@ function InfoEvent() {
           {saved ? <span>Dejar de guardar</span> : <span>Guardar</span>}
         </Button>
         <Button className="btn btn-light rounded-pill w-auto">
-          <FontAwesomeIcon icon={faLocationArrow} className="me-2" /> Cómo llegar
+          <FontAwesomeIcon icon={faLocationArrow} className="me-2" /> Cómo
+          llegar
         </Button>
-        {simulatedData.facebook && (
+        {facebook && (
           <Button className="btn btn-light rounded-circle w-auto">
             <FontAwesomeIcon icon={faFacebook} />
           </Button>
         )}
-        {simulatedData.instagram && (
+        {instagram && (
           <Button className="btn btn-light rounded-circle w-auto">
             <FontAwesomeIcon icon={faInstagram} />
           </Button>
         )}
-        {simulatedData.twitter && (
+        {twitter && (
           <Button className="btn btn-light rounded-circle w-auto">
             <FontAwesomeIcon icon={faTwitter} />
           </Button>
         )}
       </div>
-      <p>{simulatedData.description}</p>
+      <p>{description}</p>
       <hr />
       <Rating
-        rating={simulatedData.rating}
-        totalReviews={simulatedData.totalReviews}
-        ratingDistribution={simulatedData.ratingDistribution}
+        rating={rating}
+        totalReviews={totalReviews}
+        ratingDistribution={ratingDistribution}
       />
       <hr />
-      <div className="d-flex">
-        <div className="col-3">
-          <strong>Valorar y escribir una reseña:</strong>
-        </div>
-        <div className="col-9 ps-4">
-          <div className="mb-2">
-            {[...Array(5)].map((_, index) => (
-              <FontAwesomeIcon
-                key={index}
-                icon={faStar}
-                color={index < rating ? "gold" : "gray"}
-                onClick={() => handleStarClick(index)}
-                style={{ cursor: "pointer" }}
-              />
-            ))}
+      {(user?.role == USER_ROLE || user?.role == ADMIN_ROLE) && (
+        <>
+          <div className="d-flex">
+            <div className="col-3">
+              <strong>Valorar y escribir una reseña:</strong>
+            </div>
+            <div className="col-9 ps-4">
+              <div className="mb-2">
+                {[...Array(5)].map((_, index) => (
+                  <FontAwesomeIcon
+                    key={index}
+                    icon={faStar}
+                    color={index < myRating ? "gold" : "gray"}
+                    onClick={() => handleStarClick(index)}
+                    style={{ cursor: "pointer" }}
+                  />
+                ))}
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Comentario (opcional)</label>
+                <textarea
+                  className="form-control"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                ></textarea>
+              </div>
+              <Button
+                className="btn btn-light rounded-pill w-auto"
+                onClick={handleReviewSubmit}
+              >
+                Enviar
+              </Button>
+            </div>
           </div>
-          <div className="mb-3">
-            <label className="form-label">Comentario (opcional)</label>
-            <textarea
-              className="form-control"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-            ></textarea>
-          </div>
-          <Button
-            className="btn btn-light rounded-pill w-auto"
-            onClick={handleReviewSubmit}
-          >
-            Enviar
-          </Button>
-        </div>
-      </div>
-      <hr />
+          <hr />
+        </>
+      )}
       <div className="d-flex gap-3 mb-3">
         <Select
           options={[
@@ -299,16 +278,20 @@ function InfoEvent() {
       </div>
       {reviews.map((review) => (
         <Review
+          key={review.userId}
           userId={review.userId}
-          user={review.user}
+          username={review.username}
           rating={review.rating}
           comment={review.comment}
           date={review.date}
           replies={review.replies}
+          map={function (): React.ReactNode {
+            throw new Error("Function not implemented.");
+          }}
         />
       ))}
     </div>
   );
-}
+};
 
 export default InfoEvent;

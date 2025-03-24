@@ -1,6 +1,6 @@
-import { faStar } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React from 'react';
+import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from "react";
 
 interface RatingProps {
   rating: number;
@@ -14,7 +14,11 @@ interface RatingProps {
   };
 }
 
-export const Rating: React.FC<RatingProps> = ({ rating, totalReviews, ratingDistribution }) => {
+export const Rating: React.FC<RatingProps> = ({
+  rating,
+  totalReviews,
+  ratingDistribution,
+}) => {
   const getPercentage = (count: number) => (count / totalReviews) * 100;
 
   return (
@@ -22,9 +26,9 @@ export const Rating: React.FC<RatingProps> = ({ rating, totalReviews, ratingDist
       <div className="col-3 text-center me-3">
         <h1>{rating}</h1>
         <div>
-          {[...Array(5)].map(() =>
-            <FontAwesomeIcon icon={faStar} color='yellow' />
-          )}
+          {[...Array(5)].map(() => (
+            <FontAwesomeIcon icon={faStar} color="yellow" />
+          ))}
         </div>
         <span className="text-muted">({totalReviews})</span>
       </div>
@@ -39,8 +43,16 @@ export const Rating: React.FC<RatingProps> = ({ rating, totalReviews, ratingDist
                 <div
                   className="progress-bar bg-warning"
                   role="progressbar"
-                  style={{ width: `${getPercentage(ratingDistribution[star as keyof typeof ratingDistribution])}%` }}
-                  aria-valuenow={getPercentage(ratingDistribution[star as keyof typeof ratingDistribution])}
+                  style={{
+                    width: `${getPercentage(
+                      ratingDistribution[
+                        star as keyof typeof ratingDistribution
+                      ]
+                    )}%`,
+                  }}
+                  aria-valuenow={getPercentage(
+                    ratingDistribution[star as keyof typeof ratingDistribution]
+                  )}
                   aria-valuemin={0}
                   aria-valuemax={100}
                 ></div>

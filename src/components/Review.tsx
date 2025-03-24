@@ -6,37 +6,26 @@ import {
   faReply,
   faCircleUser,
   faComment,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import { Link } from "react-router";
-
-type Reply = {
-  userId: number;
-  user: string;
-  comment: string;
-  date: string;
-  replies?: Reply[];
-};
-
-type ReviewProps = {
-  userId: number;
-  user: string;
-  rating?: number;
-  comment: string;
-  date: string;
-  replies?: Reply[];
-};
+import { Link, useNavigate } from "react-router";
+import { Reply, ReviewProps } from "../common/interfaces";
+import { useAuth } from "../context/AuthContext";
+import { ADMIN_ROLE, GUEST_ROLE } from "../common/constants";
 
 export const Review: React.FC<ReviewProps> = ({
   userId,
-  user,
+  username,
   rating = 0,
   comment,
   date,
   replies = [],
 }) => {
   const [allReplies, setAllReplies] = useState<Reply[]>(replies);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   const addReply = (
     replyList: Reply[],
@@ -57,6 +46,12 @@ export const Review: React.FC<ReviewProps> = ({
   };
 
   const handleReply = (parentReply?: Reply) => {
+    if (user?.role === GUEST_ROLE) {
+      logout();
+      navigate("/inicio-sesion");
+      return;
+    }
+
     Swal.fire({
       title: "Responder a la reseña",
       input: "text",
@@ -84,6 +79,66 @@ export const Review: React.FC<ReviewProps> = ({
     });
   };
 
+  const handleDeleteComment = (parentReply?: Reply) => {
+    Swal.fire({
+      title: "¡ATENCIÓN!",
+      html: `
+        <p>Se va a eliminar un comentario del evento</p>
+        <select id="reasonSelect" class="form-select mt-3">
+          <option value="">Motivo</option>
+          <option value="razon1">Razón 1</option>
+          <option value="razon2">Razón 2</option>
+          <option value="razon3">Razón 3</option>
+        </select>
+      `,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Eliminar",
+      reverseButtons: true,
+      customClass: {
+        confirmButton: "btn btn-danger ms-2",
+        cancelButton: "btn btn-secondary",
+      },
+      buttonsStyling: false,
+      preConfirm: () => {
+        const selectElement = document.getElementById(
+          "reasonSelect"
+        ) as HTMLSelectElement;
+        const selectedValue = selectElement.value;
+        if (!selectedValue) {
+          Swal.showValidationMessage("Por favor, selecciona un motivo");
+        }
+        return { reason: selectedValue };
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (parentReply) {
+          setAllReplies((prevReplies) => {
+            return prevReplies
+              .map((reply) => {
+                if (reply === parentReply) {
+                  return null;
+                } else if (reply.replies) {
+                  const updatedReplies = reply.replies.filter(
+                    (r) => r !== parentReply
+                  );
+                  if (updatedReplies.length !== reply.replies.length) {
+                    return { ...reply, replies: updatedReplies };
+                  }
+                }
+                return reply;
+              })
+              .filter((reply) => reply !== null) as Reply[];
+          });
+        } else {
+          setAllReplies((prevReplies) =>
+            prevReplies.filter((reply) => reply.comment !== comment)
+          );
+        }
+      }
+    });
+  };
+
   const renderReplies = (replies: Reply[]) => {
     return replies.map((reply, index) => (
       <div key={index} className="ms-4 p-2 border-start">
@@ -96,6 +151,17 @@ export const Review: React.FC<ReviewProps> = ({
           >
             <FontAwesomeIcon icon={faComment} />
           </Link>
+          {user?.role === ADMIN_ROLE && (
+            <button
+              className="btn btn-sm"
+              onClick={() => handleDeleteComment()}
+            >
+              <FontAwesomeIcon
+                icon={faTrash}
+                className="btn btn-danger rounded-circle"
+              />
+            </button>
+          )}
         </div>
         <span className="text-muted small">{reply.date}</span>
         <p>{reply.comment}</p>
@@ -113,10 +179,18 @@ export const Review: React.FC<ReviewProps> = ({
     <div className="mb-3">
       <div className="d-flex align-items-center gap-2">
         <FontAwesomeIcon icon={faCircleUser} />
-        <strong>{user}</strong>
+        <strong>{username}</strong>
         <Link to={`/chats/${userId}`} className="btn btn-light rounded-circle">
           <FontAwesomeIcon icon={faComment} />
         </Link>
+        {user?.role === ADMIN_ROLE && (
+          <button className="btn btn-sm" onClick={() => handleDeleteComment()}>
+            <FontAwesomeIcon
+              icon={faTrash}
+              className="btn btn-danger rounded-circle"
+            />
+          </button>
+        )}
       </div>
       <div className="mb-2">
         {[...Array(5)].map((_, i) => (

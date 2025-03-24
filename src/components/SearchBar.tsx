@@ -1,14 +1,14 @@
-import React, { useState, ChangeEvent } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import React, { useState, ChangeEvent } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 interface SearchBarProps {
   onSearch?: (query: string) => void;
   className?: string;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch, className = '' }) => {
-  const [searchText, setSearchText] = useState('');
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch, className = "" }) => {
+  const [searchText, setSearchText] = useState("");
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchText(event.target.value);
@@ -21,7 +21,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, className = '' }) => {
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       handleSearch();
     }
   };
@@ -29,8 +29,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, className = '' }) => {
   return (
     <div
       className={`input-group rounded-pill shadow-sm ${className}`}
-      style={{
-      }}
+      style={{}}
     >
       <input
         type="search"
@@ -41,11 +40,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, className = '' }) => {
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
       />
-      <button
-        className="btn border-0"
-        type="button"
-        onClick={handleSearch}
-      >
+      <button className="btn border-0" type="button" onClick={handleSearch}>
         <FontAwesomeIcon icon={faMagnifyingGlass} />
       </button>
     </div>

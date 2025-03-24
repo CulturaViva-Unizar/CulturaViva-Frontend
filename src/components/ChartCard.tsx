@@ -1,16 +1,20 @@
-import React from 'react';
-import { Select } from './Select';
+import React from "react";
+import { Select } from "./Select";
 
 interface ChartCardProps {
-  title: string
-  children: React.ReactNode
+  title: string;
+  children: React.ReactNode;
   className?: string;
 }
 
-const ChartCard: React.FC<ChartCardProps> = ({ title, children, className = '' }) => {
+const ChartCard: React.FC<ChartCardProps> = ({
+  title,
+  children,
+  className = "",
+}) => {
   return (
     <div className={`card ${className}`}>
-      <div className='card-header d-flex align-items-center justify-content-between'>
+      <div className="card-header d-flex align-items-center justify-content-between">
         <h5>{title}</h5>
         <Select
           options={[
@@ -25,9 +29,7 @@ const ChartCard: React.FC<ChartCardProps> = ({ title, children, className = '' }
           onChange={(newValue) => console.log(newValue)}
         />
       </div>
-      <div className="card-body">
-        {children}
-      </div>
+      <div className="card-body">{children}</div>
     </div>
   );
 };

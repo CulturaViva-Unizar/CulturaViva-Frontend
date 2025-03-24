@@ -1,32 +1,38 @@
-// src/pages/Bookmarks.tsx
-import SearchBar from '../components/SearchBar'
-import { Select } from '../components/Select'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowDownWideShort } from '@fortawesome/free-solid-svg-icons'
-import { Card, CardProps } from '../components/Card'
-import BootstrapPagination from '../components/BootstrapPagination'
-import { useState } from 'react'
-import MainLayout from '../layouts/MainLayout'
+import SearchBar from "../components/SearchBar";
+import { Select } from "../components/Select";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowDownWideShort } from "@fortawesome/free-solid-svg-icons";
+import { Card } from "../components/Card";
+import BootstrapPagination from "../components/BootstrapPagination";
+import { useState } from "react";
+import MainLayout from "../layouts/MainLayout";
+import { CardProps } from "../common/interfaces";
+import { useNavigate } from "react-router";
 
 const simulatedData: CardProps[] = Array.from({ length: 27 }, (_, index) => ({
   image:
-    'https://www.zaragoza.es/cont/paginas/actividades/imagen/2360.png_1070x713.png',
+    "https://www.zaragoza.es/cont/paginas/actividades/imagen/2360.png_1070x713.png",
   title: `Regálame esta noche. Albena Teatro ${index + 1}`,
-  location: 'Teatro de las Esquinas',
+  location: "Teatro de las Esquinas",
   rating: 4.1,
   reviews: 116,
   description:
-    'Dos viejos amantes se reencuentran después de más de veinticinco años. Una comedia romántica para preguntarnos con quién desearíamos pasar la última noche de nuestra vida.',
-}))
+    "Dos viejos amantes se reencuentran después de más de veinticinco años. Una comedia romántica para preguntarnos con quién desearíamos pasar la última noche de nuestra vida.",
+}));
 
 function Bookmarks() {
-  const [currentPage, setCurrentPage] = useState<number>(1)
-  const itemsPerPage = 9
-  const totalPages = Math.ceil(simulatedData.length / itemsPerPage)
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 9;
+  const totalPages = Math.ceil(simulatedData.length / itemsPerPage);
   const currentCards = simulatedData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
-  )
+  );
+  const navigate = useNavigate();
+
+  const showEventDetails = (eventId: number) => {
+    navigate(`/eventos/${eventId}`);
+  };
 
   return (
     <MainLayout title="Guardados">
@@ -34,25 +40,28 @@ function Bookmarks() {
         <div className="row col-12 col-md-3">
           <SearchBar />
         </div>
-        <div className="row col-12 col-md-6 gap-2 gx-2 py-1 flex-nowrap overflow-x-auto hide-scrollbar" style={{ WebkitOverflowScrolling: 'touch' }}>
+        <div
+          className="row col-12 col-md-6 gap-2 gx-2 py-1 flex-nowrap overflow-x-auto hide-scrollbar"
+          style={{ WebkitOverflowScrolling: "touch" }}
+        >
           <Select
-            className='col'
+            className="col"
             options={[
-              { value: 'todos', label: 'Todos' },
-              { value: 'eventos', label: 'Eventos' },
-              { value: 'lugares', label: 'Lugares culturales' }
+              { value: "todos", label: "Todos" },
+              { value: "eventos", label: "Eventos" },
+              { value: "lugares", label: "Lugares culturales" },
             ]}
-            initialValue='todos'
+            initialValue="todos"
             onChange={(newValue) => console.log(newValue)}
           />
           <Select
-            className='col'
+            className="col"
             options={[
-              { value: 'categoria', label: 'Categoría' },
-              { value: 'arte', label: 'Arte' },
-              { value: 'ocio', label: 'Ocio' }
+              { value: "categoria", label: "Categoría" },
+              { value: "arte", label: "Arte" },
+              { value: "ocio", label: "Ocio" },
             ]}
-            initialValue='categoria'
+            initialValue="categoria"
             onChange={(newValue) => console.log(newValue)}
           />
           <button className="col btn rounded-pill shadow-sm text-nowrap">
@@ -76,6 +85,7 @@ function Bookmarks() {
               reviews={card.reviews}
               description={card.description}
               className="rounded bg-light shadow"
+              onClick={() => showEventDetails(i)}
             />
           </div>
         ))}
@@ -86,7 +96,7 @@ function Bookmarks() {
         onPageChange={(page: number) => setCurrentPage(page)}
       />
     </MainLayout>
-  )
+  );
 }
 
-export default Bookmarks
+export default Bookmarks;

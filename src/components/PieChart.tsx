@@ -6,7 +6,11 @@ import { ChartProps } from "../common/interfaces";
 Chart.register(ArcElement, Tooltip, Legend);
 
 const PieChart: FC<ChartProps> = ({ data, options, className }) => {
-  return <div className={className}><Pie data={data} options={options} /></div>;
+  return (
+    <div className={className}>
+      <Pie data={data} options={options} />
+    </div>
+  );
 };
 
 export default PieChart;

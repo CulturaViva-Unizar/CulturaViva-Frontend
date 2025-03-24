@@ -6,7 +6,11 @@ import { ChartProps } from "../common/interfaces";
 Chart.register(ArcElement, Tooltip, Legend);
 
 const DoughnutChart: FC<ChartProps> = ({ data, options, className }) => {
-  return <div className={className}><Doughnut data={data} options={options} /></div>;
+  return (
+    <div className={className}>
+      <Doughnut data={data} options={options} />
+    </div>
+  );
 };
 
 export default DoughnutChart;

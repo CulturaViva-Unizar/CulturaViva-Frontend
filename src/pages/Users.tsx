@@ -1,28 +1,33 @@
-import { UserCard, UserCardProps } from '../components/UserCard'
-import SearchBar from '../components/SearchBar'
-import { Select } from '../components/Select'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowDownWideShort } from '@fortawesome/free-solid-svg-icons'
-import { useState } from 'react'
-import BootstrapPagination from '../components/BootstrapPagination'
-import MainLayout from '../layouts/MainLayout'
+import { UserCard } from "../components/UserCard";
+import SearchBar from "../components/SearchBar";
+import { Select } from "../components/Select";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowDownWideShort } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
+import BootstrapPagination from "../components/BootstrapPagination";
+import MainLayout from "../layouts/MainLayout";
+import { UserCardProps } from "../common/interfaces";
 
-const simulatedData: UserCardProps[] = Array.from({ length: 27 }, (_, index) => ({
-  user: `User ${index + 1}`,
-  isEnabledInit: true,
-  totalComments: 40,
-  deletedComments: 10
-}))
+const simulatedData: UserCardProps[] = Array.from(
+  { length: 27 },
+  (_, index) => ({
+    userId: index,
+    username: `User ${index + 1}`,
+    isEnabledInit: true,
+    totalComments: 40,
+    deletedComments: 10,
+  })
+);
 
 function Users() {
-  const [currentPage, setCurrentPage] = useState<number>(1)
-  const itemsPerPage = 9
-  const totalPages = Math.ceil(simulatedData.length / itemsPerPage)
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 9;
+  const totalPages = Math.ceil(simulatedData.length / itemsPerPage);
 
   const currentCards = simulatedData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
-  )
+  );
 
   return (
     <MainLayout title="Usuarios">
@@ -32,16 +37,16 @@ function Users() {
         </div>
         <div
           className="row col-12 col-md-3 gap-2 gx-2 py-1 flex-nowrap overflow-x-auto hide-scrollbar"
-          style={{ WebkitOverflowScrolling: 'touch' }}
+          style={{ WebkitOverflowScrolling: "touch" }}
         >
           <Select
-            className='col'
+            className="col"
             options={[
-              { value: 'todos', label: 'Todos' },
-              { value: 'habilitados', label: 'Habilitados' },
-              { value: 'deshabilitados', label: 'Deshabilitados' }
+              { value: "todos", label: "Todos" },
+              { value: "habilitados", label: "Habilitados" },
+              { value: "deshabilitados", label: "Deshabilitados" },
             ]}
-            initialValue='todos'
+            initialValue="todos"
             onChange={(newValue) => console.log(newValue)}
           />
           <button className="col btn rounded-pill shadow-sm text-nowrap">
@@ -55,7 +60,8 @@ function Users() {
           <div className="col-md-4" key={i}>
             <UserCard
               className="rounded bg-light shadow"
-              user={card.user}
+              userId={card.userId}
+              username={card.username}
               totalComments={card.totalComments}
               deletedComments={card.deletedComments}
               isEnabledInit={card.isEnabledInit}
@@ -69,7 +75,7 @@ function Users() {
         onPageChange={(page: number) => setCurrentPage(page)}
       />
     </MainLayout>
-  )
+  );
 }
 
-export default Users
+export default Users;

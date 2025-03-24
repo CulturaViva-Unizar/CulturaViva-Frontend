@@ -1,6 +1,6 @@
-import { FC, useState } from 'react';
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+import { FC, useState } from "react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const MySwal = withReactContent(Swal);
 
@@ -12,12 +12,18 @@ interface RangeProps {
   hideWhenMaxValue?: boolean;
 }
 
-export const Range: FC<RangeProps> = ({ min = 0, max = 100, initialValue = 50, className = '', hideWhenMaxValue = false }) => {
+export const Range: FC<RangeProps> = ({
+  min = 0,
+  max = 100,
+  initialValue = 50,
+  className = "",
+  hideWhenMaxValue = false,
+}) => {
   const [value, setValue] = useState<number>(initialValue);
 
   const openModal = async () => {
     const { value: newValue } = await MySwal.fire({
-      title: 'Seleccione un rango',
+      title: "Seleccione un rango",
       html: `
         <div class="d-flex flex-column align-items-center">
           <div class="position-relative my-3" style="width: 80%;">
@@ -38,27 +44,31 @@ export const Range: FC<RangeProps> = ({ min = 0, max = 100, initialValue = 50, c
       `,
       showCancelButton: true,
       focusConfirm: false,
-      cancelButtonText: 'Cancelar',
-      confirmButtonText: 'Aceptar',
+      cancelButtonText: "Cancelar",
+      confirmButtonText: "Aceptar",
       preConfirm: () => {
-        const slider = document.getElementById('swal-range') as HTMLInputElement;
+        const slider = document.getElementById(
+          "swal-range"
+        ) as HTMLInputElement;
         return slider ? slider.value : null;
       },
       didOpen: () => {
-        const slider = document.getElementById('swal-range') as HTMLInputElement;
-        const tooltip = document.getElementById('swal-tooltip') as HTMLElement;
+        const slider = document.getElementById(
+          "swal-range"
+        ) as HTMLInputElement;
+        const tooltip = document.getElementById("swal-tooltip") as HTMLElement;
         if (slider && tooltip) {
           const updateTooltip = () => {
-            tooltip.textContent = slider.value + '€';
+            tooltip.textContent = slider.value + "€";
             const percent = (Number(slider.value) - min) / (max - min);
             const sliderWidth = slider.getBoundingClientRect().width;
             const left = percent * sliderWidth;
-            tooltip.style.left = left + 'px';
+            tooltip.style.left = left + "px";
           };
-          slider.addEventListener('input', updateTooltip);
+          slider.addEventListener("input", updateTooltip);
           updateTooltip();
         }
-      }
+      },
     });
     if (newValue !== undefined && newValue !== null) {
       setValue(Number(newValue));
