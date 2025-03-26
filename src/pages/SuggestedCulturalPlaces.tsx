@@ -5,10 +5,6 @@ import MainLayout from "../layouts/MainLayout";
 function SuggestedCulturalPlaces() {
   const navigate = useNavigate();
 
-  const showCulturalPlaceDetails = (culturalPlaceId: number) => {
-    navigate(`/lugares-culturales/${culturalPlaceId}`);
-  };
-
   return (
     <MainLayout
       title="Recomendaciones"
@@ -25,7 +21,7 @@ function SuggestedCulturalPlaces() {
               reviews={116}
               description="Dos viejos amantes se reencuentran después de más de veinticinco años desde la última vez que estuvieron juntos. Sus vidas han evolucionado de forma muy diferente, pero ambos coinciden con quien desearían pasar la última noche de su vida. Una comedia romántica que nos hace preguntarnos con quién desearíamos pasar la última noche de nuestra vida."
               className="rounded bg-light shadow"
-              onClick={() => showCulturalPlaceDetails(i)}
+              onClick={() => navigate(`/lugares-culturales/${i}`)}
             />
           </div>
         ))}

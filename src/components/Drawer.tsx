@@ -1,13 +1,13 @@
 import { FC } from "react";
 import { Offcanvas } from "react-bootstrap";
 
-interface InfoDrawerProps {
+interface DrawerProps {
   show: boolean;
   onClose: () => void;
   children: React.ReactNode;
 }
 
-export const InfoDrawer: FC<InfoDrawerProps> = ({
+export const Drawer: FC<DrawerProps> = ({
   show,
   onClose,
   children,

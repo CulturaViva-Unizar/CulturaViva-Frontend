@@ -48,10 +48,6 @@ function PopularEvents() {
   );
   const navigate = useNavigate();
 
-  const showEventDetails = (eventId: number) => {
-    navigate(`/eventos/${eventId}`);
-  };
-
   return (
     <MainLayout title="Populares">
       <div className="d-md-flex">
@@ -79,7 +75,7 @@ function PopularEvents() {
                   reviews={card.reviews}
                   description={card.description}
                   className="rounded bg-light shadow"
-                  onClick={() => showEventDetails(i)}
+                  onClick={() => navigate(`/eventos/${i}`)}
                 />
               </div>
             ))}

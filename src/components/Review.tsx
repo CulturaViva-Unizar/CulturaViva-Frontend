@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faStar,
   faReply,
   faCircleUser,
   faComment,
@@ -11,9 +10,11 @@ import {
 import Swal from "sweetalert2";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { Link, useNavigate } from "react-router";
-import { Reply, ReviewProps } from "../common/interfaces";
+import { ReplyProps, ReviewProps } from "../common/interfaces";
 import { useAuth } from "../context/AuthContext";
-import { ADMIN_ROLE, GUEST_ROLE } from "../common/constants";
+import { ADMIN_ROLE } from "../common/constants";
+import { RatingStars } from "./RatingStars";
+import { Reply } from "./Reply";
 
 export const Review: React.FC<ReviewProps> = ({
   userId,
@@ -23,15 +24,15 @@ export const Review: React.FC<ReviewProps> = ({
   date,
   replies = [],
 }) => {
-  const [allReplies, setAllReplies] = useState<Reply[]>(replies);
+  const [allReplies, setAllReplies] = useState<ReplyProps[]>(replies);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const addReply = (
-    replyList: Reply[],
-    parentReply: Reply,
-    newReply: Reply
-  ): Reply[] => {
+    replyList: ReplyProps[],
+    parentReply: ReplyProps,
+    newReply: ReplyProps
+  ): ReplyProps[] => {
     return replyList.map((reply) => {
       if (reply === parentReply) {
         return { ...reply, replies: [...(reply.replies || []), newReply] };
@@ -45,8 +46,8 @@ export const Review: React.FC<ReviewProps> = ({
     });
   };
 
-  const handleReply = (parentReply?: Reply) => {
-    if (user?.role === GUEST_ROLE) {
+  const handleReply = (parentReply?: ReplyProps) => {
+    if (!user?.role) {
       logout();
       navigate("/inicio-sesion");
       return;
@@ -60,12 +61,14 @@ export const Review: React.FC<ReviewProps> = ({
       confirmButtonText: "Enviar",
     }).then((result) => {
       if (result.isConfirmed && result.value) {
-        const newReply: Reply = {
+        const newReply: ReplyProps = {
           userId: userId,
-          user: "Tú",
+          username: "Tú",
           comment: result.value,
           date: "hace un momento",
           replies: [],
+          onReply: handleReply,
+          onDelete: handleDeleteComment,
         };
 
         setAllReplies((prevReplies) => {
@@ -79,7 +82,7 @@ export const Review: React.FC<ReviewProps> = ({
     });
   };
 
-  const handleDeleteComment = (parentReply?: Reply) => {
+  const handleDeleteComment = (parentReply?: ReplyProps) => {
     Swal.fire({
       title: "¡ATENCIÓN!",
       html: `
@@ -128,7 +131,7 @@ export const Review: React.FC<ReviewProps> = ({
                 }
                 return reply;
               })
-              .filter((reply) => reply !== null) as Reply[];
+              .filter((reply) => reply !== null) as ReplyProps[];
           });
         } else {
           setAllReplies((prevReplies) =>
@@ -137,42 +140,6 @@ export const Review: React.FC<ReviewProps> = ({
         }
       }
     });
-  };
-
-  const renderReplies = (replies: Reply[]) => {
-    return replies.map((reply, index) => (
-      <div key={index} className="ms-4 p-2 border-start">
-        <div className="d-flex align-items-center gap-2">
-          <FontAwesomeIcon icon={faCircleUser} />
-          <strong>{reply.user}</strong>
-          <Link
-            to={`/chats/${reply.userId}`}
-            className="btn btn-light rounded-circle"
-          >
-            <FontAwesomeIcon icon={faComment} />
-          </Link>
-          {user?.role === ADMIN_ROLE && (
-            <button
-              className="btn btn-sm"
-              onClick={() => handleDeleteComment()}
-            >
-              <FontAwesomeIcon
-                icon={faTrash}
-                className="btn btn-danger rounded-circle"
-              />
-            </button>
-          )}
-        </div>
-        <span className="text-muted small">{reply.date}</span>
-        <p>{reply.comment}</p>
-        <div>
-          <button className="btn btn-sm" onClick={() => handleReply(reply)}>
-            <FontAwesomeIcon icon={faReply} className="me-2" /> Responder
-          </button>
-        </div>
-        {reply.replies && renderReplies(reply.replies)}
-      </div>
-    ));
   };
 
   return (
@@ -184,31 +151,25 @@ export const Review: React.FC<ReviewProps> = ({
           <FontAwesomeIcon icon={faComment} />
         </Link>
         {user?.role === ADMIN_ROLE && (
-          <button className="btn btn-sm" onClick={() => handleDeleteComment()}>
-            <FontAwesomeIcon
-              icon={faTrash}
-              className="btn btn-danger rounded-circle"
-            />
+          <button
+            className="btn btn-sm btn-danger rounded-circle"
+            onClick={() => handleDeleteComment()}
+          >
+            <FontAwesomeIcon icon={faTrash} />
           </button>
         )}
       </div>
       <div className="mb-2">
-        {[...Array(5)].map((_, i) => (
-          <FontAwesomeIcon
-            key={i}
-            icon={faStar}
-            className={i < rating ? "text-warning" : "text-secondary"}
-          />
-        ))}
+        <RatingStars rating={rating} />
         <span className="text-muted ms-2">{date}</span>
       </div>
       <p>{comment}</p>
-      {renderReplies(allReplies)}
-      <div>
-        <button className="btn btn-sm" onClick={() => handleReply()}>
-          <FontAwesomeIcon icon={faReply} className="me-2" /> Responder
-        </button>
-      </div>
+      {allReplies.map((reply, index) => (
+        <Reply key={index} {...reply} onReply={handleReply} onDelete={handleDeleteComment} />
+      ))}
+      <button className="btn btn-sm mt-2" onClick={() => handleReply()}>
+        <FontAwesomeIcon icon={faReply} className="me-2" /> Responder
+      </button>
     </div>
   );
 };

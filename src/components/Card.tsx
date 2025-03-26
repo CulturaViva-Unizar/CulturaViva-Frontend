@@ -15,15 +15,13 @@ export const Card: FC<CardProps> = ({
   className = "",
   to,
 }) => {
-  const handleClick = () => {
-    if (onClick) {
-      onClick();
-    }
-  };
-
   const CardContent = (
-    <div className={`card border-0 ${className}`} onClick={handleClick}>
-      <div className="row g-0">
+    <div
+      className={`card border-0 ${className}`}
+      onClick={onClick}
+      style={{ cursor: onClick ? "pointer" : "default" }}
+    >
+      <div className="d-flex g-0">
         {image && (
           <div className="col-4">
             <img
@@ -33,31 +31,23 @@ export const Card: FC<CardProps> = ({
             />
           </div>
         )}
-        <div className="col">
-          <div className="card-body">
-            <h5 className="card-title">{title}</h5>
-            <p className="card-text text-muted mb-0">{location}</p>
-            <div className="d-flex align-items-center gap-1">
-              <p className="card-text text-muted mb-0">{rating}</p>
-              <FontAwesomeIcon icon={faStar} style={{ color: "gold" }} />
-              <p className="card-text text-muted mb-0">({reviews})</p>
-            </div>
-            <p className="card-text">
-              {description.length > 65
-                ? `${description.slice(0, 65)}...`
-                : description}
-            </p>
+        <div className="col card-body">
+          <h5 className="card-title">{title}</h5>
+          <p className="card-text text-muted mb-0">{location}</p>
+          <div className="d-flex align-items-center gap-1">
+            <p className="card-text text-muted mb-0">{rating}</p>
+            <FontAwesomeIcon icon={faStar} color="gold" />
+            <p className="card-text text-muted mb-0">({reviews})</p>
           </div>
+          <p className="card-text">
+            {description.length > 65
+              ? `${description.slice(0, 65)}...`
+              : description}
+          </p>
         </div>
       </div>
     </div>
   );
 
-  return to ? (
-    <Link to={to} className="text-decoration-none text-dark">
-      {CardContent}
-    </Link>
-  ) : (
-    CardContent
-  );
+  return to ? <Link to={to}>{CardContent}</Link> : CardContent;
 };

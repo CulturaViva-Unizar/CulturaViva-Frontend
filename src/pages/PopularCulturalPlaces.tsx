@@ -48,10 +48,6 @@ function PopularCulturalPlaces() {
   );
   const navigate = useNavigate();
 
-  const showCulturalPlaceDetails = (culturalPlaceId: number) => {
-    navigate(`/lugares-culturales/${culturalPlaceId}`);
-  };
-
   return (
     <MainLayout title="Populares">
       <div className="d-md-flex">
@@ -79,7 +75,7 @@ function PopularCulturalPlaces() {
                   reviews={card.reviews}
                   description={card.description}
                   className="rounded bg-light shadow"
-                  onClick={() => showCulturalPlaceDetails(i)}
+                  onClick={() => navigate(`/lugares-culturales/${i}`)}
                 />
               </div>
             ))}

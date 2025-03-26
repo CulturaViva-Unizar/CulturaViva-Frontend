@@ -1,5 +1,3 @@
-import { JSX } from "react";
-
 export interface ChartProps {
   data: any;
   options?: any;
@@ -44,21 +42,22 @@ export interface InfoEventProps {
 }
 
 export interface ReviewProps {
-  map(arg0: (review: any) => JSX.Element): React.ReactNode;
   userId: number;
   username: string;
   rating?: number;
   comment: string;
   date: string;
-  replies?: Reply[];
+  replies?: ReplyProps[];
 }
 
-export interface Reply {
+export interface ReplyProps {
   userId: number;
-  user: string;
+  username: string;
   comment: string;
   date: string;
-  replies?: Reply[];
+  replies?: ReplyProps[];
+  onReply: (parentReply?: ReplyProps) => void;
+  onDelete: (parentReply?: ReplyProps) => void;
 }
 
 export interface UserCardProps {

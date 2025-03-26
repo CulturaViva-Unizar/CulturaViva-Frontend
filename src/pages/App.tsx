@@ -5,7 +5,7 @@ import { Range } from "../components/Range";
 import { DatePicker } from "../components/DatePicker";
 import { useState } from "react";
 import { Button } from "react-bootstrap";
-import { InfoDrawer } from "../components/InfoDrawer";
+import { Drawer } from "../components/Drawer";
 import InfoEvent from "../components/InfoEvent";
 import { Card } from "../components/Card";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -49,15 +49,18 @@ function App() {
         replies: [
           {
             userId: 2,
-            user: "User Z",
+            username: "User Z",
             comment: "De nada! 😊",
             date: "hace 2 meses",
             replies: [],
+            onReply: function (): void {
+              throw new Error("Function not implemented.");
+            },
+            onDelete: function (): void {
+              throw new Error("Function not implemented.");
+            }
           },
         ],
-        map: function (): React.ReactNode {
-          throw new Error("Function not implemented.");
-        },
       },
       {
         userId: 3,
@@ -66,9 +69,6 @@ function App() {
         comment: "Me ha encantado!",
         date: "hace 2 días",
         replies: [],
-        map: function (): React.ReactNode {
-          throw new Error("Function not implemented.");
-        },
       },
     ],
     onClose: () => setShowEventDrawer(false),
@@ -112,7 +112,7 @@ function App() {
       <div className="d-flex justify-content-center gap-3">
         <div>
           <Button onClick={() => setShowEventDrawer(true)}>Evento</Button>
-          <InfoDrawer
+          <Drawer
             show={showEventDrawer}
             onClose={() => setShowEventDrawer(false)}
           >
@@ -120,13 +120,13 @@ function App() {
               {...eventData}
               onClose={() => setShowEventDrawer(false)}
             />
-          </InfoDrawer>
+          </Drawer>
         </div>
         <div>
           <Button onClick={() => setShowEventListDrawer(true)}>
             Lista eventos
           </Button>
-          <InfoDrawer
+          <Drawer
             show={showEventListDrawer}
             onClose={() => setShowEventListDrawer(false)}
           >
@@ -151,7 +151,7 @@ function App() {
                 />
               </div>
             ))}
-          </InfoDrawer>
+          </Drawer>
         </div>
       </div>
     </div>

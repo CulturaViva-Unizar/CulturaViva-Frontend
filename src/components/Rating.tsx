@@ -1,6 +1,5 @@
-import { faStar } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
+import { RatingStars } from "./RatingStars";
 
 interface RatingProps {
   rating: number;
@@ -25,12 +24,8 @@ export const Rating: React.FC<RatingProps> = ({
     <div className="d-flex align-items-center">
       <div className="col-3 text-center me-3">
         <h1>{rating}</h1>
-        <div>
-          {[...Array(5)].map(() => (
-            <FontAwesomeIcon icon={faStar} color="yellow" />
-          ))}
-        </div>
-        <span className="text-muted">({totalReviews})</span>
+        <RatingStars rating={rating} />
+        <p className="text-muted">({totalReviews})</p>
       </div>
       <div className="col-9">
         {[5, 4, 3, 2, 1].map((star) => (

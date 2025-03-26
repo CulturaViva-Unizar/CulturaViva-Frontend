@@ -15,7 +15,7 @@ const ChartCard: React.FC<ChartCardProps> = ({
   return (
     <div className={`card ${className}`}>
       <div className="card-header d-flex align-items-center justify-content-between">
-        <h5>{title}</h5>
+        <h5 className="mb-0">{title}</h5>
         <Select
           options={[
             { value: "semana", label: "Última semana" },

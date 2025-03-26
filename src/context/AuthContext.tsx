@@ -6,7 +6,6 @@ import {
   ReactNode,
 } from "react";
 import { User } from "../services/authService";
-import { GUEST_ROLE } from "../common/constants";
 
 interface AuthContextProps {
   user: User | null;
@@ -19,7 +18,7 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(() => {
     const storedUser = localStorage.getItem("user");
-    return storedUser ? JSON.parse(storedUser) : { id: '', name: 'Invitado', role: GUEST_ROLE };;
+    return storedUser ? JSON.parse(storedUser) : null;
   });
 
   const loginUser = (userData: User) => {

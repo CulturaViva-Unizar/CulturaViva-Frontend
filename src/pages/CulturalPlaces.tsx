@@ -9,10 +9,6 @@ import { useNavigate } from "react-router";
 function CulturalPlaces() {
   const navigate = useNavigate();
 
-  const showCulturalPlaceDetails = (culturalPlaceId: number) => {
-    navigate(`/lugares-culturales/${culturalPlaceId}`);
-  };
-
   return (
     <MainLayout title="Lugares culturales">
       <div className="mt-3 mb-5 d-flex flex-column align-items-start align-items-md-center justify-content-center">
@@ -50,7 +46,7 @@ function CulturalPlaces() {
               reviews={116}
               description="Dos viejos amantes se reencuentran después de más de veinticinco años desde la última vez que estuvieron juntos. Sus vidas han evolucionado de forma muy diferente, pero ambos coinciden con quien desearían pasar la última noche de su vida. Una comedia romántica que nos hace preguntarnos con quién desearíamos pasar la última noche de nuestra vida."
               className="rounded bg-light shadow"
-              onClick={() => showCulturalPlaceDetails(index)}
+              onClick={() => navigate(`/lugares-culturales/${index}`)}
             />
           </div>
         ))}

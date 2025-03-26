@@ -1,12 +1,10 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faStar,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import { RatingStars } from "./RatingStars";
 
 interface CommentCardProps {
   item: string;
@@ -65,26 +63,17 @@ export const CommentCard: React.FC<CommentCardProps> = ({
 
   return (
     <>
-      <div className="d-flex align-items-center gap-2">
+      <div className="d-flex align-items-center justify-content-between gap-2">
         <h2>{item}</h2>
         <button
-          className="btn btn-sm"
+          className="btn btn-sm btn-danger rounded-circle"
           onClick={() => handleDeleteComment()}
         >
-          <FontAwesomeIcon
-            icon={faTrash}
-            className="btn btn-danger rounded-circle"
-          />
+          <FontAwesomeIcon icon={faTrash} />
         </button>
       </div>
       <div className="mb-2">
-        {[...Array(5)].map((_, i) => (
-          <FontAwesomeIcon
-            key={i}
-            icon={faStar}
-            className={i < rating ? "text-warning" : "text-secondary"}
-          />
-        ))}
+        <RatingStars rating={rating} />
         <span className="text-muted ms-2">{date}</span>
       </div>
       <p>{comment}</p>

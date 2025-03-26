@@ -4,40 +4,48 @@ import { FC } from "react";
 import { Link } from "react-router";
 
 interface ChatCardProps {
-  userId: number;
   username: string;
   lastMessage: string;
   date: string;
   unreadMessages: number;
+  to?: string;
 }
 
 export const ChatCard: FC<ChatCardProps> = ({
-  userId,
   username,
   lastMessage,
   date,
   unreadMessages,
+  to,
 }) => {
-  return (
-    <Link
-      to={`/chats/${userId}`}
-      className="dropdown-item btn d-flex align-items-center p-2"
+  const CardContent = (
+    <div
+      className="d-flex align-items-center py-3 border-bottom"
+      style={{ cursor: "pointer" }}
     >
       <div className="col-1">
         <FontAwesomeIcon icon={faUser} />
       </div>
       <div className="col-8">
-        <p className="fw-bold mb-0">{username}</p>
+        <strong>{username}</strong>
         <p className="small text-muted mb-0 text-truncate">{lastMessage}</p>
       </div>
-      <div className="col-3 d-flex flex-column align-items-end">
-        <p className="small text-muted mb-1">{date}</p>
+      <div className="col-3 text-end">
+        <p className="small text-muted mb-0">{date}</p>
         {unreadMessages > 0 && (
-          <span className="badge bg-danger rounded-circle float-end">
+          <span className="badge bg-danger rounded-circle">
             {unreadMessages}
           </span>
         )}
       </div>
+    </div>
+  );
+
+  return to ? (
+    <Link to={to} className="text-decoration-none text-dark">
+      {CardContent}
     </Link>
+  ) : (
+    CardContent
   );
 };

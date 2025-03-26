@@ -48,10 +48,6 @@ function AssistedEvents() {
   );
   const navigate = useNavigate();
 
-  const showEventDetails = (eventId: number) => {
-    navigate(`/eventos/${eventId}`);
-  };
-
   return (
     <MainLayout title="Asistidos">
       <div className="d-md-flex">
@@ -79,7 +75,7 @@ function AssistedEvents() {
                   reviews={card.reviews}
                   description={card.description}
                   className="rounded bg-light shadow"
-                  onClick={() => showEventDetails(i)}
+                  onClick={() => navigate(`/eventos/${i}`)}
                 />
               </div>
             ))}

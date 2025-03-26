@@ -4,7 +4,7 @@ import { FC, useState } from "react";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { UserCardProps } from "../common/interfaces";
-import { useNavigate } from "react-router";
+import { Link } from "react-router";
 
 export const UserCard: FC<UserCardProps> = ({
   userId,
@@ -15,11 +15,6 @@ export const UserCard: FC<UserCardProps> = ({
   className = "",
 }) => {
   const [isEnabled, setIsEnabled] = useState(isEnabledInit);
-  const navigate = useNavigate();
-
-  const showUserComments = (userID: number) => {
-    navigate(`/users/${userID}`);
-  };
 
   const handleDisable = () => {
     Swal.fire({
@@ -97,12 +92,12 @@ export const UserCard: FC<UserCardProps> = ({
       </div>
       <div className="col-6 col-md-5 d-flex flex-md-row flex-column gap-2 justify-content-center mt-3">
         {(totalComments > 0 || deletedComments > 0) && (
-          <button
+          <Link
+            to={`/users/${userId}`}
             className="btn btn-dark px-0 px-md-3 shadow rounded-pill text-nowrap"
-            onClick={() => showUserComments(userId)}
           >
             <FontAwesomeIcon icon={faMessage} /> Comentarios
-          </button>
+          </Link>
         )}
         {isEnabled ? (
           <button

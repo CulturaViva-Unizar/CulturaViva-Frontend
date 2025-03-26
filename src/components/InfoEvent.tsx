@@ -22,6 +22,7 @@ import { Select } from "./Select";
 import { InfoEventProps } from "../common/interfaces";
 import { useAuth } from "../context/AuthContext";
 import { ADMIN_ROLE, USER_ROLE } from "../common/constants";
+import { RatingStars } from "./RatingStars";
 
 const InfoEvent: FC<InfoEventProps> = ({
   image,
@@ -79,7 +80,7 @@ const InfoEvent: FC<InfoEventProps> = ({
     if (saved) {
       Swal.fire({
         title: "¿Estás seguro?",
-        text: "Ya no tendrás el evento en tus Guardados.",
+        text: "Ya no verás el evento en tus Guardados.",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Sí, desmarcar",
@@ -129,17 +130,17 @@ const InfoEvent: FC<InfoEventProps> = ({
 
   return (
     <div className="p-3">
-      <div className="d-flex flex-row-reverse mb-2 gap-2">
+      <div className="text-end mb-2">
+        <Button className="btn btn-light rounded-circle me-2">
+          <FontAwesomeIcon icon={faShareAlt} />
+        </Button>
         <Button className="btn btn-light rounded-circle" onClick={onClose}>
           <FontAwesomeIcon icon={faXmark} />
         </Button>
-        <Button className="btn btn-light rounded-circle">
-          <FontAwesomeIcon icon={faShareAlt} />
-        </Button>
       </div>
-      <div className="row g-3 mb-4">
+      <div className="row mb-4">
         {image && (
-          <div className="col-4 col-md-3">
+          <div className="col-4">
             <img
               src={image}
               className="img-fluid rounded h-100 object-fit-cover"
@@ -148,23 +149,21 @@ const InfoEvent: FC<InfoEventProps> = ({
           </div>
         )}
         <div className="col">
-          <div>
-            <h2>{title}</h2>
-            <p className="text-muted mb-0">{location}</p>
-            <div className="d-flex align-items-center gap-1 mb-2">
-              <p className="text-muted mb-0">{rating}</p>
-              <FontAwesomeIcon icon={faStar} color="gold" />
-              <p className="text-muted mb-0">({totalReviews})</p>
-            </div>
-            <p className="mb-0">{date}</p>
-            <p className="mb-0">{price} €</p>
-            <p>Organizado por: {organizer}</p>
+          <h2>{title}</h2>
+          <span className="text-muted">{location}</span>
+          <div className="d-flex align-items-center gap-1 my-1">
+            <span className="text-muted">{rating}</span>
+            <FontAwesomeIcon icon={faStar} color="gold" />
+            <span className="text-muted">({totalReviews})</span>
           </div>
+          <p className="mb-0">{date}</p>
+          <p className="mb-0">{price} €</p>
+          <p className="mb-0">Organizado por: {organizer}</p>
         </div>
       </div>
       <Button
         variant={isAttending ? "danger" : "success"}
-        className="w-100 mb-3 rounded-pill"
+        className="w-100 rounded-pill"
         onClick={handleAttendance}
       >
         <FontAwesomeIcon
@@ -174,7 +173,7 @@ const InfoEvent: FC<InfoEventProps> = ({
         {isAttending ? "Dejar de asistir" : "Voy a asistir"} ({attendees})
       </Button>
       <div
-        className="row flex-nowrap overflow-x-auto hide-scrollbar gap-2 gx-2 py-1"
+        className="row flex-nowrap overflow-x-auto hide-scrollbar gap-2 gx-2 py-3"
         style={{ WebkitOverflowScrolling: "touch" }}
       >
         <Button
@@ -187,8 +186,7 @@ const InfoEvent: FC<InfoEventProps> = ({
           {saved ? <span>Dejar de guardar</span> : <span>Guardar</span>}
         </Button>
         <Button className="btn btn-light rounded-pill w-auto">
-          <FontAwesomeIcon icon={faLocationArrow} className="me-2" /> Cómo
-          llegar
+          <FontAwesomeIcon icon={faLocationArrow} className="me-2" /> Cómo llegar
         </Button>
         {facebook && (
           <Button className="btn btn-light rounded-circle w-auto">
@@ -221,25 +219,16 @@ const InfoEvent: FC<InfoEventProps> = ({
               <strong>Valorar y escribir una reseña:</strong>
             </div>
             <div className="col-9 ps-4">
-              <div className="mb-2">
-                {[...Array(5)].map((_, index) => (
-                  <FontAwesomeIcon
-                    key={index}
-                    icon={faStar}
-                    color={index < myRating ? "gold" : "gray"}
-                    onClick={() => handleStarClick(index)}
-                    style={{ cursor: "pointer" }}
-                  />
-                ))}
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Comentario (opcional)</label>
-                <textarea
-                  className="form-control"
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                ></textarea>
-              </div>
+              <RatingStars
+                rating={myRating}
+                onClick={(index) => handleStarClick(index)}
+              />
+              <p className="form-label pt-2">Comentario (opcional)</p>
+              <textarea
+                className="form-control mb-3"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              />
               <Button
                 className="btn btn-light rounded-pill w-auto"
                 onClick={handleReviewSubmit}
@@ -262,6 +251,7 @@ const InfoEvent: FC<InfoEventProps> = ({
           ]}
           initialValue="ordenar"
           onChange={(newValue) => console.log(newValue)}
+          className="col"
         />
         <Select
           options={[
@@ -274,20 +264,18 @@ const InfoEvent: FC<InfoEventProps> = ({
           ]}
           initialValue="filtrar"
           onChange={(newValue) => console.log(newValue)}
+          className="col"
         />
       </div>
-      {reviews.map((review) => (
+      {reviews.map((review, i) => (
         <Review
-          key={review.userId}
+          key={i}
           userId={review.userId}
           username={review.username}
           rating={review.rating}
           comment={review.comment}
           date={review.date}
           replies={review.replies}
-          map={function (): React.ReactNode {
-            throw new Error("Function not implemented.");
-          }}
         />
       ))}
     </div>

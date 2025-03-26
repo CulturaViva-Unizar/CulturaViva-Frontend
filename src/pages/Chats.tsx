@@ -34,17 +34,17 @@ function Chats() {
             <SearchBar />
           </div>
           <div
-            className="overflow-auto"
+            className="overflow-auto hide-scrollbar"
             style={{ maxHeight: "calc(100vh - 12%)" }}
           >
             {[...Array(24)].map((_, i) => (
               <ChatCard
                 key={i}
-                userId={i}
                 username={`User ${i}`}
                 lastMessage="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
                 date="Hace 27 días"
                 unreadMessages={3}
+                to={`${i}`}
               />
             ))}
           </div>

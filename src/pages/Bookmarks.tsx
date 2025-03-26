@@ -30,10 +30,6 @@ function Bookmarks() {
   );
   const navigate = useNavigate();
 
-  const showEventDetails = (eventId: number) => {
-    navigate(`/eventos/${eventId}`);
-  };
-
   return (
     <MainLayout title="Guardados">
       <div className="py-3 row gap-2 justify-content-center">
@@ -85,7 +81,7 @@ function Bookmarks() {
               reviews={card.reviews}
               description={card.description}
               className="rounded bg-light shadow"
-              onClick={() => showEventDetails(i)}
+              onClick={() => navigate(`/eventos/${i}`)}
             />
           </div>
         ))}
