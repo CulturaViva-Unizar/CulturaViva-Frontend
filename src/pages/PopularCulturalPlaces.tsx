@@ -7,15 +7,13 @@ import MainLayout from "../layouts/MainLayout";
 import { CardProps } from "../common/interfaces";
 import { useNavigate } from "react-router";
 
-const simulatedData: CardProps[] = Array.from({ length: 27 }, (_, index) => ({
-  image:
-    "https://www.zaragoza.es/cont/paginas/actividades/imagen/2360.png_1070x713.png",
-  title: `Regálame esta noche. Albena Teatro ${index + 1}`,
-  location: "Teatro de las Esquinas",
-  rating: 4.1,
-  reviews: 116,
+const simulatedData: CardProps[] = Array.from({ length: 27 }, () => ({
+  title: "Catedral-Basílica de Nuestra Señora del Pilar",
+  location: "Plaza del Pilar, s/n, Casco Antiguo, 50003 Zaragoza",
+  rating: 5,
+  reviews: 40637,
   description:
-    "Dos viejos amantes se reencuentran después de más de veinticinco años. Una comedia romántica para preguntarnos con quién desearíamos pasar la última noche de nuestra vida.",
+    "Basílica barroca con cúpulas con pinturas, una famosa capilla dedicada a la Virgen María y frescos de Goya.",
 }));
 
 const pieData = {

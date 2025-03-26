@@ -1,4 +1,3 @@
-import { useParams } from "react-router";
 import InfoEvent from "../components/InfoEvent";
 import { InfoEventProps } from "../common/interfaces";
 
@@ -35,15 +34,18 @@ const eventData: InfoEventProps = {
       replies: [
         {
           userId: 2,
-          user: "User Z",
+          username: "User Z",
           comment: "De nada! 😊",
           date: "hace 2 meses",
           replies: [],
+          onReply: function (): void {
+            throw new Error("Function not implemented.");
+          },
+          onDelete: function (): void {
+            throw new Error("Function not implemented.");
+          }
         },
       ],
-      map: function (): React.ReactNode {
-        throw new Error("Function not implemented.");
-      },
     },
     {
       userId: 3,
@@ -52,17 +54,12 @@ const eventData: InfoEventProps = {
       comment: "Me ha encantado!",
       date: "hace 2 días",
       replies: [],
-      map: function (): React.ReactNode {
-        throw new Error("Function not implemented.");
-      },
     },
   ],
   onClose: () => null,
 };
 
 function EventDetails() {
-  const { eventId } = useParams();
-
   return <InfoEvent {...eventData} />;
 }
 

@@ -3,14 +3,12 @@ import {
   faStar,
   faLocationArrow,
   faShareAlt,
-  faPlus,
-  faMinus,
   faBookmark,
   faXmark,
   faEuro,
-  faPerson,
-  faCalendar,
+  faPhone,
   faGlobe,
+  faClock,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "react-bootstrap";
@@ -23,63 +21,34 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { Review } from "./Review";
 import { Select } from "./Select";
-import { InfoEventProps } from "../common/interfaces";
+import { InfoCulturalPlaceProps } from "../common/interfaces";
 import { useAuth } from "../context/AuthContext";
 import { ADMIN_ROLE, USER_ROLE } from "../common/constants";
 import { RatingStars } from "./RatingStars";
 
-const InfoEvent: FC<InfoEventProps> = ({
+const InfoCulturalPlace: FC<InfoCulturalPlaceProps> = ({
   image,
   title,
   location,
   rating,
   totalReviews,
   ratingDistribution,
-  date,
+  timetable,
   description,
-  price,
-  organizer,
-  attendeesInit,
+  phone,
   web,
+  price,
   facebook,
   instagram,
   twitter,
   reviewsInit,
   onClose,
 }) => {
-  const [isAttending, setIsAttending] = useState(false);
-  const [attendees, setAttendees] = useState(attendeesInit);
   const [saved, setSaved] = useState(false);
   const [reviews, setReviews] = useState(reviewsInit);
   const [myRating, setMyRating] = useState(0);
   const [comment, setComment] = useState("");
   const { user } = useAuth();
-
-  const handleAttendance = () => {
-    if (isAttending) {
-      Swal.fire({
-        title: "¿Estás seguro?",
-        text: "Dejarás de asistir a esta exposición.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Sí, dejar de asistir",
-        cancelButtonText: "Cancelar",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          setIsAttending(false);
-          setAttendees((prev: number) => prev - 1);
-        }
-      });
-    } else {
-      setIsAttending(true);
-      setAttendees((prev: number) => prev + 1);
-      Swal.fire({
-        title: "¡Asistencia confirmada!",
-        text: "Has confirmado tu asistencia a esta exposición.",
-        icon: "success",
-      });
-    }
-  };
 
   const handleSaveEvent = () => {
     if (saved) {
@@ -143,7 +112,7 @@ const InfoEvent: FC<InfoEventProps> = ({
           <FontAwesomeIcon icon={faXmark} />
         </Button>
       </div>
-      <div className="row mb-4">
+      <div className="row">
         {image && (
           <div className="col-4">
             <img
@@ -156,24 +125,13 @@ const InfoEvent: FC<InfoEventProps> = ({
         <div className="col">
           <h2>{title}</h2>
           <span className="text-muted">{location}</span>
-          <div className="d-flex align-items-center gap-1 my-1">
+          <div className="d-flex align-items-center gap-1">
             <span className="text-muted">{rating}</span>
             <FontAwesomeIcon icon={faStar} color="gold" />
             <span className="text-muted">({totalReviews})</span>
           </div>
         </div>
       </div>
-      <Button
-        variant={isAttending ? "danger" : "success"}
-        className="w-100 rounded-pill"
-        onClick={handleAttendance}
-      >
-        <FontAwesomeIcon
-          icon={isAttending ? faMinus : faPlus}
-          className="me-2"
-        />
-        {isAttending ? "Dejar de asistir" : "Voy a asistir"} ({attendees})
-      </Button>
       <div
         className="row flex-nowrap overflow-x-auto hide-scrollbar gap-2 gx-2 py-3"
         style={{ WebkitOverflowScrolling: "touch" }}
@@ -210,10 +168,12 @@ const InfoEvent: FC<InfoEventProps> = ({
         <FontAwesomeIcon icon={faEuro} className="me-2" />
         {price ? price : "Gratis"}
       </div>
-      <div className="mb-2">
-        <FontAwesomeIcon icon={faCalendar} className="me-2" />
-        {date}
-      </div>
+      {phone && (
+        <div className="mb-2">
+          <FontAwesomeIcon icon={faPhone} className="me-2" />
+          {phone}
+        </div>
+      )}
       {web && (
         <div className="mb-2">
           <FontAwesomeIcon icon={faGlobe} className="me-2" />
@@ -221,8 +181,8 @@ const InfoEvent: FC<InfoEventProps> = ({
         </div>
       )}
       <div className="mb-2">
-        <FontAwesomeIcon icon={faPerson} className="me-2" />
-        Organizado por: {organizer}
+        <FontAwesomeIcon icon={faClock} className="me-2" />
+        {timetable}
       </div>
       <p>{description}</p>
       <hr />
@@ -302,4 +262,4 @@ const InfoEvent: FC<InfoEventProps> = ({
   );
 };
 
-export default InfoEvent;
+export default InfoCulturalPlace;

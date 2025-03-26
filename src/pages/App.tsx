@@ -10,11 +10,13 @@ import InfoEvent from "../components/InfoEvent";
 import { Card } from "../components/Card";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { InfoEventProps } from "../common/interfaces";
+import { InfoCulturalPlaceProps, InfoEventProps } from "../common/interfaces";
+import InfoCulturalPlace from "../components/InfoCulturalPlace";
 
 function App() {
   const [showEventDrawer, setShowEventDrawer] = useState(false);
   const [showEventListDrawer, setShowEventListDrawer] = useState(false);
+  const [showCulturalPlaceDrawer, setShowCulturalPlaceDrawer] = useState(false);
 
   const eventData: InfoEventProps = {
     image:
@@ -36,6 +38,7 @@ function App() {
     price: 20,
     organizer: "Ayuntamiento de Zaragoza",
     attendeesInit: 45,
+    web: "https://www.teatrodelasesquinas.com/es/programacion/c/567-regalame-esta-noche.html",
     facebook: "facebook",
     instagram: "instagram",
     twitter: "twitter",
@@ -72,6 +75,55 @@ function App() {
       },
     ],
     onClose: () => setShowEventDrawer(false),
+  };
+
+  const culturalPlaceData: InfoCulturalPlaceProps = {
+    title: "Catedral-Basílica de Nuestra Señora del Pilar",
+    location: "Plaza del Pilar, s/n, Casco Antiguo, 50003 Zaragoza",
+    rating: 5,
+    totalReviews: 40637,
+    ratingDistribution: {
+      5: 40637,
+      4: 0,
+      3: 0,
+      2: 0,
+      1: 0,
+    },
+    timetable: "Abierto todos los días",
+    description: "Basílica barroca con cúpulas con pinturas, una famosa capilla dedicada a la Virgen María y frescos de Goya.",
+    reviewsInit: [
+      {
+        userId: 1,
+        username: "User X",
+        rating: 3,
+        comment: "Gracias por tu reseña!",
+        date: "hace 3 meses",
+        replies: [
+          {
+            userId: 2,
+            username: "User Z",
+            comment: "De nada! 😊",
+            date: "hace 2 meses",
+            replies: [],
+            onReply: function (): void {
+              throw new Error("Function not implemented.");
+            },
+            onDelete: function (): void {
+              throw new Error("Function not implemented.");
+            }
+          },
+        ],
+      },
+      {
+        userId: 3,
+        username: "User A",
+        rating: 5,
+        comment: "Me ha encantado!",
+        date: "hace 2 días",
+        replies: [],
+      },
+    ],
+    onClose: () => null,
   };
 
   return (
@@ -151,6 +203,18 @@ function App() {
                 />
               </div>
             ))}
+          </Drawer>
+        </div>
+        <div>
+          <Button onClick={() => setShowCulturalPlaceDrawer(true)}>Lugar Cultural</Button>
+          <Drawer
+            show={showCulturalPlaceDrawer}
+            onClose={() => setShowCulturalPlaceDrawer(false)}
+          >
+            <InfoCulturalPlace
+              {...culturalPlaceData}
+              onClose={() => setShowCulturalPlaceDrawer(false)}
+            />
           </Drawer>
         </div>
       </div>
