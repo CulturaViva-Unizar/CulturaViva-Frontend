@@ -24,10 +24,7 @@ const logoutFn = async (): Promise<void> => {
 };
 
 const loginFn = async (data: LoginUserRequest): Promise<LoggedUser> => {
-  const loginResponse: ApiResponse<LoginUserResponse> = await api.post(
-    "/auth/login",
-    data
-  );
+  const loginResponse: ApiResponse<LoginUserResponse> = await api.post("/auth/login", data);
 
   localStorage.setItem("token", loginResponse.data.accessToken);
   localStorage.setItem("user", JSON.stringify(loginResponse.data.user));
@@ -35,10 +32,10 @@ const loginFn = async (data: LoginUserRequest): Promise<LoggedUser> => {
   return loginResponse.data.user;
 };
 
-const registerFn = async (data: CreateUserRequest): Promise<CreateUserRespose> => {
+const registerFn = async (data: CreateUserRequest): Promise<LoggedUser> => {
   const registerResponse: ApiResponse<CreateUserRespose> = await api.post("/auth/register", data);
 
-  return registerResponse.data;
+  return registerResponse.data.user;
 };
 
 const authConfig = {

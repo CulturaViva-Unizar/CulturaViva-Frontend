@@ -5,19 +5,6 @@ export type ApiResponse<T> = {
 };
 
 /* Auth ------------------------------------------------------------------------------*/
-export type CreateUserRequest = {
-  email: string;
-  password: string;
-  name: string;
-  phone: string;
-};
-
-export type CreateUserRespose = {
-  id: string;
-  email: string;
-  name: string;
-};
-
 export type LoginUserRequest = {
   email: string;
   password: string;
@@ -35,6 +22,16 @@ export type LoggedUser = {
   admin: boolean;
   userType: number;
 };
+
+export type CreateUserRequest = {
+  email: string;
+  password: string;
+  name: string;
+  phone: string;
+};
+
+export type CreateUserRespose = LoginUserResponse;
+
 
 /* Events ------------------------------------------------------------------------------*/
 export type GetEventsResponse = {
