@@ -81,13 +81,13 @@ export const UserMenu: FC<UserMenuProps> = ({ className = "" }) => {
       >
         <li>
           <span className="fs-5 fw-bold px-3">
-            ¡Hola {user.data?.nombre || "User"}!
+            ¡Hola {user.data?.name || "User"}!
           </span>
         </li>
         <li>
           <hr className="dropdown-divider mx-3" />
         </li>
-        {(user.data?.rol == USER_ROLE || user.data?.rol == ADMIN_ROLE) && (
+        {user.data && (
           <>
             <li>
               <Link
@@ -141,7 +141,7 @@ export const UserMenu: FC<UserMenuProps> = ({ className = "" }) => {
           onClick={(e) => e.stopPropagation()}
         >
           <ul className="list-unstyled">
-            {user.data?.rol === ADMIN_ROLE && (
+            {user.data?.admin && (
               <>
                 <li>
                   <hr className="dropdown-divider mx-3" />
@@ -184,7 +184,7 @@ export const UserMenu: FC<UserMenuProps> = ({ className = "" }) => {
                 <span className="col">Populares</span>
               </Link>
             </li>
-            {(user.data?.rol == USER_ROLE || user.data?.rol == ADMIN_ROLE) && (
+            {user.data && (
               <>
                 <li>
                   <hr className="dropdown-divider mx-3" />
@@ -249,7 +249,7 @@ export const UserMenu: FC<UserMenuProps> = ({ className = "" }) => {
             <li>
               <hr className="dropdown-divider mx-3" />
             </li>
-            {user.data?.rol === ADMIN_ROLE && (
+            {user.data?.admin && (
               <>
                 <li>
                   <Link
@@ -288,7 +288,7 @@ export const UserMenu: FC<UserMenuProps> = ({ className = "" }) => {
             </li>
           </ul>
         </div>
-        {user.data?.rol === ADMIN_ROLE && (
+        {user.data?.admin && (
           <>
             <li>
               <hr className="dropdown-divider mx-3" />
@@ -319,7 +319,7 @@ export const UserMenu: FC<UserMenuProps> = ({ className = "" }) => {
         <li>
           <hr className="dropdown-divider mx-3" />
         </li>
-        {user.data?.rol == USER_ROLE || user.data?.rol == ADMIN_ROLE ? (
+        {user.data ? (
           <>
             <li className="text-center mt-4 mb-3">
               <button

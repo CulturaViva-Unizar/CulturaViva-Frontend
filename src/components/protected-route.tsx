@@ -5,15 +5,15 @@ import { useUser } from "../lib/auth";
 import { paths } from "../config/paths";
 
 interface ProtectedRouteProps {
-  allowedRoles: readonly Role[];
+  admin: boolean;
   children?: React.ReactNode;
 }
 
-const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
+const ProtectedRoute = ({ admin, children }: ProtectedRouteProps) => {
   const user = useUser();
   const location = useLocation();
 
-  if (!user.data || !allowedRoles.includes(user.data.rol))
+  if (!user.data || (!user.data.admin && admin))
     return (
       <Navigate
         to={paths.auth.unauthorized.getHref(location.pathname)}

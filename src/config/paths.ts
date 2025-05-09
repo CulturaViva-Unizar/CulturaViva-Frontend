@@ -38,12 +38,12 @@ export const paths = {
     bookmarks: {
       path: "bookmarks",
       getHref: () => "/app/bookmarks",
-      allowedRoles: ALL_ROLES,
+      admin: false,
     },
     events: {
       path: "events",
       getHref: () => "/app/events",
-      allowedRoles: [ADMIN_ROLE],
+      admin: true,
       suggested: {
         path: "suggested",
         getHref: () => "/app/events/suggested",
@@ -55,12 +55,12 @@ export const paths = {
       assisted: {
         path: "assisted",
         getHref: () => "/app/events/assisted",
-        allowedRoles: ALL_ROLES,
+        admin: false,
       },
       upcoming: {
         path: "upcoming",
         getHref: () => "/app/events/upcoming",
-        allowedRoles: ALL_ROLES,
+        admin: false,
       },
       details: {
         path: ":eventId",
@@ -70,7 +70,7 @@ export const paths = {
     culturalPlaces: {
       path: "places",
       getHref: () => "/app/places",
-      allowedRoles: [ADMIN_ROLE],
+      admin: true,
       suggested: {
         path: "suggested",
         getHref: () => "/app/places/suggested",
@@ -87,22 +87,22 @@ export const paths = {
     users: {
       path: "users",
       getHref: () => "/app/users",
-      allowedRoles: [ADMIN_ROLE],
+      admin: true,
     },
     comments: {
       path: "comments/user/:userId",
       getHref: (id: number) => `/app/comments/user/${id}`,
-      allowedRoles: [ADMIN_ROLE],
+      admin: true,
     },
     chats: {
       path: "chats",
       getHref: () => "/app/chats",
-      allowedRoles: ALL_ROLES,
+      admin: false,
     },
     analytics: {
       path: "analytics",
       getHref: () => "/app/analytics",
-      allowedRoles: [ADMIN_ROLE],
+      admin: true,
     },
   },
 } as const;

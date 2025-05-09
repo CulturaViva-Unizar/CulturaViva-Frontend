@@ -55,7 +55,7 @@ const createAppRouter = (queryClient: QueryClient) =>
                 ...route,
                 Component: (props: any) => (
                   <ProtectedRoute
-                    allowedRoles={paths.app.events.assisted.allowedRoles}
+                    admin={paths.app.events.assisted.admin}
                   >
                     <route.Component {...props} />
                   </ProtectedRoute>
@@ -76,7 +76,7 @@ const createAppRouter = (queryClient: QueryClient) =>
                     ...route,
                     Component: (props: any) => (
                       <ProtectedRoute
-                        allowedRoles={paths.app.events.allowedRoles}
+                        admin={paths.app.events.admin}
                       >
                         <route.Component {...props} />
                       </ProtectedRoute>
@@ -107,7 +107,7 @@ const createAppRouter = (queryClient: QueryClient) =>
                     ...route,
                     Component: (props: any) => (
                       <ProtectedRoute
-                        allowedRoles={paths.app.events.assisted.allowedRoles}
+                        admin={paths.app.events.assisted.admin}
                       >
                         <route.Component {...props} />
                       </ProtectedRoute>
@@ -124,7 +124,7 @@ const createAppRouter = (queryClient: QueryClient) =>
                     ...route,
                     Component: (props: any) => (
                       <ProtectedRoute
-                        allowedRoles={paths.app.events.upcoming.allowedRoles}
+                        admin={paths.app.events.upcoming.admin}
                       >
                         <route.Component {...props} />
                       </ProtectedRoute>
@@ -155,7 +155,7 @@ const createAppRouter = (queryClient: QueryClient) =>
                       ...route,
                       Component: (props: any) => (
                         <ProtectedRoute
-                          allowedRoles={paths.app.culturalPlaces.allowedRoles}
+                          admin={paths.app.culturalPlaces.admin}
                         >
                           <route.Component {...props} />
                         </ProtectedRoute>
@@ -195,7 +195,7 @@ const createAppRouter = (queryClient: QueryClient) =>
               return {
                 ...route,
                 Component: (props: any) => (
-                  <ProtectedRoute allowedRoles={paths.app.users.allowedRoles}>
+                  <ProtectedRoute admin={paths.app.users.admin}>
                     <route.Component {...props} />
                   </ProtectedRoute>
                 ),
@@ -211,7 +211,7 @@ const createAppRouter = (queryClient: QueryClient) =>
                 ...route,
                 Component: (props: any) => (
                   <ProtectedRoute
-                    allowedRoles={paths.app.comments.allowedRoles}
+                    admin={paths.app.comments.admin}
                   >
                     <route.Component {...props} />
                   </ProtectedRoute>
@@ -222,7 +222,7 @@ const createAppRouter = (queryClient: QueryClient) =>
         {
           path: paths.app.chats.path,
           element: (
-            <ProtectedRoute allowedRoles={paths.app.chats.allowedRoles}>
+            <ProtectedRoute admin={paths.app.chats.admin}>
               <Outlet />
             </ProtectedRoute>
           ),
@@ -253,7 +253,7 @@ const createAppRouter = (queryClient: QueryClient) =>
                 ...route,
                 Component: (props: any) => (
                   <ProtectedRoute
-                    allowedRoles={paths.app.analytics.allowedRoles}
+                    admin={paths.app.analytics.admin}
                   >
                     <route.Component {...props} />
                   </ProtectedRoute>
