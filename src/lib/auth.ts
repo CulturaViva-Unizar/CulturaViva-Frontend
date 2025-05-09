@@ -3,11 +3,11 @@ import { api } from "./api-client";
 import {
   ApiResponse,
   CreateUserRequest,
+  CreateUserRespose,
   LoggedUser,
   LoginUserRequest,
   LoginUserResponse,
 } from "../types/api";
-import { User } from "../features/auth/types/models";
 
 const userFn = async (): Promise<LoggedUser | null> => {
   const userJson = localStorage.getItem("user");
@@ -35,13 +35,8 @@ const loginFn = async (data: LoginUserRequest): Promise<LoggedUser> => {
   return loginResponse.data.user;
 };
 
-const registerFn = async (
-  data: CreateUserRequest
-): Promise<CreateUserRequest> => {
-  const registerResponse: ApiResponse<CreateUserRequest> = await api.post(
-    "/auth/register",
-    data
-  );
+const registerFn = async (data: CreateUserRequest): Promise<CreateUserRespose> => {
+  const registerResponse: ApiResponse<CreateUserRespose> = await api.post("/auth/register", data);
 
   return registerResponse.data;
 };
