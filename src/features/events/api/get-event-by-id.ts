@@ -1,16 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../../lib/api-client";
 import { Event } from "../types/models";
-import { GetEventsByIdResponse } from "../../../types/api";
+import { ApiResponse, GetEventByIdResponse } from "../../../types/api";
+import { mapEventResponseToEvent } from "../utils/mappers";
 
-const getEventById = async (id: string): Promise<Event[]> => {
-  const events: GetEventsByIdResponse = await api.get(`/items/events${id}`);
+const getEventById = async (id: string): Promise<Event> => {
+  const response: ApiResponse<GetEventByIdResponse> = await api.get(
+    `/items/events${id}`
+  );
 
-  return events;
+  const { data: event } = response;
+
+  return mapEventResponseToEvent(event);
 };
 
 export const useGetEventById = (id: string) => {
-  return useQuery<Event[], Error>({
+  return useQuery<Event, Error>({
     queryKey: ["events", id],
     queryFn: () => getEventById(id),
   });

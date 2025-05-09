@@ -21,3 +21,11 @@
   max-height: 600px;
   overflow-y: auto;
 }
+
+.offcanvas-backdrop {
+  z-index: 10001;
+}
+
+.offcanvas {
+  z-index: 10002;
+}

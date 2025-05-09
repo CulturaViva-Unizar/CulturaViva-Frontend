@@ -68,7 +68,7 @@ export const UserMenu: FC<UserMenuProps> = ({ className = "" }) => {
   return (
     <div className={`dropdown ${className}`}>
       <button
-        className="btn rounded-circle p-0 h-100"
+        className="btn rounded-circle p-0 h-100 bg-white border-0"
         type="button"
         data-bs-toggle="dropdown"
         aria-expanded="false"

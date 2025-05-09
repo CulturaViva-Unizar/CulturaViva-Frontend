@@ -19,29 +19,20 @@ import {
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 import { USER_ROLE, ADMIN_ROLE } from "../../../config/constants";
-import { InfoCulturalPlaceProps } from "../../../types/viejas-interfaces";
 import { RatingStars } from "../../../components/ui/rating-stars";
 import { Review } from "../../../components/ui/review";
 import { Select } from "../../../components/ui/select";
 import { useUser } from "../../../lib/auth";
 import { Rating } from "../../../components/ui/rating";
+import { CulturalPlace } from "../types/models";
+
+type InfoCulturalPlaceProps = {
+  culturalPlace: CulturalPlace;
+  onClose: () => void;
+};
 
 const InfoCulturalPlace: FC<InfoCulturalPlaceProps> = ({
-  image,
-  title,
-  location,
-  rating,
-  totalReviews,
-  ratingDistribution,
-  timetable,
-  description,
-  phone,
-  web,
-  price,
-  facebook,
-  instagram,
-  twitter,
-  reviewsInit,
+  culturalPlace,
   onClose,
 }) => {
   const [saved, setSaved] = useState(false);
@@ -146,7 +137,8 @@ const InfoCulturalPlace: FC<InfoCulturalPlaceProps> = ({
           {saved ? <span>Dejar de guardar</span> : <span>Guardar</span>}
         </Button>
         <Button className="btn btn-light rounded-pill w-auto">
-          <FontAwesomeIcon icon={faLocationArrow} className="me-2" /> Cómo llegar
+          <FontAwesomeIcon icon={faLocationArrow} className="me-2" /> Cómo
+          llegar
         </Button>
         {facebook && (
           <Button className="btn btn-light rounded-circle w-auto">

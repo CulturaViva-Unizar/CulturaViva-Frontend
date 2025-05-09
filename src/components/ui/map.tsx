@@ -9,6 +9,10 @@ import redUrl from "leaflet-color-markers/img/marker-icon-red.png";
 import goldUrl from "leaflet-color-markers/img/marker-icon-gold.png";
 import shadowUrl from "leaflet-color-markers/img/marker-shadow.png";
 import { Colors } from "../../features/enums";
+import { Drawer } from "./drawer";
+import InfoEvent from "../../features/events/components/info-event";
+import { useState } from "react";
+import InfoCulturalPlace from "../../features/cultural-places/components/info-cultural-place";
 
 type MapProps = {
   events: Event[];
@@ -16,6 +20,7 @@ type MapProps = {
 };
 
 export function createClusterIcon(color: string) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (cluster: any) => {
     const count = cluster.getChildCount();
     const size = 40;
@@ -31,7 +36,7 @@ export function createClusterIcon(color: string) {
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: ${color == Colors.RED ? "white" : "black"};
             font-size: 14px;
             border: 2px solid white;
           "
@@ -67,6 +72,15 @@ const Map: React.FC<MapProps> = ({ events, culturalPlaces }) => {
   const eventClusterIcon = createClusterIcon(Colors.RED);
   const culturalClusterIcon = createClusterIcon(Colors.GOLD);
 
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [selectedCulturalPlace, setSelectedCulturalPlace] = useState<CulturalPlace | null>(null);
+  const [showEventDrawer, setShowEventDrawer] = useState(false);
+
+  const handleClose = () => {
+    setShowEventDrawer(false);
+    setSelectedEvent(null);
+  };
+
   return (
     <MapContainer
       center={ZGZ_COORDS}
@@ -87,7 +101,17 @@ const Map: React.FC<MapProps> = ({ events, culturalPlaces }) => {
             event.coordinates!.longitude,
           ];
           return (
-            <Marker key={event.id} position={coords} icon={eventIcon}></Marker>
+            <Marker
+              key={event.id}
+              position={coords}
+              icon={eventIcon}
+              eventHandlers={{
+                click: () => {
+                  setSelectedEvent(event);
+                  setShowEventDrawer(true);
+                },
+              }}
+            />
           );
         })}
       </MarkerClusterGroup>
@@ -103,10 +127,28 @@ const Map: React.FC<MapProps> = ({ events, culturalPlaces }) => {
               key={culturalPlace.id}
               position={coords}
               icon={culturalPlaceIcon}
-            ></Marker>
+              eventHandlers={{
+                click: () => {
+                  setSelectedCulturalPlace(culturalPlace);
+                  setShowEventDrawer(true);
+                },
+              }}
+            />
           );
         })}
       </MarkerClusterGroup>
+
+      {selectedEvent && (
+        <Drawer show={showEventDrawer} onClose={handleClose}>
+          <InfoEvent event={selectedEvent} onClose={handleClose} />
+        </Drawer>
+      )}
+
+      {selectedCulturalPlace && (
+        <Drawer show={showEventDrawer} onClose={handleClose}>
+          <InfoCulturalPlace culturalPlace={selectedCulturalPlace} onClose={handleClose} />
+        </Drawer>
+      )}
     </MapContainer>
   );
 };

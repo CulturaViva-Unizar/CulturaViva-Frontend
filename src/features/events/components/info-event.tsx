@@ -21,36 +21,23 @@ import {
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 import { USER_ROLE, ADMIN_ROLE } from "../../../config/constants";
-import { InfoEventProps } from "../../../types/viejas-interfaces";
 import { Rating } from "../../../components/ui/rating";
 import { RatingStars } from "../../../components/ui/rating-stars";
 import { Review } from "../../../components/ui/review";
 import { Select } from "../../../components/ui/select";
 import { useUser } from "../../../lib/auth";
+import { Event } from "../types/models";
 
-const InfoEvent: FC<InfoEventProps> = ({
-  image,
-  title,
-  location,
-  rating,
-  totalReviews,
-  ratingDistribution,
-  date,
-  description,
-  price,
-  organizer,
-  attendeesInit,
-  web,
-  facebook,
-  instagram,
-  twitter,
-  reviewsInit,
-  onClose,
-}) => {
+type InfoEventProps = {
+  event: Event;
+  onClose: () => void;
+};
+
+const InfoEvent: FC<InfoEventProps> = ({ event, onClose }) => {
   const [isAttending, setIsAttending] = useState(false);
-  const [attendees, setAttendees] = useState(attendeesInit);
+  const [attendees, setAttendees] = useState(event.totalAssistants);
   const [saved, setSaved] = useState(false);
-  const [reviews, setReviews] = useState(reviewsInit);
+  //const [reviews, setReviews] = useState(reviewsInit);
   const [myRating, setMyRating] = useState(0);
   const [comment, setComment] = useState("");
   const user = useUser();
@@ -144,23 +131,23 @@ const InfoEvent: FC<InfoEventProps> = ({
         </Button>
       </div>
       <div className="row mb-4">
-        {image && (
+        {event.image && (
           <div className="col-4">
             <img
-              src={image}
+              src={event.image}
               className="img-fluid rounded h-100 object-fit-cover"
-              alt={title}
+              alt={event.title}
             />
           </div>
         )}
         <div className="col">
-          <h2>{title}</h2>
-          <span className="text-muted">{location}</span>
-          <div className="d-flex align-items-center gap-1 my-1">
+          <h2>{event.title}</h2>
+          <span className="text-muted">{event.location}</span>
+          {/*<div className="d-flex align-items-center gap-1 my-1">
             <span className="text-muted">{rating}</span>
             <FontAwesomeIcon icon={faStar} color="gold" />
             <span className="text-muted">({totalReviews})</span>
-          </div>
+          </div>*/}
         </div>
       </div>
       <Button
@@ -188,33 +175,34 @@ const InfoEvent: FC<InfoEventProps> = ({
           {saved ? <span>Dejar de guardar</span> : <span>Guardar</span>}
         </Button>
         <Button className="btn btn-light rounded-pill w-auto">
-          <FontAwesomeIcon icon={faLocationArrow} className="me-2" /> Cómo llegar
+          <FontAwesomeIcon icon={faLocationArrow} className="me-2" /> Cómo
+          llegar
         </Button>
-        {facebook && (
+        {/*event.facebook && (
           <Button className="btn btn-light rounded-circle w-auto">
             <FontAwesomeIcon icon={faFacebook} />
           </Button>
-        )}
-        {instagram && (
+        )*/}
+        {event.instagram && (
           <Button className="btn btn-light rounded-circle w-auto">
             <FontAwesomeIcon icon={faInstagram} />
           </Button>
         )}
-        {twitter && (
+        {/*twitter && (
           <Button className="btn btn-light rounded-circle w-auto">
             <FontAwesomeIcon icon={faTwitter} />
           </Button>
-        )}
+        )*/}
       </div>
       <div className="mb-2">
         <FontAwesomeIcon icon={faEuro} className="me-2" />
-        {price ? price : "Gratis"}
+        {/*event.price ? event.price : "Gratis"*/}
       </div>
       <div className="mb-2">
         <FontAwesomeIcon icon={faCalendar} className="me-2" />
-        {date}
+        {event.startDate}
       </div>
-      {web && (
+      {/*{web && (
         <div className="mb-2">
           <FontAwesomeIcon icon={faGlobe} className="me-2" />
           {web}
@@ -223,10 +211,10 @@ const InfoEvent: FC<InfoEventProps> = ({
       <div className="mb-2">
         <FontAwesomeIcon icon={faPerson} className="me-2" />
         Organizado por: {organizer}
-      </div>
-      <p>{description}</p>
+      </div>*/}
+      <p>{event.description}</p>
       <hr />
-      <Rating
+      {/*<Rating
         rating={rating}
         totalReviews={totalReviews}
         ratingDistribution={ratingDistribution}
@@ -297,7 +285,7 @@ const InfoEvent: FC<InfoEventProps> = ({
           date={review.date}
           replies={review.replies}
         />
-      ))}
+      ))}*/}
     </div>
   );
 };

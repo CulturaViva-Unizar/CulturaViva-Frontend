@@ -42,9 +42,8 @@ export type GetEventsResponse = EventResponse[];
 export type GetEventByIdRequest = {
   id: string;
 };
-export type GetEventByIdResponse = {
-  item: EventResponse;
-};
+
+export type GetEventByIdResponse = EventResponse;
 
 type Price = {
   grupo: string;
@@ -76,9 +75,7 @@ export type GetCulturalPlacesResponse = CulturalPlaceResponse[];
 export type GetPlaceByIdRequest = {
   id: string;
 };
-export type GetPlaceByIdResponse = {
-  item: CulturalPlaceResponse;
-};
+export type GetPlaceByIdResponse = CulturalPlaceResponse;
 
 export type CulturalPlaceResponse = {
   _id: string;

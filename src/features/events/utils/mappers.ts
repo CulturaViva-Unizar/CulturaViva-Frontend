@@ -2,7 +2,7 @@ import { EventResponse } from "../../../types/api";
 import { Price } from "../../models";
 import { Event } from "../types/models";
 
-export const mapEventsResponseToEvent = (src: EventResponse): Event => ({
+export const mapEventResponseToEvent = (src: EventResponse): Event => ({
   id: src._id,
   title: src.title,
   description: src.description,
