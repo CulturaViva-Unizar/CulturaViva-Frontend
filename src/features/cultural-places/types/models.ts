@@ -1,26 +1,16 @@
-import { ReviewProps } from "../../reviews/types/models";
+import { Coordinates, Price } from "../../models";
 
 export type CulturalPlace = {
   id: string;
-  image?: string;
   title: string;
-  location: string;
-  rating: number;
-  totalReviews: number;
-  ratingDistribution: {
-    5: number;
-    4: number;
-    3: number;
-    2: number;
-    1: number;
-  };
-  timetable: string;
-  description: string;
+  location?: string;
+  price: Price[];
+  description?: string;
+  coordinates?: Coordinates;
+  openingHours?: string;
+  image?: string;
+  email?: string;
   phone?: string;
-  web?: string;
-  price?: number;
-  facebook?: string;
+  category?: string;
   instagram?: string;
-  twitter?: string;
-  reviewsInit: ReviewProps[];
-}
+};

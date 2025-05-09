@@ -37,57 +37,65 @@ export type LoggedUser = {
 };
 
 /* Events ------------------------------------------------------------------------------*/
-export type GetEventsResponse = {
-  items: Event[];
-};
+export type GetEventsResponse = EventResponse[];
 
 export type GetEventByIdRequest = {
   id: string;
 };
 export type GetEventByIdResponse = {
-  item: Event;
+  item: EventResponse;
 };
 
-export type Event = {
-  id: string;
+type Price = {
+  grupo: string;
+  precio: number | null;
+};
+
+export type EventResponse = {
+  _id: string;
   title: string;
-  category: string;
-  instagram?: string;
-  twitter?: string;
+  coordinates: Coordinates | null;
+  itemType: string;
+  startDate: string;
+  endDate: string;
+  asistentes: string[];
+  price: Price[] | null;
   description?: string;
   image?: string;
-  price?: number | null;
-  coordinates?: Coordinates;
-  startDate?: string;
-  endDate?: string;
+  category?: string;
   permanent?: boolean;
   place?: string;
+  instagram?: string;
+  twitter?: string;
+  __v: number;
 };
 
 /* Places -----------------------------------------------------------------------------*/
-export type GetPlacesResponse = {
-  items: Place[];
-};
+export type GetCulturalPlacesResponse = CulturalPlaceResponse[];
 
 export type GetPlaceByIdRequest = {
   id: string;
 };
 export type GetPlaceByIdResponse = {
-  item: Place;
+  item: CulturalPlaceResponse;
 };
 
-export type Place = {
-  id: string;
+export type CulturalPlaceResponse = {
+  _id: string;
   title: string;
-  category: string;
+  itemType: string;
+  direction: string | null;
+  price: Price[];
+  coordinates?: Coordinates;
+  category?: string;
+  description?: string | null;
+  image?: string;
+  email?: string | null;
+  phone?: string | null;
+  openingHours?: string | null;
   instagram?: string;
   twitter?: string;
-  description?: string;
-  image?: string;
-  price?: number | null;
-  coordinates?: Coordinates;
-  direction?: string;
-  openingHours?: OpeningHours;
+  __v: number;
 };
 
 export type OpeningHours = {
@@ -122,9 +130,10 @@ export type AttendEventResponse = {
   attending: boolean;
 };
 
-export type Coordinates = {
-  lat: number;
-  lng: number;
+type Coordinates = {
+  latitude: number;
+  longitude: number;
+  _id?: string;
 };
 
 export type User = {

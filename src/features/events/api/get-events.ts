@@ -1,12 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../../lib/api-client";
 import { Event } from "../types/models";
-import { GetEventsResponse } from "../../../types/api";
+import { ApiResponse, GetEventsResponse } from "../../../types/api";
+import { mapEventsResponseToEvent } from "../utils/mappers";
 
 export const getEvents = async (): Promise<Event[]> => {
-  const events: GetEventsResponse = await api.get("/items/events");
+  const response: ApiResponse<GetEventsResponse> = await api.get(
+    "/items/events"
+  );
 
-  return events;
+  const { data: events = [] } = response;
+
+  return events.map(mapEventsResponseToEvent);
 };
 
 export const useGetEvents = () => {

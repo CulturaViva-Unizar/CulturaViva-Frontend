@@ -1,19 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../../lib/api-client";
 import { CulturalPlace } from "../types/models";
-import { GetCulturalPlacesResponse } from "../../../types/api";
-import { QueryConfig } from "../../../lib/react-query";
+import { ApiResponse, GetCulturalPlacesResponse } from "../../../types/api";
+import { mapCulturalPlaceResponseToCulturalPlace } from "../utils/mappers";
 
 export const getCulturalPlaces = async (): Promise<CulturalPlace[]> => {
-  const events: GetCulturalPlacesResponse = await api.get("/items/places");
+  const response: ApiResponse<GetCulturalPlacesResponse> = await api.get(
+    "/items/places"
+  );
 
-  return events;
+  const { data: culturalPlaces = [] } = response;
+
+  return culturalPlaces.map(mapCulturalPlaceResponseToCulturalPlace);
 };
 
-export const useGetCulturalPlaces = (config?: QueryConfig<typeof useQuery>) => {
+export const useGetCulturalPlaces = () => {
   return useQuery<CulturalPlace[], Error>({
     queryKey: ["culturalPlaces"],
     queryFn: getCulturalPlaces,
-    ...config,
   });
 };

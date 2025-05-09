@@ -8,6 +8,7 @@ import {
   useGetCulturalPlaces,
 } from "../../features/cultural-places/api/get-cultural-places";
 import { QueryClient } from "@tanstack/react-query";
+import MapLegend from "../../components/ui/map-legend";
 
 export const clientLoader = (queryClient: QueryClient) => async () => {
   await queryClient.prefetchQuery({ queryKey: ["events"], queryFn: getEvents });
@@ -43,8 +44,13 @@ function Landing() {
         className="position-absolute top-0 start-0 p-3 vw-100"
         style={{ zIndex: 10000 }}
       />
-      
-      <Map />
+
+      <Map
+        events={events.filter((e) => e.coordinates)}
+        culturalPlaces={culturalPlaces.filter((p) => p.coordinates)}
+      />
+
+      <MapLegend />
     </>
   );
 }
