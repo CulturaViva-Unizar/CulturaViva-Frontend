@@ -1,113 +1,169 @@
-import { useState } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { useRegister } from "../../../lib/auth";
 import Swal from "sweetalert2";
+import { CreateUserRequest } from "../../../types/api";
 
 type RegisterFormProps = {
   onSuccess: () => void;
 };
 
-const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-    name: "",
-    phone: "",
-    confirmPassword: "",
+const registerSchema = z
+  .object({
+    email: z.string().email("Email inválido"),
+    name: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
+    phone: z
+      .string()
+      .regex(/^[0-9+\s\-]+$/, "Teléfono inválido")
+      .min(9, "El teléfono debe tener al menos 9 dígitos"),
+    password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Las contraseñas no coinciden",
+    path: ["confirmPassword"],
   });
-  const registering = useRegister({ onSuccess });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+type RegisterUserForm = z.infer<typeof registerSchema>;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (form.password !== form.confirmPassword) {
-      Swal.fire("¡Error!", "Las contraseñas no coinciden", "error");
-      return;
-    }
-    registering.mutate(form);
+const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<RegisterUserForm>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      email: "",
+      name: "",
+      phone: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  const registering = useRegister({
+    onSuccess: () => {
+      Swal.fire("¡Registro exitoso!", "Bienvenido", "success").then(() => {
+        reset();
+        onSuccess();
+      });
+    },
+    onError: (err) => {
+      Swal.fire(
+        "¡Error al registrar!",
+        err.response?.data?.message || "Error desconocido",
+        "error"
+      );
+    },
+  });
+
+  const onSubmit = (data: RegisterUserForm) => {
+    const createData: CreateUserRequest = {
+      email: data.email,
+      name: data.name,
+      phone: data.phone,
+      password: data.password
+    };
+    registering.mutate(createData);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <div className="mb-3">
         <label htmlFor="email" className="form-label">
           Email
         </label>
         <input
           type="email"
-          className="form-control"
           id="email"
-          name="email"
-          value={form.email}
-          onChange={handleChange}
-          required
+          className={`form-control ${errors.email ? "is-invalid" : ""}`}
+          {...register("email")}
+          disabled={registering.isPending}
         />
+        {errors.email && (
+          <div className="invalid-feedback">{errors.email.message}</div>
+        )}
       </div>
+
       <div className="mb-3">
         <label htmlFor="name" className="form-label">
           Nombre completo
         </label>
         <input
           type="text"
-          className="form-control"
           id="name"
-          name="name"
-          value={form.name}
-          onChange={handleChange}
-          required
+          className={`form-control ${errors.name ? "is-invalid" : ""}`}
+          {...register("name")}
+          disabled={registering.isPending}
         />
+        {errors.name && (
+          <div className="invalid-feedback">{errors.name.message}</div>
+        )}
       </div>
+
       <div className="mb-3">
         <label htmlFor="phone" className="form-label">
           Teléfono
         </label>
         <input
           type="tel"
-          className="form-control"
           inputMode="tel"
           pattern="[0-9+\s\-]+"
           id="phone"
-          name="phone"
-          value={form.phone}
-          onChange={handleChange}
-          required
+          className={`form-control ${errors.phone ? "is-invalid" : ""}`}
+          {...register("phone")}
+          disabled={registering.isPending}
         />
+        {errors.phone && (
+          <div className="invalid-feedback">{errors.phone.message}</div>
+        )}
       </div>
+
       <div className="mb-3">
         <label htmlFor="password" className="form-label">
           Contraseña
         </label>
         <input
           type="password"
-          className="form-control"
           id="password"
-          name="password"
-          value={form.password}
-          onChange={handleChange}
-          required
+          className={`form-control ${errors.password ? "is-invalid" : ""}`}
+          {...register("password")}
+          disabled={registering.isPending}
         />
+        {errors.password && (
+          <div className="invalid-feedback">{errors.password.message}</div>
+        )}
       </div>
+
       <div className="mb-3">
         <label htmlFor="confirmPassword" className="form-label">
           Repetir contraseña
         </label>
         <input
           type="password"
-          className="form-control"
           id="confirmPassword"
-          name="confirmPassword"
-          value={form.confirmPassword}
-          onChange={handleChange}
-          required
+          className={`form-control ${
+            errors.confirmPassword ? "is-invalid" : ""
+          }`}
+          {...register("confirmPassword")}
+          disabled={registering.isPending}
         />
+        {errors.confirmPassword && (
+          <div className="invalid-feedback">
+            {errors.confirmPassword.message}
+          </div>
+        )}
       </div>
+
       <div className="d-grid text-center gap-2">
         <button
           type="submit"
           className="btn btn-dark shadow-sm rounded-pill"
-          disabled={registering.isPending}
+          disabled={isSubmitting || registering.isPending}
         >
           {registering.isPending ? "Cargando..." : "Registrarse"}
         </button>
