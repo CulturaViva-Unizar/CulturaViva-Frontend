@@ -9,7 +9,7 @@ import { paths } from "../../../../config/paths";
 import { useGetEvents } from "../../../../features/events/api/get-events";
 import LoadingIndicator from "../../../../components/ui/loading-indicator";
 import { ErrorMessage } from "../../../../components/errors/error-message";
-import { CATEGORY_SELECT_OPTIONS } from "../../../../config/constants";
+import { CATEGORY_SELECT_OPTIONS } from "../../../../shared/constants/select-options";
 
 function Events() {
   const { data: events = [], isLoading, error } = useGetEvents();

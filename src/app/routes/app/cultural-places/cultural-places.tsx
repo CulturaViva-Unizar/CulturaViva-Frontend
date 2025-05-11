@@ -7,10 +7,10 @@ import MainLayout from "../../../../components/layouts/main-layout";
 import { useNavigate } from "react-router";
 import { paths } from "../../../../config/paths";
 import { useGetCulturalPlaces } from "../../../../features/cultural-places/api/get-cultural-places";
-import { CATEGORY_SELECT_OPTIONS } from "../../../../config/constants";
 import { CulturalPlace } from "../../../../features/cultural-places/types/models";
 import { ErrorMessage } from "../../../../components/errors/error-message";
 import LoadingIndicator from "../../../../components/ui/loading-indicator";
+import { CATEGORY_SELECT_OPTIONS } from "../../../../shared/constants/select-options";
 
 function CulturalPlaces() {
   const {

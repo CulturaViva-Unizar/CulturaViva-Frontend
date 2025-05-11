@@ -4,7 +4,7 @@ import { CulturalPlace } from "../types/models";
 import { ApiResponse, GetCulturalPlacesResponse } from "../../../types/api";
 import { mapCulturalPlaceResponseToCulturalPlace } from "../utils/mappers";
 
-export const getCulturalPlaces = async (): Promise<CulturalPlace[]> => {
+const getCulturalPlaces = async (): Promise<CulturalPlace[]> => {
   const response: ApiResponse<GetCulturalPlacesResponse> = await api.get(
     "/items/places"
   );

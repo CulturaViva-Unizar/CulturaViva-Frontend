@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, useState } from "react";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { UserCardProps } from "../../types/viejas-interfaces";
 import { Link } from "react-router";
 import { paths } from "../../config/paths";
 

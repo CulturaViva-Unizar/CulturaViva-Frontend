@@ -9,8 +9,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { Link } from "react-router";
-import { ReplyProps } from "../../types/viejas-interfaces";
-import { ADMIN_ROLE } from "../../config/constants";
 import { useUser } from "../../lib/auth";
 import { paths } from "../../config/paths";
 

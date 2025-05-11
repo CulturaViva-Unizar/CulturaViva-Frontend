@@ -6,7 +6,6 @@ import { faArrowDownWideShort } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import BootstrapPagination from "../../../components/ui/bootstrap-pagination";
 import MainLayout from "../../../components/layouts/main-layout";
-import { UserCardProps } from "../../../types/viejas-interfaces";
 
 const simulatedData: UserCardProps[] = Array.from(
   { length: 27 },

@@ -1,4 +1,4 @@
-import { Coordinates, Price } from "../../models";
+import { Coordinates, Price } from "../../../shared/types/models";
 
 export type Event = {
   id: string;

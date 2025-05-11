@@ -1,10 +1,11 @@
 import MainLayout from "../../../components/layouts/main-layout";
 import ChartCard from "../../../components/ui/chart-card";
-import { Select, SelectOption } from "../../../components/ui/select";
+import { Select } from "../../../components/ui/select";
 import BarChart from "../../../components/ui/bar-chart";
 import LineChart from "../../../components/ui/line-chart";
 import DoughnutChart from "../../../components/ui/doughnut-chart";
-import { CATEGORY_SELECT_OPTIONS } from "../../../config/constants";
+import { CATEGORY_SELECT_OPTIONS } from "../../../shared/constants/select-options";
+import { SelectOption } from "../../../shared/types/models";
 
 const labels = [
   "Enero",

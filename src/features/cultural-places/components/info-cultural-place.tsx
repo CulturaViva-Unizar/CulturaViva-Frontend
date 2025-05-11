@@ -18,7 +18,6 @@ import {
   faInstagram,
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
-import { USER_ROLE, ADMIN_ROLE } from "../../../config/constants";
 import { RatingStars } from "../../../components/ui/rating-stars";
 import { Review } from "../../../components/ui/review";
 import { Select } from "../../../components/ui/select";

@@ -1,0 +1,1 @@
+export const ZGZ_COORDS: [number, number] = [41.65606, -0.87734];

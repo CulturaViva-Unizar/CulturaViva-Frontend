@@ -18,8 +18,6 @@ export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
 
-api.defaults.headers.patch['Content-Type'] = 'application/json-patch+json';
-
 api.interceptors.request.use(authRequestInterceptor);
 api.interceptors.response.use(
   (res) => res.data,

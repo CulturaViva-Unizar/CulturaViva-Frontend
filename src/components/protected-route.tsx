@@ -1,6 +1,5 @@
 import React from "react";
 import { Navigate, useLocation } from "react-router";
-import { Role } from "../config/constants";
 import { useUser } from "../lib/auth";
 import { paths } from "../config/paths";
 

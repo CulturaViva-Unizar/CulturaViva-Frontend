@@ -1,25 +1,26 @@
-import { TileLayer, Marker } from "react-leaflet";
+import { TileLayer, Marker, useMap } from "react-leaflet";
 import { MapContainer, ZoomControl } from "react-leaflet";
 import { Event } from "../../features/events/types/models";
 import { CulturalPlace } from "../../features/cultural-places/types/models";
-import { ZGZ_COORDS } from "../../config/constants";
 import MarkerClusterGroup from "react-leaflet-markercluster";
 import L, { Icon } from "leaflet";
 import redUrl from "leaflet-color-markers/img/marker-icon-red.png";
 import goldUrl from "leaflet-color-markers/img/marker-icon-gold.png";
 import shadowUrl from "leaflet-color-markers/img/marker-shadow.png";
-import { Colors } from "../../features/enums";
+import { Colors } from "../../shared/types/enums";
 import { Drawer } from "./drawer";
 import InfoEvent from "../../features/events/components/info-event";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InfoCulturalPlace from "../../features/cultural-places/components/info-cultural-place";
+import { ZGZ_COORDS } from "../../shared/constants/location";
+import Swal from "sweetalert2";
 
 type MapProps = {
   events: Event[];
   culturalPlaces: CulturalPlace[];
 };
 
-export function createClusterIcon(color: string) {
+function createClusterIcon(color: string) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (cluster: any) => {
     const count = cluster.getChildCount();
@@ -52,6 +53,14 @@ export function createClusterIcon(color: string) {
   };
 }
 
+function FlyToPosition({ position }: { position: [number, number] }) {
+  const map = useMap();
+  useEffect(() => {
+    map.flyTo(position, map.getZoom());
+  }, [position, map]);
+  return null;
+}
+
 const Map: React.FC<MapProps> = ({ events, culturalPlaces }) => {
   const eventIcon = new Icon({
     iconUrl: redUrl,
@@ -72,28 +81,50 @@ const Map: React.FC<MapProps> = ({ events, culturalPlaces }) => {
   const eventClusterIcon = createClusterIcon(Colors.RED);
   const culturalClusterIcon = createClusterIcon(Colors.GOLD);
 
+  const [userPosition, setUserPosition] = useState<[number, number] | null>(
+    null
+  );
+  const center = userPosition ?? ZGZ_COORDS;
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  const [selectedCulturalPlace, setSelectedCulturalPlace] = useState<CulturalPlace | null>(null);
+  const [selectedCulturalPlace, setSelectedCulturalPlace] =
+    useState<CulturalPlace | null>(null);
   const [showEventDrawer, setShowEventDrawer] = useState(false);
 
   const handleClose = () => {
     setShowEventDrawer(false);
     setSelectedEvent(null);
+    setSelectedCulturalPlace(null);
   };
+
+  useEffect(() => {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        setUserPosition([coords.latitude, coords.longitude]);
+      },
+      () => {
+        Swal.fire("Aviso", "No se pudo obtener la ubicación", "warning");
+      },
+      { enableHighAccuracy: true }
+    );
+  }, []);
 
   return (
     <MapContainer
-      center={ZGZ_COORDS}
+      center={center}
       zoom={15}
       style={{ height: "100vh", width: "100vw" }}
       zoomControl={false}
     >
+      {userPosition && <FlyToPosition position={userPosition} />}
       <ZoomControl position="bottomright" />
       <TileLayer
         attribution="&copy; OpenStreetMap contributors"
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-
+      {userPosition && (
+        <Marker position={userPosition} />
+      )}
       <MarkerClusterGroup iconCreateFunction={eventClusterIcon}>
         {events.map((event) => {
           const coords: [number, number] = [
@@ -115,7 +146,6 @@ const Map: React.FC<MapProps> = ({ events, culturalPlaces }) => {
           );
         })}
       </MarkerClusterGroup>
-
       <MarkerClusterGroup iconCreateFunction={culturalClusterIcon}>
         {culturalPlaces.map((culturalPlace) => {
           const coords: [number, number] = [
@@ -146,7 +176,10 @@ const Map: React.FC<MapProps> = ({ events, culturalPlaces }) => {
 
       {selectedCulturalPlace && (
         <Drawer show={showEventDrawer} onClose={handleClose}>
-          <InfoCulturalPlace culturalPlace={selectedCulturalPlace} onClose={handleClose} />
+          <InfoCulturalPlace
+            culturalPlace={selectedCulturalPlace}
+            onClose={handleClose}
+          />
         </Drawer>
       )}
     </MapContainer>

@@ -141,3 +141,22 @@ export type User = {
   savedEvents?: string[];
   attendingEvents?: string[];
 };
+
+export type BookmarkResponse = EventResponse | CulturalPlaceResponse;
+
+export type GetBookmarksByUserResponse = {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  items: BookmarkResponse[];
+};
+
+export type GetPaginatedEventsRequest = {
+  userId: string;
+  eventType?: string;
+  eventName?: string;
+  eventDate?: string;
+  eventCategory?: string;
+  page: number;
+  limit: number;
+};

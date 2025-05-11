@@ -7,7 +7,7 @@ import MainLayout from "../../../../components/layouts/main-layout";
 import { useNavigate } from "react-router";
 import { paths } from "../../../../config/paths";
 import { Event } from "../../../../features/events/types/models";
-import { CATEGORY_SELECT_OPTIONS } from "../../../../config/constants";
+import { CATEGORY_SELECT_OPTIONS } from "../../../../shared/constants/select-options";
 
 const pieData = {
   labels: ["Arte", "Ocio", "Otros"],

@@ -6,7 +6,7 @@ import { mapEventResponseToEvent } from "../utils/mappers";
 
 const getEventById = async (id: string): Promise<Event> => {
   const response: ApiResponse<GetEventByIdResponse> = await api.get(
-    `/items/events${id}`
+    `/items/events/${id}`
   );
 
   const { data: event } = response;

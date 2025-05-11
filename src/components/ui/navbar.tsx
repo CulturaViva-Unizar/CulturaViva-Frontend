@@ -1,10 +1,10 @@
-import { Select, SelectOption } from "./select";
+import { Select } from "./select";
 import { UserMenu } from "./user-menu";
 import SearchBar from "./search-bar";
 import { DatePicker } from "./date-picker";
 import { Range } from "./range";
-import { Categories, Items } from "../../features/enums";
 import { CSSProperties } from "react";
+import { ITEM_TYPE_SELECT_OPTIONS, CATEGORY_SELECT_OPTIONS } from "../../shared/constants/select-options";
 
 type NavBarProps = {
   className?: string;
@@ -12,22 +12,6 @@ type NavBarProps = {
 };
 
 export const Navbar: React.FC<NavBarProps> = ({ className = "", style }) => {
-  const items_options: SelectOption[] = [
-    { value: "", label: "Todos" },
-    ...Object.values(Items).map((v) => ({
-      value: v,
-      label: v.charAt(0).toUpperCase() + v.slice(1),
-    })),
-  ];
-
-  const category_options: SelectOption[] = [
-    { value: "", label: "Categoría" },
-    ...Object.values(Categories).map((v) => ({
-      value: v,
-      label: v.charAt(0).toUpperCase() + v.slice(1),
-    })),
-  ];
-
   return (
     <nav className={`row py-md-4 gap-2 m-0 ${className}`} style={style}>
       <div className="row col-11 col-md-3 order-1">
@@ -39,13 +23,13 @@ export const Navbar: React.FC<NavBarProps> = ({ className = "", style }) => {
       >
         <Select
           className="col shadow-sm"
-          options={items_options}
+          options={ITEM_TYPE_SELECT_OPTIONS}
           initialValue=""
           onChange={(newValue) => console.log(newValue)}
         />
         <Select
           className="col shadow-sm"
-          options={category_options}
+          options={CATEGORY_SELECT_OPTIONS}
           initialValue=""
           onChange={(newValue) => console.log(newValue)}
         />

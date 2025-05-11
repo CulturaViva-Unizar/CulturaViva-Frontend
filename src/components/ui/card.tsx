@@ -2,7 +2,6 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC } from "react";
 import { Link } from "react-router";
-import { CardProps } from "../../types/viejas-interfaces";
 
 export const Card: FC<CardProps> = ({
   image,

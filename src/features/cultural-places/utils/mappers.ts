@@ -1,5 +1,5 @@
 import { CulturalPlaceResponse } from "../../../types/api";
-import { Price } from "../../models";
+import { Price } from "../../../shared/types/models";
 import { CulturalPlace } from "../types/models";
 
 export const mapCulturalPlaceResponseToCulturalPlace = (src: CulturalPlaceResponse): CulturalPlace => ({

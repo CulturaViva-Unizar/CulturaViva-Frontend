@@ -4,7 +4,7 @@ import { Event } from "../types/models";
 import { ApiResponse, GetEventsResponse } from "../../../types/api";
 import { mapEventResponseToEvent } from "../utils/mappers";
 
-export const getEvents = async (): Promise<Event[]> => {
+const getEvents = async (): Promise<Event[]> => {
   const response: ApiResponse<GetEventsResponse> = await api.get(
     "/items/events"
   );

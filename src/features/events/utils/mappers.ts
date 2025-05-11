@@ -1,5 +1,5 @@
 import { EventResponse } from "../../../types/api";
-import { Price } from "../../models";
+import { Price } from "../../../shared/types/models";
 import { Event } from "../types/models";
 
 export const mapEventResponseToEvent = (src: EventResponse): Event => ({

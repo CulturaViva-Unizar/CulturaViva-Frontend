@@ -4,67 +4,101 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDownWideShort } from "@fortawesome/free-solid-svg-icons";
 import { Card } from "../../../components/ui/card";
 import BootstrapPagination from "../../../components/ui/bootstrap-pagination";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import MainLayout from "../../../components/layouts/main-layout";
-import { CardProps } from "../../../types/viejas-interfaces";
 import { useNavigate } from "react-router";
 import { paths } from "../../../config/paths";
+import { useGetBookmarksByUser } from "../../../features/bookmarks/api/get-bookmarks-by-user";
+import { useUser } from "../../../lib/auth";
+import {
+  CATEGORY_SELECT_OPTIONS,
+  ITEM_TYPE_SELECT_OPTIONS,
+} from "../../../shared/constants/select-options";
+import LoadingIndicator from "../../../components/ui/loading-indicator";
+import { ErrorMessage } from "../../../components/errors/error-message";
+import { Event } from "../../../features/events/types/models";
+import { DatePicker } from "../../../components/ui/date-picker";
 
-const simulatedData: CardProps[] = Array.from({ length: 27 }, (_, index) => ({
-  image:
-    "https://www.zaragoza.es/cont/paginas/actividades/imagen/2360.png_1070x713.png",
-  title: `Regálame esta noche. Albena Teatro ${index + 1}`,
-  location: "Teatro de las Esquinas",
-  rating: 4.1,
-  reviews: 116,
-  description:
-    "Dos viejos amantes se reencuentran después de más de veinticinco años. Una comedia romántica para preguntarnos con quién desearíamos pasar la última noche de nuestra vida.",
-}));
+const ITEMS_PER_PAGE = 9;
 
 function Bookmarks() {
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const itemsPerPage = 9;
-  const totalPages = Math.ceil(simulatedData.length / itemsPerPage);
-  const currentCards = simulatedData.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const user = useUser();
   const navigate = useNavigate();
+  const [name, setName] = useState<string>("");
+  const [date, setDate] = useState<string>("");
+  const [type, setType] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const request = useMemo(
+    () => ({
+      userId: user.data!.id,
+      eventType: type,
+      eventName: name,
+      eventDate: date,
+      eventCategory: category,
+      page: currentPage,
+      limit: ITEMS_PER_PAGE,
+    }),
+    [name, date, type, currentPage]
+  );
+  const { data, isLoading, error } = useGetBookmarksByUser(request);
+
+  const onNameChange = (newName: string) => {
+    setName(newName);
+    setCurrentPage(1);
+  };
+  const onDateChange = (date: Date | null) => {
+    setCurrentPage(1);
+    if (date) {
+      const iso = date.toISOString().slice(0, 10);
+      setDate(iso);
+    } else {
+      setDate("");
+    }
+  };
+  const onTypeChange = (newType: string) => {
+    setType(newType);
+    setCurrentPage(1);
+  };
+  const onCategoryChange = (newCategory: string) => {
+    setCategory(newCategory);
+    setCurrentPage(1);
+  };
 
   return (
     <MainLayout title="Guardados">
+      {isLoading && !error && (
+        <LoadingIndicator message="Cargando guardados..." />
+      )}
+      {error && <ErrorMessage message="Error al cargar los guardados" />}
+
       <div className="py-3 row gap-2 justify-content-center">
         <div className="row col-12 col-md-3">
-          <SearchBar />
+          <SearchBar
+            className="rounded-pill shadow-sm"
+            onSearch={onNameChange}
+          />
         </div>
         <div
           className="row col-12 col-md-6 gap-2 gx-2 py-1 flex-nowrap overflow-x-auto hide-scrollbar"
           style={{ WebkitOverflowScrolling: "touch" }}
         >
           <Select
-            className="col"
-            options={[
-              { value: "todos", label: "Todos" },
-              { value: "eventos", label: "Eventos" },
-              { value: "lugares", label: "Lugares culturales" },
-            ]}
-            initialValue="todos"
-            onChange={(newValue) => console.log(newValue)}
+            className="col shadow-sm"
+            options={ITEM_TYPE_SELECT_OPTIONS}
+            initialValue=""
+            onChange={onTypeChange}
           />
           <Select
-            className="col"
-            options={[
-              { value: "categoria", label: "Categoría" },
-              { value: "arte", label: "Arte" },
-              { value: "ocio", label: "Ocio" },
-            ]}
-            initialValue="categoria"
-            onChange={(newValue) => console.log(newValue)}
+            className="col shadow-sm"
+            options={CATEGORY_SELECT_OPTIONS}
+            initialValue=""
+            onChange={onCategoryChange}
           />
-          <button className="col btn rounded-pill shadow-sm text-nowrap">
-            Fecha
-            <FontAwesomeIcon icon={faArrowDownWideShort} className="ps-2" />
-          </button>
+          <DatePicker
+            className="col shadow-sm bg-white"
+            onChange={onDateChange}
+          />
           <button className="col btn rounded-pill shadow-sm text-nowrap">
             Comentarios
             <FontAwesomeIcon icon={faArrowDownWideShort} className="ps-2" />
@@ -72,26 +106,38 @@ function Bookmarks() {
         </div>
       </div>
       <div className="row g-4">
-        {currentCards.map((card, i) => (
-          <div className="col-md-4" key={i}>
-            <Card
-              image={card.image}
-              title={card.title}
-              location={card.location}
-              rating={card.rating}
-              reviews={card.reviews}
-              description={card.description}
-              className="rounded bg-light shadow"
-              onClick={() => navigate(paths.app.events.details.getHref(String(i)))}
-            />
-          </div>
-        ))}
+        {data?.items.map((item) => {
+          const isEvent = (item as Event).startDate !== undefined;
+
+          return (
+            <div className="col-md-4" key={item.id}>
+              <Card
+                image={item.image}
+                title={item.title}
+                location={item.location}
+                rating={5}
+                reviews={[]}
+                description={item.description}
+                className="rounded bg-light shadow"
+                onClick={() =>
+                  navigate(
+                    isEvent
+                      ? paths.app.events.details.getHref(item.id)
+                      : paths.app.culturalPlaces.details.getHref(item.id)
+                  )
+                }
+              />
+            </div>
+          );
+        })}
       </div>
-      <BootstrapPagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={(page: number) => setCurrentPage(page)}
-      />
+      {data && (
+        <BootstrapPagination
+          currentPage={data.currentPage}
+          totalPages={data.totalPages}
+          onPageChange={setCurrentPage}
+        />
+      )}
     </MainLayout>
   );
 }

@@ -17,7 +17,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { ADMIN_ROLE, USER_ROLE } from "../../config/constants";
 import Swal from "sweetalert2";
 import { useLogout, useUser } from "../../lib/auth";
 import { paths } from "../../config/paths";

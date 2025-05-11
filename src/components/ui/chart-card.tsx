@@ -1,5 +1,7 @@
 import React from "react";
 import { Select } from "./select";
+import { TIMEFRAME_SELECT_OPTIONS } from "../../shared/constants/select-options";
+import { Timeframe } from "../../shared/types/enums";
 
 interface ChartCardProps {
   title: string;
@@ -17,15 +19,8 @@ const ChartCard: React.FC<ChartCardProps> = ({
       <div className="card-header d-flex align-items-center justify-content-between">
         <h5 className="mb-0">{title}</h5>
         <Select
-          options={[
-            { value: "semana", label: "Última semana" },
-            { value: "mes", label: "Último mes" },
-            { value: "3meses", label: "Últimos 3 meses" },
-            { value: "6meses", label: "Últimos 6 meses" },
-            { value: "9meses", label: "Últimos 9 meses" },
-            { value: "año", label: "Último año" },
-          ]}
-          initialValue="semana"
+          options={TIMEFRAME_SELECT_OPTIONS}
+          initialValue={Timeframe.Semana}
           onChange={(newValue) => console.log(newValue)}
         />
       </div>

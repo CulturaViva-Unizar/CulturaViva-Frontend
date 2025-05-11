@@ -1,17 +1,13 @@
 import { FC, useState, ChangeEvent } from "react";
+import { SelectOption } from "../../shared/types/models";
 
-export interface SelectOption {
-  value: string;
-  label: string;
-}
-
-interface SelectProps {
+type SelectProps = {
   options: SelectOption[];
   placeholder?: string;
   initialValue?: string;
   onChange?: (newValue: string) => void;
   className?: string;
-}
+};
 
 export const Select: FC<SelectProps> = ({
   options,

@@ -10,8 +10,6 @@ import {
 import Swal from "sweetalert2";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { Link, useNavigate, useSearchParams } from "react-router";
-import { ReplyProps, ReviewProps } from "../../types/viejas-interfaces";
-import { ADMIN_ROLE } from "../../config/constants";
 import { RatingStars } from "./rating-stars";
 import { Reply } from "./reply";
 import { useLogout, useUser } from "../../lib/auth";

@@ -9,7 +9,6 @@ import {
   PointElement,
   LineElement,
 } from "chart.js";
-import { ChartProps } from "../../types/viejas-interfaces";
 
 Chart.register(
   CategoryScale,

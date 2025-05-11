@@ -8,7 +8,6 @@ import {
   LinearScale,
   BarElement,
 } from "chart.js";
-import { ChartProps } from "../../types/viejas-interfaces";
 
 Chart.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
