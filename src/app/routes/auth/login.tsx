@@ -49,22 +49,7 @@ const Login = () => {
             }}
           />
         </div>
-        {/*
-        <button
-          type="button"
-          className="btn btn-danger shadow-sm rounded-pill mt-2"
-          onClick={() => googleLogin()}
-        >
-          <FontAwesomeIcon icon={faGoogle} /> Iniciar sesión con Google
-        </button>
-        */}
-        <Link
-          to={paths.auth.changePassword.getHref()}
-          className="btn text-decoration-none text-secondary mt-3"
-        >
-          ¿Has olvidado tu contraseña?
-        </Link>
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-center mt-2">
           <span className="text-secondary">¿Aún no tienes una cuenta?</span>
           <Link
             to={paths.auth.register.getHref(redirectTo)}

@@ -1,16 +1,15 @@
-export interface ReviewProps {
-  userId: number;
-  username: string;
-  rating?: number;
-  comment: string;
+export interface Review {
+  id: string;
+  userId: string;
+  rating: number;
+  comment?: string;
   date: string;
-  replies?: ReplyProps[];
+  replies: Reply[];
 }
 
-export interface ReplyProps {
+export interface Reply {
   userId: number;
   username: string;
   comment: string;
   date: string;
-  replies?: ReplyProps[];
 }

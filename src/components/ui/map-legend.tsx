@@ -20,15 +20,15 @@ const MapLegend = () => {
         />
         <p className="m-0">Ubicación actual</p>
       </div>
-      {items.map((item, idx) => (
-        <div className="d-flex align-items-center mb-1">
+      {items.map((item, i) => (
+        <div key={i} className="d-flex align-items-center mb-1">
           <span
             className="me-3"
             style={{
               display: "inline-block",
               width: "12px",
               height: "12px",
-              backgroundColor: colors[idx],
+              backgroundColor: colors[i],
               borderRadius: "2px",
             }}
           />

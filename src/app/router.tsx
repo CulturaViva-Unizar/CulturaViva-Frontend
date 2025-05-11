@@ -4,6 +4,7 @@ import { createBrowserRouter, Outlet, RouterProvider } from "react-router";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import { paths } from "../config/paths";
 import ProtectedRoute from "../components/protected-route";
+import Chats from "./routes/app/chats";
 
 const convert = (queryClient: QueryClient) => (module: any) => {
   const { clientLoader, clientAction, default: Component, ...rest } = module;
@@ -32,10 +33,6 @@ const createAppRouter = (queryClient: QueryClient) =>
     {
       path: paths.auth.register.path,
       lazy: () => import("./routes/auth/register").then(convert(queryClient)),
-    },
-    {
-      path: paths.auth.changePassword.path,
-      lazy: () => import("./routes/auth/change-password").then(convert(queryClient)),
     },
     {
       path: paths.auth.unauthorized.path,
@@ -223,7 +220,7 @@ const createAppRouter = (queryClient: QueryClient) =>
           path: paths.app.chats.path,
           element: (
             <ProtectedRoute admin={paths.app.chats.admin}>
-              <Outlet />
+              <Chats />
             </ProtectedRoute>
           ),
           children: [

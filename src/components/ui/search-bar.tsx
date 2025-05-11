@@ -1,23 +1,26 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 interface SearchBarProps {
+  value: string;
   onSearch?: (query: string) => void;
   className?: string;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch, className = "" }) => {
-  const [searchText, setSearchText] = useState("");
+const SearchBar: React.FC<SearchBarProps> = ({
+  value,
+  onSearch,
+  className = "",
+}) => {
+  const [searchText, setSearchText] = useState<string>(value);
 
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchText(event.target.value);
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
   };
 
   const handleSearch = () => {
-    if (onSearch) {
-      onSearch(searchText);
-    }
+    onSearch?.(searchText);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -27,10 +30,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, className = "" }) => {
   };
 
   return (
-    <div
-      className={`${className} input-group`}
-      style={{}}
-    >
+    <div className={`${className} input-group`}>
       <input
         type="search"
         className="form-control border-0 rounded-pill"

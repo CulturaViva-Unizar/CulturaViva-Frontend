@@ -23,10 +23,7 @@ api.interceptors.response.use(
   (res) => res.data,
   (error) => {
     if (error.response?.status === 401 && window.location.pathname != paths.auth.login.getHref()) {
-      const searchParams = new URLSearchParams();
-      const redirectTo =
-        searchParams.get("redirectTo") || window.location.pathname;
-      window.location.href = paths.auth.unauthorized.getHref(redirectTo);
+      window.location.href = paths.auth.unauthorized.getHref();
     }
 
     return Promise.reject(error);

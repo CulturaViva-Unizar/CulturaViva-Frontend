@@ -1,16 +1,16 @@
 export enum Items {
-  EVENTOS = "eventos",
-  LUGARES = "lugares",
+  Evento = "eventos",
+  Lugar = "lugares",
 }
 
 export enum Categories {
-  ARTE = "arte",
-  OCIO = "ocio",
+  Arte = "arte",
+  Ocio = "ocio",
 }
 
 export enum Colors {
-  RED = "rgba(203,43,62,0.7)",
-  GOLD = "rgba(255,211,38,0.7)",
+  Red = "rgba(203,43,62,0.7)",
+  Gold = "rgba(255,211,38,0.7)",
 }
 
 export enum Timeframe {

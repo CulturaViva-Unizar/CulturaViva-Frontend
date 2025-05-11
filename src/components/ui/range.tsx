@@ -1,26 +1,27 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 const MySwal = withReactContent(Swal);
 
 interface RangeProps {
+  value: number;
+  onChange: (newValue: number) => void;
   min?: number;
   max?: number;
-  initialValue?: number;
   className?: string;
   hideWhenMaxValue?: boolean;
 }
 
 export const Range: FC<RangeProps> = ({
+  value,
+  onChange,
   min = 0,
   max = 100,
-  initialValue = 50,
   className = "",
   hideWhenMaxValue = false,
 }) => {
-  const [value, setValue] = useState<number>(initialValue);
-
+  console.log(value);
   const openModal = async () => {
     const { value: newValue } = await MySwal.fire({
       title: "Seleccione un rango",
@@ -43,7 +44,6 @@ export const Range: FC<RangeProps> = ({
         </div>
       `,
       showCancelButton: true,
-      focusConfirm: false,
       cancelButtonText: "Cancelar",
       confirmButtonText: "Aceptar",
       preConfirm: () => {
@@ -62,8 +62,7 @@ export const Range: FC<RangeProps> = ({
             tooltip.textContent = slider.value + "€";
             const percent = (Number(slider.value) - min) / (max - min);
             const sliderWidth = slider.getBoundingClientRect().width;
-            const left = percent * sliderWidth;
-            tooltip.style.left = left + "px";
+            tooltip.style.left = `${percent * sliderWidth}px`;
           };
           slider.addEventListener("input", updateTooltip);
           updateTooltip();
@@ -71,7 +70,7 @@ export const Range: FC<RangeProps> = ({
       },
     });
     if (newValue !== undefined && newValue !== null) {
-      setValue(Number(newValue));
+      onChange(Number(newValue));
     }
   };
 
@@ -80,7 +79,7 @@ export const Range: FC<RangeProps> = ({
       onClick={openModal}
       className={`btn rounded-pill text-nowrap ${className}`}
     >
-      Precio {(value < max || !hideWhenMaxValue) && ` ${value}`}€
+      Precio {(value !== null && value < max || !hideWhenMaxValue) && ` ${value}`}€
     </button>
   );
 };

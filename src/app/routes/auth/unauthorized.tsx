@@ -14,7 +14,7 @@ const Unauthorized = () => {
           <p className="card-text p-3">
             No tienes permiso para acceder a esta página.
           </p>
-          <Link to={paths.app.getHref()} replace className="btn btn-primary shadow-sm rounded-pill">
+          <Link to={paths.app.getHref()} replace className="btn btn-dark shadow-sm rounded-pill">
             Volver al inicio
           </Link>
         </div>

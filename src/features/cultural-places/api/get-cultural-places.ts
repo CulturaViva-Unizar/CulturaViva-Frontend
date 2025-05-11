@@ -1,22 +1,49 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../../lib/api-client";
 import { CulturalPlace } from "../types/models";
-import { ApiResponse, GetCulturalPlacesResponse } from "../../../types/api";
+import {
+  ApiResponse,
+  GetCulturalPlacesRequest,
+  GetCulturalPlacesResponse,
+} from "../../../types/api";
 import { mapCulturalPlaceResponseToCulturalPlace } from "../utils/mappers";
 
-const getCulturalPlaces = async (): Promise<CulturalPlace[]> => {
-  const response: ApiResponse<GetCulturalPlacesResponse> = await api.get(
-    "/items/places"
-  );
+const getCulturalPlaces = async (
+  request: GetCulturalPlacesRequest
+): Promise<CulturalPlace[]> => {
+  const params = new URLSearchParams();
 
-  const { data: culturalPlaces = [] } = response;
+  if (request.name) {
+    params.append("name", request.name);
+  }
+  if (request.category) {
+    params.append("category", request.category);
+  }
+  if (request.startDate) {
+    params.append("startDate", request.startDate);
+  }
+  if (request.maxPrice) {
+    params.append("price", request.maxPrice.toString());
+  }
+  if (request.sort) {
+    params.append("sort", request.sort);
+  }
+  if (request.order) {
+    params.append("order", request.order);
+  }
 
-  return culturalPlaces.map(mapCulturalPlaceResponseToCulturalPlace);
+  params.append("page", request.page.toString());
+  params.append("limit", request.limit.toString());
+
+  const url = `/items/places?${params.toString()}`;
+  const response: ApiResponse<GetCulturalPlacesResponse> = await api.get(url);
+
+  return response.data.items.map(mapCulturalPlaceResponseToCulturalPlace);
 };
 
-export const useGetCulturalPlaces = () => {
+export const useGetCulturalPlaces = (request: GetCulturalPlacesRequest) => {
   return useQuery<CulturalPlace[], Error>({
-    queryKey: ["culturalPlaces"],
-    queryFn: getCulturalPlaces,
+    queryKey: ["culturalPlaces", request],
+    queryFn: () => getCulturalPlaces(request),
   });
 };

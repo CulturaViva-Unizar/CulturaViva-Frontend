@@ -1,36 +1,29 @@
-import { FC, useState, ChangeEvent } from "react";
+import { FC, ChangeEvent } from "react";
 import { SelectOption } from "../../shared/types/models";
 
 type SelectProps = {
   options: SelectOption[];
   placeholder?: string;
-  initialValue?: string;
-  onChange?: (newValue: string) => void;
+  value: string;
+  onChange: (newValue: string) => void;
   className?: string;
 };
 
 export const Select: FC<SelectProps> = ({
   options,
   placeholder,
-  initialValue,
+  value,
   onChange,
   className = "",
 }) => {
-  const initialSelectedValue =
-    initialValue ?? (placeholder ? "" : options[0]?.value ?? "");
-  const [selectedValue, setSelectedValue] =
-    useState<string>(initialSelectedValue);
-
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const newValue = e.target.value;
-    setSelectedValue(newValue);
-    onChange?.(newValue);
+    onChange(e.target.value);
   };
 
   return (
     <select
       className={`form-select border-0 rounded-pill w-auto ${className}`}
-      value={selectedValue}
+      value={value}
       onChange={handleChange}
       role="button"
     >

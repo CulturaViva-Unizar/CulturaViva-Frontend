@@ -13,7 +13,6 @@ import InfoEvent from "../../features/events/components/info-event";
 import { useEffect, useState } from "react";
 import InfoCulturalPlace from "../../features/cultural-places/components/info-cultural-place";
 import { ZGZ_COORDS } from "../../shared/constants/location";
-import Swal from "sweetalert2";
 
 type MapProps = {
   events: Event[];
@@ -37,7 +36,7 @@ function createClusterIcon(color: string) {
             display: flex;
             align-items: center;
             justify-content: center;
-            color: ${color == Colors.RED ? "white" : "black"};
+            color: ${color == Colors.Red ? "white" : "black"};
             font-size: 14px;
             border: 2px solid white;
           "
@@ -78,8 +77,8 @@ const Map: React.FC<MapProps> = ({ events, culturalPlaces }) => {
     popupAnchor: [1, -34],
     shadowSize: [41, 41],
   });
-  const eventClusterIcon = createClusterIcon(Colors.RED);
-  const culturalClusterIcon = createClusterIcon(Colors.GOLD);
+  const eventClusterIcon = createClusterIcon(Colors.Red);
+  const culturalClusterIcon = createClusterIcon(Colors.Gold);
 
   const [userPosition, setUserPosition] = useState<[number, number] | null>(
     null
@@ -102,9 +101,7 @@ const Map: React.FC<MapProps> = ({ events, culturalPlaces }) => {
       ({ coords }) => {
         setUserPosition([coords.latitude, coords.longitude]);
       },
-      () => {
-        Swal.fire("Aviso", "No se pudo obtener la ubicación", "warning");
-      },
+      () => {},
       { enableHighAccuracy: true }
     );
   }, []);
@@ -122,9 +119,7 @@ const Map: React.FC<MapProps> = ({ events, culturalPlaces }) => {
         attribution="&copy; OpenStreetMap contributors"
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {userPosition && (
-        <Marker position={userPosition} />
-      )}
+      {userPosition && <Marker position={userPosition} />}
       <MarkerClusterGroup iconCreateFunction={eventClusterIcon}>
         {events.map((event) => {
           const coords: [number, number] = [

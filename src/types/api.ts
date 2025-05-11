@@ -4,7 +4,6 @@ export type ApiResponse<T> = {
   data: T;
 };
 
-/* Auth ------------------------------------------------------------------------------*/
 export type LoginUserRequest = {
   email: string;
   password: string;
@@ -32,9 +31,12 @@ export type CreateUserRequest = {
 
 export type CreateUserRespose = LoginUserResponse;
 
-
-/* Events ------------------------------------------------------------------------------*/
-export type GetEventsResponse = EventResponse[];
+export type GetEventsResponse = {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  items: EventResponse[];
+};
 
 export type GetEventByIdRequest = {
   id: string;
@@ -66,8 +68,12 @@ export type EventResponse = {
   __v: number;
 };
 
-/* Places -----------------------------------------------------------------------------*/
-export type GetCulturalPlacesResponse = CulturalPlaceResponse[];
+export type GetCulturalPlacesResponse = {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  items: CulturalPlaceResponse[];
+};
 
 export type GetPlaceByIdRequest = {
   id: string;
@@ -96,7 +102,6 @@ export type OpeningHours = {
   [day: string]: string;
 };
 
-/* Users ------------------------------------------------------------------------------*/
 export type GetUsersResponse = {
   items: User[];
 };
@@ -155,8 +160,57 @@ export type GetPaginatedEventsRequest = {
   userId: string;
   eventType?: string;
   eventName?: string;
-  eventDate?: string;
+  eventDate?: Date;
   eventCategory?: string;
   page: number;
   limit: number;
+};
+
+export type GetEventsRequest = {
+  name?: string;
+  startDate?: string;
+  endDate?: string;
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  page: number;
+  limit: number;
+  sort?: string;
+  order?: string;
+};
+
+export type GetCulturalPlacesRequest = {
+  name?: string;
+  startDate?: string;
+  endDate?: string;
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  page: number;
+  limit: number;
+  sort?: string;
+  order?: string;
+};
+
+type ChatResponse = {
+  id: string;
+  user1: string;
+  user2: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type GetChatsByUserResponse = ChatResponse[];
+
+export type GetReviewsByEventResponse = ReviewResponse[];
+
+export type ReviewResponse = {
+  id: string;
+  user: string;
+  text: string;
+  createdAt: string;
+  date: string;
+  event: string;
+  value: number;
+  responseTo: string;
 };

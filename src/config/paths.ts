@@ -1,5 +1,3 @@
-import { ADMIN_ROLE, ALL_ROLES } from "./constants";
-
 export const paths = {
   home: {
     path: "/",
@@ -20,16 +18,9 @@ export const paths = {
           redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""
         }`,
     },
-    changePassword: {
-      path: "/change-password",
-      getHref: () => "/change-password",
-    },
     unauthorized: {
       path: "/unauthorized",
-      getHref: (redirectTo?: string | null | undefined) =>
-        `/unauthorized${
-          redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""
-        }`,
+      getHref: () => "/unauthorized",
     },
   },
   app: {

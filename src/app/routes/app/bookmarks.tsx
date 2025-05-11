@@ -25,7 +25,7 @@ function Bookmarks() {
   const user = useUser();
   const navigate = useNavigate();
   const [name, setName] = useState<string>("");
-  const [date, setDate] = useState<string>("");
+  const [date, setDate] = useState<Date | null>(null);
   const [type, setType] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -34,7 +34,7 @@ function Bookmarks() {
       userId: user.data!.id,
       eventType: type,
       eventName: name,
-      eventDate: date,
+      eventDate: date ?? undefined,
       eventCategory: category,
       page: currentPage,
       limit: ITEMS_PER_PAGE,
@@ -48,13 +48,8 @@ function Bookmarks() {
     setCurrentPage(1);
   };
   const onDateChange = (date: Date | null) => {
+    setDate(date);
     setCurrentPage(1);
-    if (date) {
-      const iso = date.toISOString().slice(0, 10);
-      setDate(iso);
-    } else {
-      setDate("");
-    }
   };
   const onTypeChange = (newType: string) => {
     setType(newType);
@@ -76,6 +71,7 @@ function Bookmarks() {
         <div className="row col-12 col-md-3">
           <SearchBar
             className="rounded-pill shadow-sm"
+            value={name}
             onSearch={onNameChange}
           />
         </div>
@@ -86,17 +82,18 @@ function Bookmarks() {
           <Select
             className="col shadow-sm"
             options={ITEM_TYPE_SELECT_OPTIONS}
-            initialValue=""
+            value={type}
             onChange={onTypeChange}
           />
           <Select
             className="col shadow-sm"
             options={CATEGORY_SELECT_OPTIONS}
-            initialValue=""
+            value={category}
             onChange={onCategoryChange}
           />
           <DatePicker
             className="col shadow-sm bg-white"
+            value={date}
             onChange={onDateChange}
           />
           <button className="col btn rounded-pill shadow-sm text-nowrap">

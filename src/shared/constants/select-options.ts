@@ -33,3 +33,20 @@ export const TIMEFRAME_SELECT_OPTIONS: SelectOption[] = [
   { value: Timeframe.NueveMeses, label: "Últimos 9 meses" },
   { value: Timeframe.Anio, label: "Último año" },
 ];
+
+export const ORDER_REVIEWS_OPTIONS: SelectOption[] = [
+  { value: "", label: "Ordenar" },
+  { value: "masRecientes", label: "Más Recientes" },
+  { value: "menosRecientes", label: "Menos Recientes" },
+  { value: "mayorPuntuacion", label: "Mayor Puntuación" },
+  { value: "menorPuntuacion", label: "Menor Puntuación" },
+];
+
+export const FILTER_REVIEWS_OPTIONS: SelectOption[] = [
+  { value: "", label: "Filtrar" },
+  { value: "5", label: "5 estrellas" },
+  { value: "4", label: "4 estrellas" },
+  { value: "3", label: "3 estrellas" },
+  { value: "2", label: "2 estrellas" },
+  { value: "1", label: "1 estrellas" },
+];

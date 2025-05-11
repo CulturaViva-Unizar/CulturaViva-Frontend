@@ -20,7 +20,7 @@ const getBookmarksByUser = async (
     params.append("name", request.eventName);
   }
   if (request.eventDate) {
-    params.append("date", request.eventDate);
+    params.append("date", request.eventDate.toISOString());
   }
   if (request.eventCategory) {
     params.append("category", request.eventCategory);
@@ -30,12 +30,9 @@ const getBookmarksByUser = async (
   params.append("limit", request.limit.toString());
 
   const url = `/users/${request.userId}/saved-events?${params.toString()}`;
-
   const response: ApiResponse<GetBookmarksByUserResponse> = await api.get(url);
 
-  const { data } = response;
-
-  return mapGetBookmarksByUserResponseToBookmarksPage(data);
+  return mapGetBookmarksByUserResponseToBookmarksPage(response.data);
 };
 
 export const useGetBookmarksByUser = (request: GetPaginatedEventsRequest) => {

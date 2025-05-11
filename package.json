@@ -22,6 +22,7 @@
     "axios": "^1.9.0",
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.8",
+    "date-fns": "^4.1.0",
     "leaflet": "^1.9.4",
     "leaflet-color-markers": "^0.1.0",
     "react": "^19.0.0",

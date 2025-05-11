@@ -8,25 +8,25 @@ import {
   faBookmark,
   faXmark,
   faEuro,
-  faPerson,
   faCalendar,
-  faGlobe,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "react-bootstrap";
 import { FC, useState } from "react";
-import {
-  faFacebook,
-  faInstagram,
-  faTwitter,
-} from "@fortawesome/free-brands-svg-icons";
-import { USER_ROLE, ADMIN_ROLE } from "../../../config/constants";
-import { Rating } from "../../../components/ui/rating";
+import { faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { RatingStars } from "../../../components/ui/rating-stars";
 import { Review } from "../../../components/ui/review";
 import { Select } from "../../../components/ui/select";
 import { useUser } from "../../../lib/auth";
 import { Event } from "../types/models";
+import { useGetReviewsByEvent } from "../../reviews/api/get-reviews-by-event";
+import LoadingIndicator from "../../../components/ui/loading-indicator";
+import { ErrorMessage } from "../../../components/errors/error-message";
+import { format } from "date-fns";
+import {
+  FILTER_REVIEWS_OPTIONS,
+  ORDER_REVIEWS_OPTIONS,
+} from "../../../shared/constants/select-options";
 
 type InfoEventProps = {
   event: Event;
@@ -34,12 +34,19 @@ type InfoEventProps = {
 };
 
 const InfoEvent: FC<InfoEventProps> = ({ event, onClose }) => {
+  const {
+    data: reviewsInit = [],
+    isLoading: isLoadingReviews,
+    error: errorReviews,
+  } = useGetReviewsByEvent(event.id);
   const [isAttending, setIsAttending] = useState(false);
   const [attendees, setAttendees] = useState(event.totalAssistants);
   const [saved, setSaved] = useState(false);
-  //const [reviews, setReviews] = useState(reviewsInit);
+  const [reviews, setReviews] = useState(reviewsInit);
   const [myRating, setMyRating] = useState(0);
   const [comment, setComment] = useState("");
+  const [orderReviewOption, setOrderReviewOption] = useState("");
+  const [filterReviewOption, setFilterReviewOption] = useState("");
   const user = useUser();
 
   const handleAttendance = () => {
@@ -103,15 +110,12 @@ const InfoEvent: FC<InfoEventProps> = ({ event, onClose }) => {
     }
 
     const newReview = {
-      userId: 0,
-      username: "Tú",
+      id: "",
+      userId: user.data!.id,
       rating: myRating,
       comment,
-      date: "hace un momento",
+      date: new Date().toISOString(),
       replies: [],
-      map: function (): React.ReactNode {
-        throw new Error("Function not implemented.");
-      },
     };
 
     setReviews([...reviews, newReview]);
@@ -143,11 +147,11 @@ const InfoEvent: FC<InfoEventProps> = ({ event, onClose }) => {
         <div className="col">
           <h2>{event.title}</h2>
           <span className="text-muted">{event.location}</span>
-          {/*<div className="d-flex align-items-center gap-1 my-1">
-            <span className="text-muted">{rating}</span>
+          <div className="d-flex align-items-center gap-1 my-1">
+            <span className="text-muted">{5.0}</span>
             <FontAwesomeIcon icon={faStar} color="gold" />
-            <span className="text-muted">({totalReviews})</span>
-          </div>*/}
+            <span className="text-muted">({reviews.length})</span>
+          </div>
         </div>
       </div>
       <Button
@@ -178,49 +182,35 @@ const InfoEvent: FC<InfoEventProps> = ({ event, onClose }) => {
           <FontAwesomeIcon icon={faLocationArrow} className="me-2" /> Cómo
           llegar
         </Button>
-        {/*event.facebook && (
-          <Button className="btn btn-light rounded-circle w-auto">
-            <FontAwesomeIcon icon={faFacebook} />
-          </Button>
-        )*/}
         {event.instagram && (
           <Button className="btn btn-light rounded-circle w-auto">
             <FontAwesomeIcon icon={faInstagram} />
           </Button>
         )}
-        {/*twitter && (
-          <Button className="btn btn-light rounded-circle w-auto">
-            <FontAwesomeIcon icon={faTwitter} />
-          </Button>
-        )*/}
       </div>
       <div className="mb-2">
         <FontAwesomeIcon icon={faEuro} className="me-2" />
+        Gratis
         {/*event.price ? event.price : "Gratis"*/}
       </div>
       <div className="mb-2">
         <FontAwesomeIcon icon={faCalendar} className="me-2" />
-        {event.startDate}
+        {format(event.startDate, "dd/MM/yyyy")}
       </div>
-      {/*{web && (
-        <div className="mb-2">
-          <FontAwesomeIcon icon={faGlobe} className="me-2" />
-          {web}
-        </div>
-      )}
-      <div className="mb-2">
-        <FontAwesomeIcon icon={faPerson} className="me-2" />
-        Organizado por: {organizer}
-      </div>*/}
       <p>{event.description}</p>
       <hr />
+      {isLoadingReviews && !errorReviews && (
+        <LoadingIndicator message="Cargando reseñas..." />
+      )}
+      {errorReviews && <ErrorMessage message="Error al cargar las reseñas" />}
       {/*<Rating
         rating={rating}
         totalReviews={totalReviews}
         ratingDistribution={ratingDistribution}
       />
       <hr />
-      {(user.data?.rol == USER_ROLE || user.data?.rol == ADMIN_ROLE) && (
+      */}
+      {user.data && (
         <>
           <div className="d-flex">
             <div className="col-3">
@@ -250,42 +240,33 @@ const InfoEvent: FC<InfoEventProps> = ({ event, onClose }) => {
       )}
       <div className="d-flex gap-3 mb-3">
         <Select
-          options={[
-            { value: "ordenar", label: "Ordenar" },
-            { value: "masRecientes", label: "Más Recientes" },
-            { value: "menosRecientes", label: "Menos Recientes" },
-            { value: "mayorPuntuacion", label: "Mayor Puntuación" },
-            { value: "menorPuntuacion", label: "Menor Puntuación" },
-          ]}
-          initialValue="ordenar"
-          onChange={(newValue) => console.log(newValue)}
           className="col"
+          options={ORDER_REVIEWS_OPTIONS}
+          value={orderReviewOption}
+          onChange={setOrderReviewOption}
         />
         <Select
-          options={[
-            { value: "filtrar", label: "Filtrar" },
-            { value: "5", label: "5 estrellas" },
-            { value: "4", label: "4 estrellas" },
-            { value: "3", label: "3 estrellas" },
-            { value: "2", label: "2 estrellas" },
-            { value: "1", label: "1 estrellas" },
-          ]}
-          initialValue="filtrar"
-          onChange={(newValue) => console.log(newValue)}
           className="col"
+          options={FILTER_REVIEWS_OPTIONS}
+          value={filterReviewOption}
+          onChange={setFilterReviewOption}
         />
       </div>
-      {reviews.map((review, i) => (
-        <Review
-          key={i}
-          userId={review.userId}
-          username={review.username}
-          rating={review.rating}
-          comment={review.comment}
-          date={review.date}
-          replies={review.replies}
-        />
-      ))}*/}
+      {reviews && reviews.length > 0 ? (
+        reviews.map((review, i) => (
+          <Review
+            key={i}
+            userId={review.userId}
+            username="Username"
+            rating={review.rating}
+            comment={review.comment}
+            date={review.date}
+            replies={review.replies}
+          />
+        ))
+      ) : (
+        <span>No hay reseñas</span>
+      )}
     </div>
   );
 };
