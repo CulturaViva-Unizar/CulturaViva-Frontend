@@ -4,8 +4,15 @@ import { Select } from "../../../components/ui/select";
 import BarChart from "../../../components/ui/bar-chart";
 import LineChart from "../../../components/ui/line-chart";
 import DoughnutChart from "../../../components/ui/doughnut-chart";
-import { CATEGORY_SELECT_OPTIONS } from "../../../shared/constants/select-options";
-import { SelectOption } from "../../../shared/types/models";
+import {
+  CATEGORY_SELECT_OPTIONS,
+  USER_ANALYTICS_FILTER_OPTIONS,
+} from "../../../shared/constants/select-options";
+import { useState } from "react";
+import { useGetUsersAnalytics } from "../../../features/analytics/api/get-users-analytics";
+import LoadingIndicator from "../../../components/ui/loading-indicator";
+import { ErrorMessage } from "../../../components/errors/error-message";
+import { GetUsersAnalyticsRequest } from "../../../types/api";
 
 const labels = [
   "Enero",
@@ -73,11 +80,25 @@ const doughnutChartData = {
 };
 
 function Analytics() {
-  const user_select_options: SelectOption[] = [
-    { value: "", label: "Todos" },
-    { value: "habilitados", label: "Habilitados" },
-    { value: "deshabilitados", label: "Deshabilitados" },
-  ];
+  const [userFilterOption, setUserFilterOption] = useState("");
+  const getUsersAnalyticsRequest: GetUsersAnalyticsRequest = {
+    type: userFilterOption,
+  };
+  const {
+    data: usersAnalytics,
+    isLoading: isLoadingUsersAnalytics,
+    error: errorUsersAnalytics,
+  } = useGetUsersAnalytics(getUsersAnalyticsRequest);
+  const isLoading = isLoadingUsersAnalytics;
+  const isError = errorUsersAnalytics;
+
+  if (isLoading && !isError) {
+    return <LoadingIndicator message="Cargando estadísticas..." />;
+  }
+
+  if (isError) {
+    return <ErrorMessage message="Error alcargar las estadísticas" />;
+  }
 
   return (
     <MainLayout title="Analíticas">
@@ -107,13 +128,13 @@ function Analytics() {
             <div className="card-header d-flex flex-column align-items-center justify-content-between py-3 gap-2">
               <h5>Usuarios totales</h5>
               <Select
-                options={user_select_options}
-                initialValue=""
-                onChange={(newValue) => console.log(newValue)}
+                options={USER_ANALYTICS_FILTER_OPTIONS}
+                value={userFilterOption}
+                onChange={setUserFilterOption}
               />
             </div>
             <div className="card-body text-center">
-              <h1>2000</h1>
+              <h1>{usersAnalytics!.totalUsers}</h1>
             </div>
           </div>
           <div className="card p-0 ms-3 mt-4">
@@ -121,7 +142,7 @@ function Analytics() {
               <h5>Eventos totales</h5>
               <Select
                 options={CATEGORY_SELECT_OPTIONS}
-                initialValue=""
+                value=""
                 onChange={(newValue) => console.log(newValue)}
               />
             </div>

@@ -9,7 +9,6 @@ import {
   faFire,
   faCheckCircle,
   faClock,
-  faTrash,
   faUsers,
   faChartLine,
   faLandmark,
@@ -17,7 +16,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, useState } from "react";
 import { Link, useNavigate } from "react-router";
-import Swal from "sweetalert2";
 import { useLogout, useUser } from "../../lib/auth";
 import { paths } from "../../config/paths";
 
@@ -35,28 +33,6 @@ export const UserMenu: FC<UserMenuProps> = ({ className = "" }) => {
   const handleLogout = () => {
     logout.mutate(undefined);
     navigate(paths.app.getHref());
-  };
-
-  const handleDeleteAccount = () => {
-    Swal.fire({
-      title: "¡Su cuenta va a ser eliminada!",
-      text: "¿Está seguro? Esta acción es irreversible y una vez se realice no se podrá deshacer.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, eliminar",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        logout.mutate(undefined);
-        navigate(paths.app.getHref());
-        Swal.fire({
-          title: "Eliminada!",
-          text: "Su cuenta ha sido eliminada.",
-          icon: "success",
-        });
-      }
-    });
   };
 
   const handleLogin = () => {
@@ -327,16 +303,6 @@ export const UserMenu: FC<UserMenuProps> = ({ className = "" }) => {
                 onClick={handleLogout}
               >
                 Cerrar sesión
-              </button>
-            </li>
-            <li className="text-center">
-              <button
-                className="dropdown-item text-danger btn"
-                type="button"
-                onClick={handleDeleteAccount}
-              >
-                <FontAwesomeIcon icon={faTrash} className="me-2" />
-                Eliminar cuenta
               </button>
             </li>
           </>

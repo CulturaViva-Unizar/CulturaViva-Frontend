@@ -16,6 +16,7 @@ function Chats() {
     isLoading,
     error,
   } = useGetChatsByUser(user.data!.id);
+
   const location = useLocation();
   const [selectedChat, setSelectedChat] = useState(false);
   const [searchText, setSearchText] = useState<string>("");
@@ -61,6 +62,7 @@ function Chats() {
             style={{ maxHeight: "calc(100vh - 12%)" }}
           >
             {chats.map((chat, i) => {
+              console.log(chat);
               const userChat = chat.user1 == user.data!.id ? chat.user2 : chat.user1;
               return (
                 <ChatCard
@@ -69,7 +71,7 @@ function Chats() {
                   lastMessage="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
                   date={chat.updatedAt}
                   unreadMessages={3}
-                  to={`${chat.id}`}
+                  to={`${chat}`}
                 />
               );
             })}

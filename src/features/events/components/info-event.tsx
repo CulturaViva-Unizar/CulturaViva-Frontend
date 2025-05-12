@@ -39,6 +39,9 @@ import { usePostAttendingEvent } from "../api/post-attending-event";
 import { useDeleteAttendingEvent } from "../api/delete-attending-event";
 import { Rating } from "../../../components/ui/rating";
 import { paths } from "../../../config/paths";
+import { useNavigate } from "react-router";
+import { useCreateReview } from "../../reviews/api/create-review";
+import { Items } from "../../../shared/types/enums";
 
 type InfoEventProps = {
   event: Event;
@@ -46,6 +49,7 @@ type InfoEventProps = {
 };
 
 const InfoEvent: FC<InfoEventProps> = ({ event, onClose }) => {
+  const navigate = useNavigate();
   const {
     data: reviews = [],
     isLoading: isLoadingReviews,
@@ -80,6 +84,7 @@ const InfoEvent: FC<InfoEventProps> = ({ event, onClose }) => {
   const deleteBookmarkMutation = useDeleteBookmark();
   const postAttendingEventMutation = usePostAttendingEvent();
   const deleteAttendingEventMutation = useDeleteAttendingEvent();
+  const createReviewMutation = useCreateReview();
   const isLoading = isLoadingReviews || isLoadingBookmarks;
   const error = errorReviews || errorBookmarks;
   const avgRating = useMemo(
@@ -209,6 +214,10 @@ const InfoEvent: FC<InfoEventProps> = ({ event, onClose }) => {
           confirmButtonText: "Ir a Guardados",
           cancelButtonText: "Revisar más tarde",
           showCloseButton: true,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate(paths.app.bookmarks.getHref());
+          }
         });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
@@ -221,23 +230,21 @@ const InfoEvent: FC<InfoEventProps> = ({ event, onClose }) => {
     setMyRating(index + 1);
   };
 
-  const handleReviewSubmit = () => {
+  const handleReviewSubmit = async () => {
     if (myRating === 0) {
       Swal.fire("Error", "La reseña debe tener una puntuación.", "error");
       return;
     }
 
-    /*
-    const newReview = {
-      id: "",
-      userId: user.data!.id,
-      rating: myRating,
-      comment: myComment,
-      date: new Date().toISOString(),
-      replies: [],
-    };
-    setReviews([...reviews, newReview]);
-    */
+    await createReviewMutation.mutateAsync({
+      itemId: event.id,
+      itemType: Items.Evento,
+      data: {
+        text: myComment,
+        value: myRating,
+      },
+    });
+
     setMyRating(0);
     setComment("");
     Swal.fire("¡Gracias!", "Tu reseña ha sido añadida.", "success");
@@ -437,10 +444,9 @@ const InfoEvent: FC<InfoEventProps> = ({ event, onClose }) => {
         reviews.map((review) => (
           <Review
             key={review.id}
-            userId={review.userId}
-            username="Username"
+            username={review.username}
             rating={review.rating}
-            comment={review.comment}
+            comment={review.comment ?? ""}
             date={review.date}
             replies={review.replies}
           />

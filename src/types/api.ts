@@ -1,7 +1,7 @@
 /* Shared ----------------------------------------------------------------------------*/
 
 export type ApiResponse<T> = {
-  success: false;
+  success: boolean;
   message: string;
   data: T;
 };
@@ -171,19 +171,77 @@ type ChatResponse = {
 
 export type GetChatsByUserResponse = ChatResponse[];
 
+export type ChatMessage = {
+  id: string;
+  text: string;
+  timestamp: string;
+  user: string;
+  chat: string;
+};
+
+export type GetMessagesByChatResponse = ChatMessage[];
+
 /* Reviews ---------------------------------------------------------------------------*/
 
 export type GetReviewsByEventResponse = ReviewResponse[];
+
+export type GetReviewsByUserResponse = ReviewResponse[];
 
 export type GetReviewsByCulturalPlaceResponse = ReviewResponse[];
 
 export type ReviewResponse = {
   id: string;
-  user: string;
+  user: {
+    id: string;
+    name: string;
+  };
   text: string;
   createdAt: string;
   date: string;
-  event: string;
+  item: string;
   value: number;
   responseTo: string;
 };
+
+export type CreateReviewRequest = {
+  text: string;
+  value: number;
+};
+
+/* Analytics -------------------------------------------------------------------------*/
+
+export type GetUsersAnalyticsRequest = {
+  type?: string;
+};
+
+export type GetUsersAnalyticsResponse = {
+  count: number;
+};
+
+/* Users -----------------------------------------------------------------------------*/
+
+export type UserResponse = {
+  _id: string;
+  name: string;
+  email: string;
+  admin: boolean;
+  active: boolean;
+  phone: string;
+  chats: string[];
+  asistsTo: string[];
+  savedItems: string[];
+  userType: string;
+  createdAt: string;
+  __v: number;
+};
+
+export type GetUsersRequest = {
+  name?: string;
+  type?: string;
+  page: number;
+  limit: number;
+  sort?: string;
+  order?: string;
+};
+
+export type GetUsersResponse = UserResponse[];

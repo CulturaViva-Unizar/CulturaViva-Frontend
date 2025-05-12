@@ -5,6 +5,16 @@ import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { Link } from "react-router";
 import { paths } from "../../config/paths";
+import { usePutUser } from "../../features/users/api/put-user";
+
+type UserCardProps = {
+  userId: string;
+  username: string;
+  totalComments: number;
+  deletedComments: number;
+  isEnabledInit: boolean;
+  className: string;
+};
 
 export const UserCard: FC<UserCardProps> = ({
   userId,
@@ -15,6 +25,7 @@ export const UserCard: FC<UserCardProps> = ({
   className = "",
 }) => {
   const [isEnabled, setIsEnabled] = useState(isEnabledInit);
+  const putUserMutation = usePutUser();
 
   const handleDisable = () => {
     Swal.fire({
@@ -50,8 +61,22 @@ export const UserCard: FC<UserCardProps> = ({
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log("Motivo seleccionado:", result.value?.reason);
-        setIsEnabled(false);
+        putUserMutation.mutate(
+          { id: userId },
+          {
+            onSuccess: () => {
+              Swal.fire(
+                "Deshabilitado",
+                "El usuario se ha deshabilitado.",
+                "success"
+              );
+              setIsEnabled(false);
+            },
+            onError: (err) => {
+              Swal.fire("Error", err.message, "error");
+            },
+          }
+        );
       }
     });
   };

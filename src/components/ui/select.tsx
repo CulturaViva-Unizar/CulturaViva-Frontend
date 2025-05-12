@@ -22,7 +22,7 @@ export const Select: FC<SelectProps> = ({
 
   return (
     <select
-      className={`form-select border-0 rounded-pill w-auto ${className}`}
+      className={`form-select border-0 rounded-pill w-auto text-capitalize ${className}`}
       value={value}
       onChange={handleChange}
       role="button"
@@ -33,7 +33,7 @@ export const Select: FC<SelectProps> = ({
         </option>
       )}
       {options.map((opt) => (
-        <option key={opt.value} value={opt.value}>
+        <option key={opt.value} value={opt.value} className="text-capitalize">
           {opt.label}
         </option>
       ))}

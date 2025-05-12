@@ -37,3 +37,24 @@
 .swal2-backdrop-show {
   z-index: 10004;
 }
+
+.pagination-dark .page-link {
+  color: #343a40;
+}
+
+.pagination-dark .page-link:hover,
+.pagination-dark .page-link:focus {
+  color: #343a40;
+}
+
+.pagination-dark .page-item.active .page-link {
+  color: #fff;
+  background-color: #343a40;   /* primario en modo oscuro */
+  border-color: #343a40;
+}
+
+/* Deshabilitados */
+.pagination-dark .page-link.disabled,
+.pagination-dark .page-link:disabled {
+  color: #6c757d;
+}

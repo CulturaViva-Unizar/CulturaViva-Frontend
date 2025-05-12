@@ -82,7 +82,7 @@ export const paths = {
     },
     comments: {
       path: "comments/user/:userId",
-      getHref: (id: number) => `/app/comments/user/${id}`,
+      getHref: (id: string) => `/app/comments/user/${id}`,
       admin: true,
     },
     chats: {

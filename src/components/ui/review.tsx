@@ -11,30 +11,37 @@ import Swal from "sweetalert2";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { RatingStars } from "./rating-stars";
-import { Reply } from "./reply";
 import { useLogout, useUser } from "../../lib/auth";
 import { paths } from "../../config/paths";
+import { Reply } from "../../features/reviews/types/models";
+
+type ReviewProps = {
+  username: string;
+  rating?: number;
+  comment: string;
+  date: string;
+  replies?: Reply[];
+};
 
 export const Review: React.FC<ReviewProps> = ({
-  userId,
   username,
   rating = 0,
   comment,
   date,
   replies = [],
 }) => {
-  const [allReplies, setAllReplies] = useState<ReplyProps[]>(replies);
   const user = useUser();
   const logout = useLogout();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo");
 
+  /*
   const addReply = (
-    replyList: ReplyProps[],
-    parentReply: ReplyProps,
-    newReply: ReplyProps
-  ): ReplyProps[] => {
+    replyList: Reply[],
+    parentReply: Reply,
+    newReply: Reply
+  ): Reply[] => {
     return replyList.map((reply) => {
       if (reply === parentReply) {
         return { ...reply, replies: [...(reply.replies || []), newReply] };
@@ -48,8 +55,8 @@ export const Review: React.FC<ReviewProps> = ({
     });
   };
 
-  const handleReply = (parentReply?: ReplyProps) => {
-    if (!user.data?.rol) {
+  const handleReply = (parentReply?: Reply) => {
+    if (!user.data) {
       logout.mutate(undefined);
       navigate(paths.auth.login.getHref(redirectTo));
       return;
@@ -63,8 +70,8 @@ export const Review: React.FC<ReviewProps> = ({
       confirmButtonText: "Enviar",
     }).then((result) => {
       if (result.isConfirmed && result.value) {
-        const newReply: ReplyProps = {
-          userId: userId,
+        const newReply: Reply = {
+          userId: user.data!.id,
           username: "Tú",
           comment: result.value,
           date: "hace un momento",
@@ -84,7 +91,7 @@ export const Review: React.FC<ReviewProps> = ({
     });
   };
 
-  const handleDeleteComment = (parentReply?: ReplyProps) => {
+  const handleDeleteComment = (parentReply?: Reply) => {
     Swal.fire({
       title: "¡ATENCIÓN!",
       html: `
@@ -133,7 +140,7 @@ export const Review: React.FC<ReviewProps> = ({
                 }
                 return reply;
               })
-              .filter((reply) => reply !== null) as ReplyProps[];
+              .filter((reply) => reply !== null) as Reply[];
           });
         } else {
           setAllReplies((prevReplies) =>
@@ -143,19 +150,22 @@ export const Review: React.FC<ReviewProps> = ({
       }
     });
   };
+  */
 
   return (
     <div className="mb-3">
       <div className="d-flex align-items-center gap-2">
         <FontAwesomeIcon icon={faCircleUser} />
         <strong>{username}</strong>
-        <Link to={paths.app.chats.getHref()} className="btn btn-light rounded-circle">
+        <Link
+          to={paths.app.chats.getHref()}
+          className="btn btn-light rounded-circle"
+        >
           <FontAwesomeIcon icon={faComment} />
         </Link>
-        {user.data?.rol === ADMIN_ROLE && (
+        {user.data?.admin && (
           <button
             className="btn btn-sm btn-danger rounded-circle"
-            onClick={() => handleDeleteComment()}
           >
             <FontAwesomeIcon icon={faTrash} />
           </button>
@@ -166,10 +176,7 @@ export const Review: React.FC<ReviewProps> = ({
         <span className="text-muted ms-2">{date}</span>
       </div>
       <p>{comment}</p>
-      {allReplies.map((reply, index) => (
-        <Reply key={index} {...reply} onReply={handleReply} onDelete={handleDeleteComment} />
-      ))}
-      <button className="btn btn-sm mt-2" onClick={() => handleReply()}>
+      <button className="btn btn-sm mt-2" >
         <FontAwesomeIcon icon={faReply} className="me-2" /> Responder
       </button>
     </div>

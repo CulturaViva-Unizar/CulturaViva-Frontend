@@ -18,6 +18,10 @@ import LoadingIndicator from "../../../components/ui/loading-indicator";
 import { ErrorMessage } from "../../../components/errors/error-message";
 import { Event } from "../../../features/events/types/models";
 import { DatePicker } from "../../../components/ui/date-picker";
+import { useQueries } from "@tanstack/react-query";
+import { getReviewsByEvent } from "../../../features/reviews/api/get-reviews-by-event";
+import { CulturalPlace } from "../../../features/cultural-places/types/models";
+import { getReviewsByCulturalPlace } from "../../../features/reviews/api/get-reviews-by-cultural-place";
 
 const ITEMS_PER_PAGE = 9;
 
@@ -39,7 +43,7 @@ function Bookmarks() {
       page: currentPage,
       limit: ITEMS_PER_PAGE,
     }),
-    [name, date, type, currentPage]
+    [user.data, type, name, date, category, currentPage]
   );
   const { data, isLoading, error } = useGetBookmarksByUser(request);
 
@@ -113,7 +117,7 @@ function Bookmarks() {
                 title={item.title}
                 location={item.location}
                 rating={5}
-                reviews={[]}
+                reviews={0}
                 description={item.description}
                 className="rounded bg-light shadow"
                 onClick={() =>

@@ -5,7 +5,7 @@ export const CATEGORY_SELECT_OPTIONS: SelectOption[] = [
   { value: "", label: "Categoría" },
   ...Object.values(Categories).map((v) => ({
     value: v,
-    label: v.charAt(0).toUpperCase() + v.slice(1),
+    label: v,
   })),
 ];
 
@@ -13,7 +13,7 @@ export const ITEM_TYPE_SELECT_OPTIONS: SelectOption[] = [
   { value: "", label: "Todos" },
   ...Object.values(Items).map((v) => ({
     value: v,
-    label: v.charAt(0).toUpperCase() + v.slice(1),
+    label: v,
   })),
 ];
 
@@ -21,7 +21,7 @@ export const CHART_SELECT_OPTIONS: SelectOption[] = [
   { value: "", label: "Todos" },
   ...Object.values(Items).map((v) => ({
     value: v,
-    label: v.charAt(0).toUpperCase() + v.slice(1),
+    label: v,
   })),
 ];
 
@@ -49,4 +49,10 @@ export const FILTER_REVIEWS_OPTIONS: SelectOption[] = [
   { value: "3", label: "3 estrellas" },
   { value: "2", label: "2 estrellas" },
   { value: "1", label: "1 estrellas" },
+];
+
+export const USER_ANALYTICS_FILTER_OPTIONS: SelectOption[] = [
+  { value: "", label: "Todos" },
+  { value: "activos", label: "activos" },
+  { value: "inactivos", label: "inactivos" },
 ];

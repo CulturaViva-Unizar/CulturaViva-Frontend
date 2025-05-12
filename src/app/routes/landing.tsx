@@ -19,7 +19,7 @@ function Landing() {
   const [category, setCategory] = useState<string>("");
   const [date, setDate] = useState<Date | null>(null);
   const [price, setPrice] = useState<number>(0);
-  const userId = useUser().data!.id;
+  const userId = useUser().data?.id;
   const queryClient = useQueryClient();
   const eventRequest = useMemo(
     () => ({
@@ -57,15 +57,17 @@ function Landing() {
   } = useGetCulturalPlaces(culturalPlaceRequest);
 
   useEffect(() => {
-    const request: GetPaginatedEventsRequest = {
-      userId,
-      page: 1,
-      limit: 100,
-    };
-    queryClient.prefetchQuery({
-      queryKey: ["bookmarks", request],
-      queryFn: () => getBookmarksByUser(request),
-    });
+    if (queryClient && userId) {
+      const request: GetPaginatedEventsRequest = {
+        userId,
+        page: 1,
+        limit: 100,
+      };
+      queryClient.prefetchQuery({
+        queryKey: ["bookmarks", request],
+        queryFn: () => getBookmarksByUser(request),
+      });
+    }
   }, [queryClient, userId]);
 
   const isLoading = isLoadingEvents || isLoadingCulturalPlaces;

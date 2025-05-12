@@ -2,7 +2,7 @@ import { Select } from "../../../../components/ui/select";
 import { Card } from "../../../../components/ui/card";
 import PieChart from "../../../../components/ui/pie-chart";
 import BootstrapPagination from "../../../../components/ui/bootstrap-pagination";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import MainLayout from "../../../../components/layouts/main-layout";
 import { useNavigate } from "react-router";
 import { paths } from "../../../../config/paths";
@@ -37,10 +37,15 @@ const pieOptions = {
 
 function PopularEvents() {
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const request: GetPopularEventsRequest = {
-    page: currentPage,
-    limit: 6,
-  };
+  const [category, setCategory] = useState<string>("");
+  const request: GetPopularEventsRequest = useMemo(
+    () => ({
+      category,
+      page: currentPage,
+      limit: 6,
+    }),
+    [category, currentPage]
+  );
   const { data, isLoading, error } = useGetPopularEvents(request);
   const navigate = useNavigate();
 
@@ -65,10 +70,10 @@ function PopularEvents() {
       <div className="d-md-flex py-md-1">
         <div className="col-md-3 d-flex flex-column align-items-center">
           <Select
-            className="shadow-sm"
+            className="shadow"
             options={CATEGORY_SELECT_OPTIONS}
             value=""
-            onChange={(newValue) => console.log(newValue)}
+            onChange={setCategory}
           />
           <PieChart data={pieData} options={pieOptions} className="m-4" />
         </div>
@@ -103,7 +108,7 @@ function PopularEvents() {
           </div>
           <BootstrapPagination
             currentPage={currentPage}
-            totalPages={3}
+            totalPages={data!.totalPages}
             onPageChange={(page: number) => setCurrentPage(page)}
           />
         </div>

@@ -1,5 +1,5 @@
 import { Colors, Items } from "../../shared/types/enums";
-import blueMarkerUrl from 'leaflet/dist/images/marker-icon.png';
+import blueMarkerUrl from "leaflet/dist/images/marker-icon.png";
 
 const MapLegend = () => {
   const items = Object.values(Items) as string[];
@@ -32,7 +32,7 @@ const MapLegend = () => {
               borderRadius: "2px",
             }}
           />
-          <p className="m-0">{item.charAt(0).toUpperCase() + item.slice(1)}</p>
+          <p className="m-0 text-capitalize">{item}</p>
         </div>
       ))}
     </div>
