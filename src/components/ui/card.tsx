@@ -3,6 +3,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC } from "react";
 import { Link } from "react-router";
 
+type CardProps = {
+  image?: string;
+  title: string;
+  location?: string;
+  rating: number;
+  reviews: number;
+  description?: string;
+  onClick?: () => void;
+  className?: string;
+  to?: string;
+};
+
 export const Card: FC<CardProps> = ({
   image,
   title,
@@ -20,7 +32,7 @@ export const Card: FC<CardProps> = ({
       onClick={onClick}
       style={{ cursor: onClick ? "pointer" : "default" }}
     >
-      <div className="d-flex g-0">
+      <div className="d-flex g-0 h-100">
         {image && (
           <div className="col-4">
             <img
@@ -39,9 +51,11 @@ export const Card: FC<CardProps> = ({
             <p className="card-text text-muted mb-0">({reviews})</p>
           </div>
           <p className="card-text">
-            {description.length > 65
-              ? `${description.slice(0, 65)}...`
-              : description}
+            {description
+              ? description.length > 65
+                ? `${description.slice(0, 65)}...`
+                : description
+              : ""}
           </p>
         </div>
       </div>

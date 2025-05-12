@@ -22,12 +22,12 @@ export const Rating: React.FC<RatingProps> = ({
 
   return (
     <div className="d-flex align-items-center">
-      <div className="col-3 text-center me-3">
+      <div className="col-4 text-center me-3">
         <h1>{rating}</h1>
         <RatingStars rating={rating} />
         <p className="text-muted">({totalReviews})</p>
       </div>
-      <div className="col-9">
+      <div className="col-8">
         {[5, 4, 3, 2, 1].map((star) => (
           <div key={star} className="row align-items-center mb-2">
             <div className="col-2 text-end pe-0 w-auto">

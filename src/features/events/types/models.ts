@@ -1,4 +1,4 @@
-import { Coordinates, Price } from "../../../shared/types/models";
+import { Coordinates, Paginated, Price } from "../../../shared/types/models";
 
 export type Event = {
   id: string;
@@ -11,7 +11,11 @@ export type Event = {
   startDate: string;
   endDate: string;
   totalAssistants: number;
+  assistants: string[];
   price?: Price[];
   instagram?: string;
-  twitter?: string;
 };
+
+export type PaginatedEventsPage = Paginated<Event>;
+
+export type PopularEventsPage = Paginated<Event>;

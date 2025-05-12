@@ -4,7 +4,7 @@ import { api } from "../../../lib/api-client";
 import { Review } from "../types/models";
 import { mapReviewsResponseToReview } from "../utils/mappers";
 
-const getReviewsByEvent = async (id: string): Promise<Review[]> => {
+export const getReviewsByEvent = async (id: string): Promise<Review[]> => {
   const response: ApiResponse<GetReviewsByEventResponse> = await api.get(
     `/items/events/${id}/comments`
   );

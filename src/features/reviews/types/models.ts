@@ -1,4 +1,4 @@
-export interface Review {
+export type Review = {
   id: string;
   userId: string;
   rating: number;
@@ -7,7 +7,7 @@ export interface Review {
   replies: Reply[];
 }
 
-export interface Reply {
+export type Reply = {
   userId: number;
   username: string;
   comment: string;

@@ -8,7 +8,7 @@ import { api } from "../../../lib/api-client";
 import { BookmarksPage } from "../types/models";
 import { mapGetBookmarksByUserResponseToBookmarksPage } from "../utils/mappers";
 
-const getBookmarksByUser = async (
+export const getBookmarksByUser = async (
   request: GetPaginatedEventsRequest
 ): Promise<BookmarksPage> => {
   const params = new URLSearchParams();

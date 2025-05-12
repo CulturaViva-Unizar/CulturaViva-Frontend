@@ -1,6 +1,6 @@
-import { EventResponse } from "../../../types/api";
+import { EventResponse, GetPaginatedEventsResponse } from "../../../types/api";
 import { Price } from "../../../shared/types/models";
-import { Event } from "../types/models";
+import { PaginatedEventsPage, Event } from "../types/models";
 
 export const mapEventResponseToEvent = (src: EventResponse): Event => ({
   id: src._id,
@@ -18,9 +18,20 @@ export const mapEventResponseToEvent = (src: EventResponse): Event => ({
   startDate: src.startDate,
   endDate: src.endDate,
   totalAssistants: src.asistentes?.length ?? 0,
+  assistants: src.asistentes,
   price: src.price
     ? src.price.map<Price>(({ grupo, precio }) => ({ grupo, precio }))
     : undefined,
   instagram: src.instagram,
-  twitter: src.twitter,
 });
+
+export const mapGetPaginatedEventsResponseToPaginatedEventsPage = (
+  src: GetPaginatedEventsResponse
+): PaginatedEventsPage => {
+  return {
+    currentPage: src.currentPage,
+    totalPages: src.totalPages,
+    totalItems: src.totalItems,
+    items: src.items.map(mapEventResponseToEvent),
+  };
+};
