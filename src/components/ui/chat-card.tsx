@@ -31,7 +31,7 @@ export const ChatCard: FC<ChatCardProps> = ({
   );
 
   return to ? (
-    <Link to={to} className="text-decoration-none text-dark">
+    <Link to={to} state={{ username }} className="text-decoration-none text-dark">
       {CardContent}
     </Link>
   ) : (

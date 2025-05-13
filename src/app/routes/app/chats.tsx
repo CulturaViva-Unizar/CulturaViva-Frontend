@@ -62,17 +62,15 @@ function Chats() {
             className="overflow-auto hide-scrollbar"
             style={{ maxHeight: "calc(100vh - 12%)" }}
           >
-            {chats.map((chat, i) => {
-              const userChat = chat.user1 == user.data!.id ? chat.user2 : chat.user1;
-              return (
+            {chats.map((chat, i) => (
                 <ChatCard
                   key={i}
-                  username={`User ${userChat}`}
-                  to={`${chat}`}
+                  username={chat.user.name}
+                  to={`${chat.id}`}
                   active={selectedChat}
                 />
-              );
-            })}
+              ))
+            }
           </div>
         </div>
         <div

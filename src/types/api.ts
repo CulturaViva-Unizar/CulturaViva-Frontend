@@ -164,8 +164,10 @@ export type CreateBookmarkRequest = {
 
 type ChatResponse = {
   id: string;
-  user1: string;
-  user2: string;
+  user: {
+    id: string;
+    name: string;
+  };
   createdAt: string;
   updatedAt: string;
 };
