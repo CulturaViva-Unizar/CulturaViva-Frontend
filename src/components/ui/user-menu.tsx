@@ -52,7 +52,7 @@ export const UserMenu: FC<UserMenuProps> = ({ className = "" }) => {
       </button>
       <ul
         className="dropdown-menu px-3 py-4 mt-3"
-        style={{ minWidth: "300px" }}
+        style={{ minWidth: "300px", zIndex: 10001 }}
       >
         <li>
           <span className="fs-5 fw-bold px-3">

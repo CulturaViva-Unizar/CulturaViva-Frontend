@@ -1,8 +1,10 @@
-import { CulturalPlaceResponse } from "../../../types/api";
+import { CulturalPlaceResponse, GetPaginatedCulturalPlacesResponse } from "../../../types/api";
 import { Price } from "../../../shared/types/models";
-import { CulturalPlace } from "../types/models";
+import { CulturalPlace, PaginatedCulturalPlacesPage } from "../types/models";
 
-export const mapCulturalPlaceResponseToCulturalPlace = (src: CulturalPlaceResponse): CulturalPlace => ({
+export const mapCulturalPlaceResponseToCulturalPlace = (
+  src: CulturalPlaceResponse
+): CulturalPlace => ({
   id: src._id,
   title: src.title,
   location: src.direction ?? undefined,
@@ -17,7 +19,19 @@ export const mapCulturalPlaceResponseToCulturalPlace = (src: CulturalPlaceRespon
     : undefined,
   price: src.price.map<Price>(({ grupo, precio }) => ({ grupo, precio })),
   instagram: src.instagram,
+  twitter: src.twitter,
   openingHours: src.openingHours ?? undefined,
   email: src.email ?? undefined,
-  phone: src.phone ?? undefined
+  phone: src.phone ?? undefined,
 });
+
+export const mapGetPaginatedCulturalPlacesResponseToPaginatedCulturalPlacesPage = (
+  src: GetPaginatedCulturalPlacesResponse
+): PaginatedCulturalPlacesPage => {
+  return {
+    currentPage: src.currentPage,
+    totalPages: src.totalPages,
+    totalItems: src.totalItems,
+    items: src.items.map(mapCulturalPlaceResponseToCulturalPlace),
+  };
+};

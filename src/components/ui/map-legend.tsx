@@ -8,7 +8,7 @@ const MapLegend = () => {
   return (
     <div
       className="position-absolute bottom-0 start-0 d-flex flex-column bg-white shadow m-3 px-4 py-3 align-items-start justify-content-center rounded"
-      style={{ zIndex: 10000 }}
+      style={{ zIndex: 1000 }}
     >
       <h4 className="mb-3">Leyenda</h4>
       <div className="d-flex align-items-center mb-1">

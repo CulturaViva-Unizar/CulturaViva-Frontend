@@ -10,12 +10,12 @@ import {
 import Swal from "sweetalert2";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { Link, useNavigate, useSearchParams } from "react-router";
-import { RatingStars } from "./rating-stars";
-import { useLogout, useUser } from "../../lib/auth";
-import { paths } from "../../config/paths";
-import { Reply } from "../../features/reviews/types/models";
+import { RatingStars } from "../../../components/ui/rating-stars";
+import { useLogout, useUser } from "../../../lib/auth";
+import { paths } from "../../../config/paths";
+import { Reply } from "../types/models";
 
-type ReviewProps = {
+type ReviewItemProps = {
   username: string;
   rating?: number;
   comment: string;
@@ -23,7 +23,7 @@ type ReviewProps = {
   replies?: Reply[];
 };
 
-export const Review: React.FC<ReviewProps> = ({
+export const ReviewItem: React.FC<ReviewItemProps> = ({
   username,
   rating = 0,
   comment,

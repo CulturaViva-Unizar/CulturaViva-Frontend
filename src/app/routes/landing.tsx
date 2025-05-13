@@ -9,7 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Items } from "../../shared/types/enums";
 import { format } from "date-fns";
 import { getBookmarksByUser } from "../../features/bookmarks/api/get-bookmarks-by-user";
-import { GetPaginatedEventsRequest } from "../../types/api";
+import { GetEventsRequest, GetPaginatedEventsRequest } from "../../types/api";
 import { useUser } from "../../lib/auth";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -21,7 +21,7 @@ function Landing() {
   const [price, setPrice] = useState<number>(0);
   const userId = useUser().data?.id;
   const queryClient = useQueryClient();
-  const eventRequest = useMemo(
+  const eventRequest: GetEventsRequest = useMemo(
     () => ({
       name: searchText,
       category,
@@ -29,6 +29,7 @@ function Landing() {
       startDate: date
         ? format(date, "yyyy-MM-dd")
         : format(new Date(), "yyyy-MM-dd"),
+      endDate: date ? format(date, "yyyy-MM-dd") : undefined,
       page: 1,
       limit: 2000,
     }),
@@ -39,19 +40,18 @@ function Landing() {
       name: searchText,
       category,
       maxPrice: price,
-      startDate: date ? format(date, "yyyy-MM-dd") : undefined,
       page: 1,
       limit: 2000,
     }),
-    [searchText, category, price, date]
+    [searchText, category, price]
   );
   const {
-    data: events = [],
+    data: eventsData,
     isLoading: isLoadingEvents,
     error: errorEvents,
   } = useGetEvents(eventRequest);
   const {
-    data: culturalPlaces = [],
+    data: culturalPlacesData,
     isLoading: isLoadingCulturalPlaces,
     error: errorCulturalPlaces,
   } = useGetCulturalPlaces(culturalPlaceRequest);
@@ -94,28 +94,30 @@ function Landing() {
         date={date}
         onDateChange={setDate}
       />
-      <Map
-        events={
-          itemType == Items.Evento || !itemType
-            ? events.filter(
-                (e) =>
-                  e.coordinates &&
-                  e.coordinates.latitude &&
-                  e.coordinates.longitude
-              )
-            : []
-        }
-        culturalPlaces={
-          itemType == Items.Lugar || !itemType
-            ? culturalPlaces.filter(
-                (p) =>
-                  p.coordinates &&
-                  p.coordinates.latitude &&
-                  p.coordinates.longitude
-              )
-            : []
-        }
-      />
+      {eventsData && culturalPlacesData && (
+        <Map
+          events={
+            itemType == Items.Evento || !itemType
+              ? eventsData.items.filter(
+                  (e) =>
+                    e.coordinates &&
+                    e.coordinates.latitude &&
+                    e.coordinates.longitude
+                )
+              : []
+          }
+          culturalPlaces={
+            itemType == Items.Lugar || !itemType
+              ? culturalPlacesData.items.filter(
+                  (p) =>
+                    p.coordinates &&
+                    p.coordinates.latitude &&
+                    p.coordinates.longitude
+                )
+              : []
+          }
+        />
+      )}
       <MapLegend />
     </>
   );

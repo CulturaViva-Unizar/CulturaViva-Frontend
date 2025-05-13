@@ -66,7 +66,7 @@ function PopularEvents() {
   }
 
   return (
-    <MainLayout title="Populares">
+    <MainLayout title="Eventos populares">
       <div className="d-md-flex py-md-1">
         <div className="col-md-3 d-flex flex-column align-items-center">
           <Select

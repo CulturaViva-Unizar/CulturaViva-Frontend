@@ -23,6 +23,7 @@ export const mapEventResponseToEvent = (src: EventResponse): Event => ({
     ? src.price.map<Price>(({ grupo, precio }) => ({ grupo, precio }))
     : undefined,
   instagram: src.instagram,
+  twitter: src.twitter,
 });
 
 export const mapGetPaginatedEventsResponseToPaginatedEventsPage = (

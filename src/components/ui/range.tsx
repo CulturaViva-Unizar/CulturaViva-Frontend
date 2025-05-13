@@ -21,7 +21,6 @@ export const Range: FC<RangeProps> = ({
   className = "",
   hideWhenMaxValue = false,
 }) => {
-  console.log(value);
   const openModal = async () => {
     const { value: newValue } = await MySwal.fire({
       title: "Seleccione un rango",

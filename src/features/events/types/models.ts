@@ -14,8 +14,7 @@ export type Event = {
   assistants: string[];
   price?: Price[];
   instagram?: string;
+  twitter?: string;
 };
 
 export type PaginatedEventsPage = Paginated<Event>;
-
-export type PopularEventsPage = Paginated<Event>;

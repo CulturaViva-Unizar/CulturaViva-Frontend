@@ -1,4 +1,4 @@
-import { Coordinates, Price } from "../../../shared/types/models";
+import { Coordinates, Paginated, Price } from "../../../shared/types/models";
 
 export type CulturalPlace = {
   id: string;
@@ -13,4 +13,7 @@ export type CulturalPlace = {
   phone?: string;
   category?: string;
   instagram?: string;
+  twitter?: string;
 };
+
+export type PaginatedCulturalPlacesPage = Paginated<CulturalPlace>;

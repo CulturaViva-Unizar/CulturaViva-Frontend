@@ -1,16 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../../lib/api-client";
-import { CulturalPlace } from "../types/models";
+import { PaginatedCulturalPlacesPage } from "../types/models";
 import {
   ApiResponse,
   GetCulturalPlacesRequest,
-  GetCulturalPlacesResponse,
+  GetPaginatedCulturalPlacesResponse,
 } from "../../../types/api";
-import { mapCulturalPlaceResponseToCulturalPlace } from "../utils/mappers";
+import {
+  mapGetPaginatedCulturalPlacesResponseToPaginatedCulturalPlacesPage,
+} from "../utils/mappers";
 
 const getCulturalPlaces = async (
   request: GetCulturalPlacesRequest
-): Promise<CulturalPlace[]> => {
+): Promise<PaginatedCulturalPlacesPage> => {
   const params = new URLSearchParams();
 
   if (request.name) {
@@ -18,9 +20,6 @@ const getCulturalPlaces = async (
   }
   if (request.category) {
     params.append("category", request.category);
-  }
-  if (request.startDate) {
-    params.append("startDate", request.startDate);
   }
   if (request.maxPrice) {
     params.append("price", request.maxPrice.toString());
@@ -36,13 +35,16 @@ const getCulturalPlaces = async (
   params.append("limit", request.limit.toString());
 
   const url = `/items/places?${params.toString()}`;
-  const response: ApiResponse<GetCulturalPlacesResponse> = await api.get(url);
+  const response: ApiResponse<GetPaginatedCulturalPlacesResponse> =
+    await api.get(url);
 
-  return response.data.items.map(mapCulturalPlaceResponseToCulturalPlace);
+  return mapGetPaginatedCulturalPlacesResponseToPaginatedCulturalPlacesPage(
+    response.data
+  );
 };
 
 export const useGetCulturalPlaces = (request: GetCulturalPlacesRequest) => {
-  return useQuery<CulturalPlace[], Error>({
+  return useQuery<PaginatedCulturalPlacesPage, Error>({
     queryKey: ["culturalPlaces", request],
     queryFn: () => getCulturalPlaces(request),
   });

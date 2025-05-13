@@ -39,6 +39,7 @@ export type EventResponse = {
   permanent?: boolean;
   place?: string;
   instagram?: string;
+  twitter?: string;
   __v: number;
 };
 
@@ -109,7 +110,7 @@ export type GetEventsResponse = Paginated<EventResponse>;
 export type GetEventByIdResponse = EventResponse;
 
 export type GetPaginatedEventsRequest = {
-  userId: string;
+  userId?: string;
   eventType?: string;
   eventName?: string;
   eventDate?: Date;
@@ -145,7 +146,7 @@ export type GetCulturalPlacesRequest = {
   order?: string;
 };
 
-export type GetCulturalPlacesResponse = Paginated<CulturalPlaceResponse>;
+export type GetPaginatedCulturalPlacesResponse = Paginated<CulturalPlaceResponse>;
 
 export type GetCulturalPlaceByIdResponse = CulturalPlaceResponse;
 
