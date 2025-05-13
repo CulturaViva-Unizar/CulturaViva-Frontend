@@ -5,22 +5,20 @@ import { Link } from "react-router";
 
 interface ChatCardProps {
   username: string;
-  lastMessage: string;
-  date: string;
-  unreadMessages: number;
   to?: string;
+  active: boolean;
 }
 
 export const ChatCard: FC<ChatCardProps> = ({
   username,
-  lastMessage,
-  date,
-  unreadMessages,
   to,
+  active = false
 }) => {
   const CardContent = (
     <div
-      className="d-flex align-items-center py-3 border-bottom"
+      className={`d-flex align-items-center p-3 border-bottom ${
+        active ? "bg-dark text-white" : "bg-light text-dark"
+      }`}
       style={{ cursor: "pointer" }}
     >
       <div className="col-1">
@@ -28,15 +26,6 @@ export const ChatCard: FC<ChatCardProps> = ({
       </div>
       <div className="col-8">
         <strong>{username}</strong>
-        <p className="small text-muted mb-0 text-truncate">{lastMessage}</p>
-      </div>
-      <div className="col-3 text-end">
-        <p className="small text-muted mb-0">{date}</p>
-        {unreadMessages > 0 && (
-          <span className="badge bg-danger rounded-circle">
-            {unreadMessages}
-          </span>
-        )}
       </div>
     </div>
   );

@@ -6,19 +6,18 @@ import { ChatMessage } from "../types/models";
 
 type SocketChatMessage = {
   _id: string;
-  chatId: string;
-  userId: string;
+  chat: string;
+  user: string;
   text: string;
-  createdAt: string;
-  updatedAt?: string;
+  timestamp: string;
 };
 
 function socketToChatMessage(msg: SocketChatMessage): ChatMessage {
   return {
-    id: msg._id,
+    _id: msg._id,
     text: msg.text,
-    timestamp: msg.createdAt,
-    user: msg.userId,
+    timestamp: msg.timestamp,
+    user: msg.user,
   };
 }
 
@@ -42,7 +41,6 @@ export function useChat(chatId: string): UseChatResult {
 
     const url = import.meta.env.VITE_API_URL;
 
-    console.log(url);
     const socket = io(url, {
       extraHeaders: { Authorization: `Bearer ${token}` }
     });

@@ -8,6 +8,7 @@ import { useGetChatsByUser } from "../../../features/chats/api/get-chats-by-user
 import { useUser } from "../../../lib/auth";
 import LoadingIndicator from "../../../components/ui/loading-indicator";
 import { ErrorMessage } from "../../../components/errors/error-message";
+import { paths } from "../../../config/paths";
 
 function Chats() {
   const user = useUser();
@@ -22,7 +23,7 @@ function Chats() {
   const [searchText, setSearchText] = useState<string>("");
 
   useEffect(() => {
-    setSelectedChat(location.pathname !== "/chats");
+    setSelectedChat(location.pathname !== paths.app.chats.getHref());
 
     window.scrollTo(0, 0);
   }, [location]);
@@ -46,7 +47,7 @@ function Chats() {
       </div>
       <div className="row">
         <div
-          className={`col-12 col-md-3 ${
+          className={`col-12 col-md-3 p-0 ${
             selectedChat ? "d-none d-md-block" : ""
           }`}
         >
@@ -62,23 +63,20 @@ function Chats() {
             style={{ maxHeight: "calc(100vh - 12%)" }}
           >
             {chats.map((chat, i) => {
-              console.log(chat);
               const userChat = chat.user1 == user.data!.id ? chat.user2 : chat.user1;
               return (
                 <ChatCard
                   key={i}
                   username={`User ${userChat}`}
-                  lastMessage="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-                  date={chat.updatedAt}
-                  unreadMessages={3}
                   to={`${chat}`}
+                  active={selectedChat}
                 />
               );
             })}
           </div>
         </div>
         <div
-          className={`col-12 col-md-9 ${
+          className={`col-12 col-md-9 p-0 ${
             !selectedChat ? "d-none d-md-block" : ""
           }`}
         >

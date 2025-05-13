@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect, useRef } from "react";
 import { useParams } from "react-router";
 import { useGetMessagesByChat } from "../../../features/chats/api/get-messages-by-chat";
 import { useChat } from "../../../features/chats/hooks/useChat";
@@ -7,6 +7,8 @@ import { faPaperPlane } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { GoBackBtn } from "../../../components/ui/go-back-btn";
 import { Message } from "../../../components/ui/message";
+import LoadingIndicator from "../../../components/ui/loading-indicator";
+import { ErrorMessage } from "../../../components/errors/error-message";
 
 
 function ChatConversation() {
@@ -25,15 +27,9 @@ function ChatConversation() {
   } = useGetMessagesByChat(chatId ?? "");
 
   const { messages: socketMessages, sendMessage } = useChat(chatId ?? "" );
-
+  const endRef = useRef<HTMLDivElement | null>(null);
   const [text, setText] = useState("");
-
-  if (!chatId) {
-    return <p>Chat no válido</p>;
-  }
-
-  if (isLoading) return <p>Cargando mensajes…</p>;
-  if (isError) return <p>Error: {error.message}</p>;
+  const height = window.innerWidth < 768 ? "95vh" : "85vh";
 
   const allMessages = [...initialMessages, ...socketMessages].sort(
     (a, b) =>
@@ -48,7 +44,20 @@ function ChatConversation() {
     setText("");
   };
 
-  const height = window.innerWidth < 768 ? "95vh" : "82vh";
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [allMessages]);        // ← se ejecuta en cada cambio
+
+  if (!chatId) {
+    return <ErrorMessage message="Conversación no válida" />;
+  }
+
+  if (isLoading) {
+    return <LoadingIndicator message="Cargando conversación..." />;
+  };
+  if (isError) {
+    return <ErrorMessage message="Error al cargar la conversación" />;
+  };
 
   return (
     <div
@@ -59,7 +68,7 @@ function ChatConversation() {
       }}
     >
       {/* Header */}
-      <div className="row mb-4 pb-3 border-bottom">
+      <div className="row">
         <div className="col h-100 d-flex d-md-none">
           <GoBackBtn />
         </div>
@@ -67,37 +76,33 @@ function ChatConversation() {
       </div>
 
       {/* Mensajes */}
-      <div className="flex-grow-1 d-flex flex-column overflow-auto px-3">
+      <div className="flex-grow-1 d-flex flex-column overflow-auto p-3 bg-light border">
         {allMessages.map((msg) => (
           <Message
-            key={msg.id}
+            key={msg._id}
             message={msg.text}
-            dateTime={new Date(msg.timestamp).toLocaleString()}
+            dateTime={new Date(msg.timestamp).toLocaleString([], {hour: '2-digit', minute:'2-digit', day: '2-digit', month: '2-digit', year: '2-digit'})}
             isOwn={msg.user === userId}
           />
         ))}
+        {/* ancla invisible */}
+        <div ref={endRef} />
       </div>
 
       {/* Formulario de envío */}
       <form
         onSubmit={handleSubmit}
-        className="d-flex align-items-center py-3 border-top"
-        style={{
-          position: "absolute",
-          bottom: 0,
-          width: "100%",
-          padding: "0 1rem",
-          background: "white",
-        }}
+        className="d-flex align-items-center p-3"
+
       >
         <input
           type="text"
-          className="form-control rounded-pill me-2"
+          className="form-control rounded-pill me-2 shadow"
           placeholder="Escribe..."
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
-        <button type="submit" className="btn btn-light rounded-circle">
+        <button type="submit" className="btn btn-dark rounded-circle shadow">
           <FontAwesomeIcon icon={faPaperPlane} />
         </button>
       </form>
