@@ -1,7 +1,9 @@
 export type Chat = {
   id: string;
-  user1: string;
-  user2: string;
+  user: {
+    id: string;
+    name: string;
+  };
 };
 
 export type ChatMessage = {

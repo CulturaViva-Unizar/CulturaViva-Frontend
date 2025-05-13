@@ -1,5 +1,5 @@
 import { useState, FormEvent, useEffect, useRef } from "react";
-import { useParams } from "react-router";
+import { useLocation, useParams } from "react-router";
 import { useGetMessagesByChat } from "../../../features/chats/api/get-messages-by-chat";
 import { useChat } from "../../../features/chats/hooks/useChat";
 import { useUser } from "../../../lib/auth";
@@ -13,6 +13,8 @@ import { ErrorMessage } from "../../../components/errors/error-message";
 
 function ChatConversation() {
   const { chatId } = useParams<{ chatId: string }>();
+  const location = useLocation();
+  const { username } = (location.state || {}) as { username?: string };
 
   // ─── Todos los hooks antes de cualquier return ───
   const { data: userData } = useUser();
@@ -72,7 +74,7 @@ function ChatConversation() {
         <div className="col h-100 d-flex d-md-none">
           <GoBackBtn />
         </div>
-        <h2 className="col-10 col-md-12 text-center">Chat {chatId}</h2>
+        <h2 className="col-10 col-md-12 text-center">Chat {username}</h2>
       </div>
 
       {/* Mensajes */}
