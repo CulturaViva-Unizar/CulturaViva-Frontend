@@ -139,7 +139,7 @@ const InfoCulturalPlace: FC<InfoCulturalPlaceProps> = ({
           <hr />
         </>
       )}
-      <ListReviews reviews={reviews} />
+      <ListReviews reviews={reviews} itemType={Items.Lugar} />
     </div>
   );
 };

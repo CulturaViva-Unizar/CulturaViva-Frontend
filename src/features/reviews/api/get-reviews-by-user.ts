@@ -2,7 +2,7 @@ import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { ApiResponse, GetReviewsByUserResponse } from "../../../types/api";
 import { api } from "../../../lib/api-client";
 import { Review } from "../types/models";
-import { mapUserReviewsResponseToReview } from "../utils/mappers";
+import { mapReviewsResponseToReview } from "../utils/mappers";
 
 export const getReviewsByUser = async (id: string): Promise<Review[]> => {
   const response: ApiResponse<GetReviewsByUserResponse> = await api.get(
@@ -11,7 +11,7 @@ export const getReviewsByUser = async (id: string): Promise<Review[]> => {
 
   const { data: reviews = [] } = response;
 
-  return reviews.map(mapUserReviewsResponseToReview);
+  return reviews.map(mapReviewsResponseToReview);
 };
 
 export const useGetReviewsByUser = (

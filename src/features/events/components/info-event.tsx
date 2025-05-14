@@ -133,7 +133,7 @@ const InfoEvent: FC<InfoEventProps> = ({ event, onClose, className = "" }) => {
           <hr />
         </>
       )}
-      <ListReviews reviews={reviews} />
+      <ListReviews itemType={Items.Evento} reviews={reviews} />
     </div>
   );
 };

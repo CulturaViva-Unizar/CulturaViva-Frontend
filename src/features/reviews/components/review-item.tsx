@@ -8,32 +8,38 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import { Link, useNavigate, useSearchParams } from "react-router";
+import { Link } from "react-router";
 import { RatingStars } from "../../../components/ui/rating-stars";
-import { useLogout, useUser } from "../../../lib/auth";
+import { useUser } from "../../../lib/auth";
 import { paths } from "../../../config/paths";
-import { Reply } from "../types/models";
+import Swal from "sweetalert2";
+import { Items } from "../../../shared/types/enums";
+import { useDeleteReviewFromEvent } from "../api/delete-review-from-event";
+import { useDeleteReviewFromCulturalPlace } from "../api/delete-review-from-cultural-place";
 
 type ReviewItemProps = {
+  id: string;
+  itemId: string;
+  itemType: Items;
   username: string;
   rating?: number;
   comment: string;
   date: string;
-  replies?: Reply[];
 };
 
 export const ReviewItem: React.FC<ReviewItemProps> = ({
+  id,
+  itemId,
+  itemType,
   username,
   rating = 0,
   comment,
   date,
-  replies = [],
 }) => {
   const user = useUser();
-  const logout = useLogout();
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo");
+  const deleteReviewFromEventMutation = useDeleteReviewFromEvent();
+  const deleteReviewFromCulturalPlaceMutation =
+    useDeleteReviewFromCulturalPlace();
 
   /*
   const addReply = (
@@ -89,19 +95,40 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
       }
     });
   };
+  */
 
-  const handleDeleteComment = (parentReply?: Reply) => {
+  const deleteReviewFromEvent = () => {
+    deleteReviewFromEventMutation.mutate(
+      { eventId: itemId, commentId: id },
+      {
+        onSuccess: () => {
+          Swal.fire("Eliminado", "Reseña eliminada.", "success");
+        },
+        onError: (err) => {
+          Swal.fire("Error", err.message, "error");
+        },
+      }
+    );
+  };
+
+  const deleteReviewFromCulturalPlace = () => {
+    deleteReviewFromCulturalPlaceMutation.mutate(
+      { culturalPlaceId: itemId, commentId: id },
+      {
+        onSuccess: () => {
+          Swal.fire("Eliminado", "Reseña eliminada.", "success");
+        },
+        onError: (err) => {
+          Swal.fire("Error", err.message, "error");
+        },
+      }
+    );
+  };
+
+  const handleDeleteReview = () => {
     Swal.fire({
       title: "¡ATENCIÓN!",
-      html: `
-        <p>Se va a eliminar un comentario del evento</p>
-        <select id="reasonSelect" class="form-select mt-3">
-          <option value="">Motivo</option>
-          <option value="razon1">Razón 1</option>
-          <option value="razon2">Razón 2</option>
-          <option value="razon3">Razón 3</option>
-        </select>
-      `,
+      text: "Se va a eliminar un comentario",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Eliminar",
@@ -111,45 +138,16 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
         cancelButton: "btn btn-secondary",
       },
       buttonsStyling: false,
-      preConfirm: () => {
-        const selectElement = document.getElementById(
-          "reasonSelect"
-        ) as HTMLSelectElement;
-        const selectedValue = selectElement.value;
-        if (!selectedValue) {
-          Swal.showValidationMessage("Por favor, selecciona un motivo");
-        }
-        return { reason: selectedValue };
-      },
     }).then((result) => {
       if (result.isConfirmed) {
-        if (parentReply) {
-          setAllReplies((prevReplies) => {
-            return prevReplies
-              .map((reply) => {
-                if (reply === parentReply) {
-                  return null;
-                } else if (reply.replies) {
-                  const updatedReplies = reply.replies.filter(
-                    (r) => r !== parentReply
-                  );
-                  if (updatedReplies.length !== reply.replies.length) {
-                    return { ...reply, replies: updatedReplies };
-                  }
-                }
-                return reply;
-              })
-              .filter((reply) => reply !== null) as Reply[];
-          });
+        if (itemType == Items.Evento) {
+          deleteReviewFromEvent();
         } else {
-          setAllReplies((prevReplies) =>
-            prevReplies.filter((reply) => reply.comment !== comment)
-          );
+          deleteReviewFromCulturalPlace();
         }
       }
     });
   };
-  */
 
   return (
     <div className="mb-3">
@@ -165,6 +163,7 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
         {user.data?.admin && (
           <button
             className="btn btn-sm btn-danger rounded-circle"
+            onClick={handleDeleteReview}
           >
             <FontAwesomeIcon icon={faTrash} />
           </button>
@@ -172,10 +171,18 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
       </div>
       <div className="mb-2">
         <RatingStars rating={rating} />
-        <span className="text-muted ms-2">{new Date(date).toLocaleString([], {hour: '2-digit', minute:'2-digit', day: '2-digit', month: '2-digit', year: '2-digit'})}</span>
+        <span className="text-muted ms-2">
+          {new Date(date).toLocaleString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+            day: "2-digit",
+            month: "2-digit",
+            year: "2-digit",
+          })}
+        </span>
       </div>
       <p>{comment}</p>
-      <button className="btn btn-sm mt-2" >
+      <button className="btn btn-sm mt-2">
         <FontAwesomeIcon icon={faReply} className="me-2" /> Responder
       </button>
     </div>

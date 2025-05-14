@@ -35,23 +35,27 @@ function UserReviews() {
           />
         </div>
       </div>
-      {reviews.map((review) => (
-        <div key={review.id}>
-          <CommentCard
-            item={review.itemId}
-            rating={review.rating}
-            date={new Date(review.date).toLocaleString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-              day: "2-digit",
-              month: "2-digit",
-              year: "2-digit",
-            })}
-            comment={review.comment ?? ""}
-          />
-          <hr />
-        </div>
-      ))}
+      <div className="d-flex">
+        <div className="col-md-3"></div>
+        {reviews.map((review) => (
+          <div className="col-md" key={review.id}>
+            <CommentCard
+              item={review.itemId}
+              rating={review.rating}
+              date={new Date(review.date).toLocaleString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+                day: "2-digit",
+                month: "2-digit",
+                year: "2-digit",
+              })}
+              comment={review.comment ?? ""}
+            />
+            <hr />
+          </div>
+        ))}
+        <div className="col-md-3"></div>
+      </div>
     </MainLayout>
   );
 }

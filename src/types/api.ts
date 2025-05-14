@@ -195,13 +195,12 @@ export type GetReviewsByUserResponse = ReviewResponse[];
 export type GetReviewsByCulturalPlaceResponse = ReviewResponse[];
 
 export type ReviewResponse = {
-  id: string;
+  _id: string;
   user: {
-    id: string;
+    _id: string;
     name: string;
   };
   text: string;
-  createdAt: string;
   date: string;
   event: string;
   value: number;

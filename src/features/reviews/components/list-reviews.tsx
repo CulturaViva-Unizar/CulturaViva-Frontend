@@ -6,12 +6,14 @@ import {
 } from "../../../shared/constants/select-options";
 import { ReviewItem } from "./review-item";
 import { Review } from "../types/models";
+import { Items } from "../../../shared/types/enums";
 
 type ListReviewsProps = {
+  itemType: Items;
   reviews?: Review[];
 };
 
-const ListReviews: FC<ListReviewsProps> = ({ reviews }) => {
+const ListReviews: FC<ListReviewsProps> = ({ itemType, reviews }) => {
   const [orderReviewOption, setOrderReviewOption] = useState("");
   const [filterReviewOption, setFilterReviewOption] = useState("");
 
@@ -35,11 +37,13 @@ const ListReviews: FC<ListReviewsProps> = ({ reviews }) => {
         reviews.map((review) => (
           <ReviewItem
             key={review.id}
+            id={review.id}
+            itemId={review.itemId}
             username={review.username}
             rating={review.rating}
             comment={review.comment ?? ""}
             date={review.date}
-            replies={review.replies}
+            itemType={itemType}
           />
         ))
       ) : (
