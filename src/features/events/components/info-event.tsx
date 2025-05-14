@@ -81,6 +81,8 @@ const InfoEvent: FC<InfoEventProps> = ({ event, onClose }) => {
     return <ErrorMessage message="Error al cargar la información del evento" />;
   }
 
+  console.log(reviews);
+
   return (
     <div className="p-3">
       <InfoItemHeader

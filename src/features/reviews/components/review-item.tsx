@@ -14,8 +14,12 @@ import { RatingStars } from "../../../components/ui/rating-stars";
 import { useLogout, useUser } from "../../../lib/auth";
 import { paths } from "../../../config/paths";
 import { Reply } from "../types/models";
+import { useGetChatsByUser } from "../../chats/api/get-chats-by-user";
+import { Chat } from "../../chats/types/models";
+import { usePostNewChatByUser } from "../../chats/api/post-new-chat-by-user";
 
 type ReviewItemProps = {
+  userId: string;
   username: string;
   rating?: number;
   comment: string;
@@ -24,6 +28,7 @@ type ReviewItemProps = {
 };
 
 export const ReviewItem: React.FC<ReviewItemProps> = ({
+  userId,
   username,
   rating = 0,
   comment,
@@ -35,6 +40,41 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo");
+
+  const {
+    data: chats = [],
+    isLoading: chatsLoading,
+    isError: chatsError,
+  } = useGetChatsByUser(user.data?.id ?? "");
+
+  const {
+    mutate: createChat,
+    isPending: creatingChat,
+  } = usePostNewChatByUser(user.data?.id ?? "");
+
+  const handleNewChat = () => {
+    if (!user.data || chatsLoading || chatsError) {
+      return;
+    }
+
+    console.log(chats);
+    const existing = chats.find(
+      (c: Chat) => c.user._id === userId
+    );
+
+    if (existing) {
+      navigate(paths.app.chats.chat.getHref(existing.id));
+    } else {
+      createChat(
+        { user: userId },
+        {
+          onSuccess: (newChat) => {
+            navigate(paths.app.chats.chat.getHref(newChat.id));
+          },
+        }
+      );
+    }
+  };
 
   /*
   const addReply = (
@@ -157,12 +197,15 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
       <div className="d-flex align-items-center gap-2">
         <FontAwesomeIcon icon={faCircleUser} />
         <strong>{username}</strong>
-        <Link
-          to={paths.app.chats.getHref()}
+        {user.data && user.data.id !== userId && (
+        <button
+          onClick={handleNewChat}
+          disabled={creatingChat || chatsLoading || chatsError}
           className="btn btn-light rounded-circle"
         >
           <FontAwesomeIcon icon={faComment} />
-        </Link>
+        </button>
+        )}
         {user.data?.admin && (
           <button
             className="btn btn-sm btn-danger rounded-circle"

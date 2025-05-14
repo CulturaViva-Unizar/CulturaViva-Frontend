@@ -165,7 +165,7 @@ export type CreateBookmarkRequest = {
 type ChatResponse = {
   id: string;
   user: {
-    id: string;
+    _id: string;
     name: string;
   };
   createdAt: string;
@@ -184,6 +184,18 @@ export type ChatMessage = {
 
 export type GetMessagesByChatResponse = ChatMessage[];
 
+export type PostCreateChatRequest = {
+  user: string;
+};
+
+export type PostCreateChatResponse = {
+  id: string;
+  mensajes: string[];
+  user: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 /* Reviews ---------------------------------------------------------------------------*/
 
 export type GetReviewsByEventResponse = ReviewResponse[];
@@ -193,9 +205,9 @@ export type GetReviewsByUserResponse = ReviewResponse[];
 export type GetReviewsByCulturalPlaceResponse = ReviewResponse[];
 
 export type ReviewResponse = {
-  id: string;
+  _id: string;
   user: {
-    id: string;
+    _id: string;
     name: string;
   };
   text: string;

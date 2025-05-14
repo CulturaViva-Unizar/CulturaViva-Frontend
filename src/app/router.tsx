@@ -233,7 +233,7 @@ const createAppRouter = (queryClient: QueryClient) =>
               ),
             },
             {
-              path: ":chatId",
+              path: paths.app.chats.chat.path,
               lazy: () =>
                 import("./routes/app/chat-conversation").then(
                   convert(queryClient)

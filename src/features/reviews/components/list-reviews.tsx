@@ -35,6 +35,7 @@ const ListReviews: FC<ListReviewsProps> = ({ reviews }) => {
         reviews.map((review) => (
           <ReviewItem
             key={review.id}
+            userId={review.userId}
             username={review.username}
             rating={review.rating}
             comment={review.comment ?? ""}

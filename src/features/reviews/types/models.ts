@@ -1,6 +1,6 @@
 export type Review = {
   id: string;
-  userId: string;
+  user: string;
   username: string;
   rating: number;
   comment?: string;

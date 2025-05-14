@@ -37,6 +37,15 @@ const Register = () => {
             Iniciar sesión
           </Link>
         </div>
+        <div className="mt-4 d-flex flex-column gap-2">
+          <Link
+            to={paths.app.getHref()}
+            replace
+            className="btn btn-outline-secondary rounded-pill"
+          >
+            Continuar sin iniciar sesión
+          </Link>
+        </div>
       </div>
     </div>
   );

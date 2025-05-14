@@ -1,5 +1,6 @@
 import { configureAuth } from "react-query-auth";
 import { api } from "./api-client";
+import { TokenService } from "./token-service";
 import {
   ApiResponse,
   CreateUserRequest,
@@ -10,40 +11,27 @@ import {
 } from "../types/api";
 
 const userFn = async (): Promise<LoggedUser | null> => {
-  const userJson = localStorage.getItem("user");
-  if (!userJson) {
-    return null;
-  }
-
-  return JSON.parse(userJson) as LoggedUser;
+  return TokenService.getUser<LoggedUser>();
 };
 
 const logoutFn = async (): Promise<void> => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("user");
+  TokenService.clear();
 };
 
 const loginFn = async (data: LoginUserRequest): Promise<LoggedUser> => {
-  const loginResponse: ApiResponse<LoginUserResponse> = await api.post("/auth/login", data);
+  const response: ApiResponse<LoginUserResponse> = await api.post("/auth/login", data);
+  const { accessToken, user } = response.data;
 
-  localStorage.setItem("token", loginResponse.data.accessToken);
-  localStorage.setItem("user", JSON.stringify(loginResponse.data.user));
+  TokenService.setAccessToken(accessToken);
+  TokenService.saveUser(user);
 
-  return loginResponse.data.user;
+  return user;
 };
 
 const registerFn = async (data: CreateUserRequest): Promise<LoggedUser> => {
-  const registerResponse: ApiResponse<CreateUserRespose> = await api.post("/auth/register", data);
-
-  return registerResponse.data.user;
+  const response: ApiResponse<CreateUserRespose> = await api.post("/auth/register", data);
+  return response.data.user;
 };
-
-const authConfig = {
-  userFn,
-  loginFn,
-  registerFn,
-  logoutFn,
-};
-
+const authConfig = { userFn, loginFn, registerFn, logoutFn };
 export const { useUser, useLogin, useLogout, useRegister, AuthLoader } =
   configureAuth(authConfig);

@@ -10,7 +10,7 @@ export const getReviewsByEvent = async (id: string): Promise<Review[]> => {
   );
 
   const { data: reviews = [] } = response;
-
+  
   return reviews.map(mapReviewsResponseToReview);
 };
 

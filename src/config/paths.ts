@@ -89,6 +89,11 @@ export const paths = {
       path: "chats",
       getHref: () => "/app/chats",
       admin: false,
+      chat: {
+        path: ":chatId",
+        getHref: (id: string) => `/app/chats/${id}`,
+        admin: false,
+      },
     },
     analytics: {
       path: "analytics",
