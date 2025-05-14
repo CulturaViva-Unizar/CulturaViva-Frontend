@@ -10,14 +10,14 @@ import { useNavigate } from "react-router";
 import { paths } from "../../../config/paths";
 import { useGetBookmarksByUser } from "../../../features/bookmarks/api/get-bookmarks-by-user";
 import { useUser } from "../../../lib/auth";
-import {
-  CATEGORY_SELECT_OPTIONS,
-  ITEM_TYPE_SELECT_OPTIONS,
-} from "../../../shared/constants/select-options";
+import { ITEM_TYPE_SELECT_OPTIONS } from "../../../shared/constants/select-options";
 import LoadingIndicator from "../../../components/ui/loading-indicator";
 import { ErrorMessage } from "../../../components/errors/error-message";
 import { Event } from "../../../features/events/types/models";
 import { DatePicker } from "../../../components/ui/date-picker";
+import { useGetCulturalPlaceCategories } from "../../../features/cultural-places/api/get-cultural-place-categories";
+import { useGetEventCategories } from "../../../features/events/api/get-event-categories";
+import { format } from "date-fns";
 
 const ITEMS_PER_PAGE = 9;
 
@@ -34,14 +34,47 @@ function Bookmarks() {
       userId: user.data!.id,
       eventType: type,
       eventName: name,
-      eventDate: date ?? undefined,
+      eventDate: date ? format(date, "yyyy-MM-dd") : undefined,
       eventCategory: category,
       page: currentPage,
       limit: ITEMS_PER_PAGE,
     }),
     [user.data, type, name, date, category, currentPage]
   );
-  const { data, isLoading, error } = useGetBookmarksByUser(request);
+  const {
+    data,
+    isLoading: isLoadingBookmarks,
+    error: errorBookmarks,
+  } = useGetBookmarksByUser(request);
+
+  const {
+    data: eventCategories,
+    isLoading: isLoadingEventCategories,
+    error: errorEventCategories,
+  } = useGetEventCategories();
+  const {
+    data: culturalPlaceCategories,
+    isLoading: isLoadingCulturalPlaceCategories,
+    error: errorCulturalPlaceCategories,
+  } = useGetCulturalPlaceCategories();
+
+  const eventOptions =
+    eventCategories?.map((cat) => ({
+      value: cat,
+      label: cat,
+    })) ?? [];
+
+  const culturalOptions =
+    culturalPlaceCategories?.map((cat) => ({
+      value: cat,
+      label: cat,
+    })) ?? [];
+
+  const categoryOptions = [
+    { value: "", label: "Categoría" },
+    ...eventOptions,
+    ...culturalOptions,
+  ];
 
   const onNameChange = (newName: string) => {
     setName(newName);
@@ -60,12 +93,20 @@ function Bookmarks() {
     setCurrentPage(1);
   };
 
+  const isLoading =
+    isLoadingEventCategories ||
+    isLoadingCulturalPlaceCategories ||
+    isLoadingBookmarks;
+  const isError = Boolean(
+    errorEventCategories || errorCulturalPlaceCategories || errorBookmarks
+  );
+
   return (
     <MainLayout title="Guardados">
-      {isLoading && !error && (
+      {isLoading && !isError && (
         <LoadingIndicator message="Cargando guardados..." />
       )}
-      {error && <ErrorMessage message="Error al cargar los guardados" />}
+      {isError && <ErrorMessage message="Error al cargar los guardados" />}
 
       <div className="py-3 row gap-2 justify-content-center">
         <div className="row col-12 col-md-3">
@@ -87,9 +128,10 @@ function Bookmarks() {
           />
           <Select
             className="col shadow-sm"
-            options={CATEGORY_SELECT_OPTIONS}
+            options={categoryOptions}
             value={category}
             onChange={onCategoryChange}
+            style={{ maxWidth: 150 }}
           />
           <DatePicker
             className="col shadow-sm bg-white"
@@ -103,34 +145,39 @@ function Bookmarks() {
         </div>
       </div>
       <div className="row g-4">
-        {data?.items.map((item) => {
-          const isEvent = (item as Event).startDate !== undefined;
-
-          return (
-            <div className="col-md-4" key={item.id}>
-              <Card
-                image={item.image}
-                title={item.title}
-                location={item.location}
-                rating={5}
-                reviews={0}
-                description={item.description}
-                className="h-100 rounded bg-light shadow"
-                onClick={() =>
-                  navigate(
-                    isEvent
-                      ? paths.app.events.details.getHref(item.id)
-                      : paths.app.culturalPlaces.details.getHref(item.id)
-                  )
-                }
-              />
-            </div>
-          );
-        })}
+        {data && data.items.length > 0 ? (
+          data.items.map((item) => {
+            const isEvent = (item as Event).startDate !== undefined;
+            return (
+              <div className="col-md-4" key={item.id}>
+                <Card
+                  image={item.image}
+                  title={item.title}
+                  location={item.location}
+                  rating={5}
+                  reviews={0}
+                  description={item.description}
+                  className="h-100 rounded bg-light shadow"
+                  onClick={() =>
+                    navigate(
+                      isEvent
+                        ? paths.app.events.details.getHref(item.id)
+                        : paths.app.culturalPlaces.details.getHref(item.id)
+                    )
+                  }
+                />
+              </div>
+            );
+          })
+        ) : (
+          <div className="text-center">
+            <strong>Sin resultados :(</strong>
+          </div>
+        )}
       </div>
       {data && (
         <BootstrapPagination
-          currentPage={data.currentPage}
+          currentPage={currentPage}
           totalPages={data.totalPages}
           onPageChange={setCurrentPage}
         />

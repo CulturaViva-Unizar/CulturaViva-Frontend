@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -7,33 +7,45 @@ import {
   faComment,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import Swal from "sweetalert2";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { RatingStars } from "../../../components/ui/rating-stars";
 import { useLogout, useUser } from "../../../lib/auth";
 import { paths } from "../../../config/paths";
-import { Reply } from "../types/models";
+import Swal from "sweetalert2";
+import { Items } from "../../../shared/types/enums";
+import { useDeleteReviewFromEvent } from "../api/delete-review-from-event";
+import { useDeleteReviewFromCulturalPlace } from "../api/delete-review-from-cultural-place";
+import { useCreateResponseToReview } from "../api/create-response";
+import { useGetRepliesByEvent } from "../api/get-replies-by-event";
+import { GetRepliesRequest } from "../../../types/api";
+import LoadingIndicator from "../../../components/ui/loading-indicator";
+import { ErrorMessage } from "../../../components/errors/error-message";
+import { ReplyItem } from "./reply-item";
 import { useGetChatsByUser } from "../../chats/api/get-chats-by-user";
 import { Chat } from "../../chats/types/models";
 import { usePostNewChatByUser } from "../../chats/api/post-new-chat-by-user";
 
 type ReviewItemProps = {
+  id: string;
+  itemId: string;
+  itemType: Items;
   userId: string;
   username: string;
   rating?: number;
   comment: string;
   date: string;
-  replies?: Reply[];
 };
 
 export const ReviewItem: React.FC<ReviewItemProps> = ({
+  id,
+  itemId,
+  itemType,
   userId,
   username,
   rating = 0,
   comment,
   date,
-  replies = [],
 }) => {
   const user = useUser();
   const logout = useLogout();
@@ -57,7 +69,6 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
       return;
     }
 
-    console.log(chats);
     const existing = chats.find(
       (c: Chat) => c.user._id === userId
     );
@@ -75,27 +86,24 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
       );
     }
   };
+  const deleteReviewFromEventMutation = useDeleteReviewFromEvent();
+  const deleteReviewFromCulturalPlaceMutation =
+    useDeleteReviewFromCulturalPlace();
+  const createResponseToReviewMutation = useCreateResponseToReview();
+  const request: GetRepliesRequest = useMemo(
+    () => ({
+      itemId,
+      commentId: id,
+    }),
+    [id, itemId]
+  );
+  const {
+    data: replies = [],
+    isLoading,
+    error,
+  } = useGetRepliesByEvent(request);
 
-  /*
-  const addReply = (
-    replyList: Reply[],
-    parentReply: Reply,
-    newReply: Reply
-  ): Reply[] => {
-    return replyList.map((reply) => {
-      if (reply === parentReply) {
-        return { ...reply, replies: [...(reply.replies || []), newReply] };
-      } else if (reply.replies) {
-        return {
-          ...reply,
-          replies: addReply(reply.replies, parentReply, newReply),
-        };
-      }
-      return reply;
-    });
-  };
-
-  const handleReply = (parentReply?: Reply) => {
+  const handleReply = (commentId: string) => {
     if (!user.data) {
       logout.mutate(undefined);
       navigate(paths.auth.login.getHref(redirectTo));
@@ -108,41 +116,52 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
       inputPlaceholder: "Escribe tu respuesta...",
       showCancelButton: true,
       confirmButtonText: "Enviar",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed && result.value) {
-        const newReply: Reply = {
-          userId: user.data!.id,
-          username: "Tú",
-          comment: result.value,
-          date: "hace un momento",
-          replies: [],
-          onReply: handleReply,
-          onDelete: handleDeleteComment,
-        };
-
-        setAllReplies((prevReplies) => {
-          if (parentReply) {
-            return addReply(prevReplies, parentReply, newReply);
-          } else {
-            return [...prevReplies, newReply];
-          }
+        await createResponseToReviewMutation.mutateAsync({
+          itemId,
+          itemType,
+          commentId,
+          data: {
+            text: result.value,
+          },
         });
       }
     });
   };
 
-  const handleDeleteComment = (parentReply?: Reply) => {
+  const deleteReviewFromEvent = () => {
+    deleteReviewFromEventMutation.mutate(
+      { eventId: itemId, commentId: id },
+      {
+        onSuccess: () => {
+          Swal.fire("Eliminado", "Reseña eliminada.", "success");
+        },
+        onError: (err) => {
+          Swal.fire("Error", err.message, "error");
+        },
+      }
+    );
+  };
+
+  const deleteReviewFromCulturalPlace = () => {
+    deleteReviewFromCulturalPlaceMutation.mutate(
+      { culturalPlaceId: itemId, commentId: id },
+      {
+        onSuccess: () => {
+          Swal.fire("Eliminado", "Reseña eliminada.", "success");
+        },
+        onError: (err) => {
+          Swal.fire("Error", err.message, "error");
+        },
+      }
+    );
+  };
+
+  const handleDeleteReview = () => {
     Swal.fire({
       title: "¡ATENCIÓN!",
-      html: `
-        <p>Se va a eliminar un comentario del evento</p>
-        <select id="reasonSelect" class="form-select mt-3">
-          <option value="">Motivo</option>
-          <option value="razon1">Razón 1</option>
-          <option value="razon2">Razón 2</option>
-          <option value="razon3">Razón 3</option>
-        </select>
-      `,
+      text: "Se va a eliminar una reseña",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Eliminar",
@@ -152,45 +171,50 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
         cancelButton: "btn btn-secondary",
       },
       buttonsStyling: false,
-      preConfirm: () => {
-        const selectElement = document.getElementById(
-          "reasonSelect"
-        ) as HTMLSelectElement;
-        const selectedValue = selectElement.value;
-        if (!selectedValue) {
-          Swal.showValidationMessage("Por favor, selecciona un motivo");
-        }
-        return { reason: selectedValue };
-      },
     }).then((result) => {
       if (result.isConfirmed) {
-        if (parentReply) {
-          setAllReplies((prevReplies) => {
-            return prevReplies
-              .map((reply) => {
-                if (reply === parentReply) {
-                  return null;
-                } else if (reply.replies) {
-                  const updatedReplies = reply.replies.filter(
-                    (r) => r !== parentReply
-                  );
-                  if (updatedReplies.length !== reply.replies.length) {
-                    return { ...reply, replies: updatedReplies };
-                  }
-                }
-                return reply;
-              })
-              .filter((reply) => reply !== null) as Reply[];
-          });
+        if (itemType == Items.Evento) {
+          deleteReviewFromEvent();
         } else {
-          setAllReplies((prevReplies) =>
-            prevReplies.filter((reply) => reply.comment !== comment)
-          );
+          deleteReviewFromCulturalPlace();
         }
       }
     });
   };
-  */
+
+  const handleDeleteReply = () => {
+    Swal.fire({
+      title: "¡ATENCIÓN!",
+      text: "Se va a eliminar un comentario",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Eliminar",
+      reverseButtons: true,
+      customClass: {
+        confirmButton: "btn btn-danger ms-2",
+        cancelButton: "btn btn-secondary",
+      },
+      buttonsStyling: false,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (itemType == Items.Evento) {
+          deleteReplyFromEvent();
+        } else {
+          deleteReplyFromCulturalPlace();
+        }
+      }
+    });
+  };
+
+  if (isLoading && !error) {
+    return <LoadingIndicator message="Cargando respuestas de las reseñas..." />;
+  }
+
+  if (error) {
+    return (
+      <ErrorMessage message="Error cargando las respuestas de las reseñas" />
+    );
+  }
 
   return (
     <div className="mb-3">
@@ -209,6 +233,7 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
         {user.data?.admin && (
           <button
             className="btn btn-sm btn-danger rounded-circle"
+            onClick={handleDeleteReview}
           >
             <FontAwesomeIcon icon={faTrash} />
           </button>
@@ -216,10 +241,21 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
       </div>
       <div className="mb-2">
         <RatingStars rating={rating} />
-        <span className="text-muted ms-2">{date}</span>
+        <span className="text-muted ms-2">
+          {new Date(date).toLocaleString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+            day: "2-digit",
+            month: "2-digit",
+            year: "2-digit",
+          })}
+        </span>
       </div>
       <p>{comment}</p>
-      <button className="btn btn-sm mt-2" >
+      {replies && replies.map((reply, index) => (
+        <ReplyItem key={index} {...reply} onReply={() => handleReply()} onDelete={handleDeleteReply} />
+      ))}
+      <button className="btn btn-sm mt-2" onClick={() => handleReply(id)}>
         <FontAwesomeIcon icon={faReply} className="me-2" /> Responder
       </button>
     </div>

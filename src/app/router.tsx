@@ -202,7 +202,7 @@ const createAppRouter = (queryClient: QueryClient) =>
         {
           path: paths.app.comments.path,
           lazy: () =>
-            import("./routes/app/user-comments").then((module) => {
+            import("./routes/app/user-reviews").then((module) => {
               const route = convert(queryClient)(module);
               return {
                 ...route,

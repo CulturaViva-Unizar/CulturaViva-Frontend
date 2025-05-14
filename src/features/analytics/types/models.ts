@@ -1,3 +1,4 @@
 export type Analytics = {
-  totalUsers: number;
+  totalUsers?: number;
+  totalEvents?: number;
 };

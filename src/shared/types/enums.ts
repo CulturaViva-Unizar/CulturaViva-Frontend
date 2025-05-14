@@ -3,11 +3,6 @@ export enum Items {
   Lugar = "lugares",
 }
 
-export enum Categories {
-  Arte = "arte",
-  Ocio = "ocio",
-}
-
 export enum Colors {
   Red = "rgba(203,43,62,0.7)",
   Gold = "rgba(255,211,38,0.7)",

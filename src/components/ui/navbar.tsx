@@ -4,10 +4,9 @@ import SearchBar from "./search-bar";
 import { DatePicker } from "./date-picker";
 import { Range } from "./range";
 import { CSSProperties } from "react";
-import {
-  ITEM_TYPE_SELECT_OPTIONS,
-  CATEGORY_SELECT_OPTIONS,
-} from "../../shared/constants/select-options";
+import { ITEM_TYPE_SELECT_OPTIONS } from "../../shared/constants/select-options";
+import { useGetCulturalPlaceCategories } from "../../features/cultural-places/api/get-cultural-place-categories";
+import { useGetEventCategories } from "../../features/events/api/get-event-categories";
 
 type NavBarProps = {
   searchText: string;
@@ -38,6 +37,39 @@ export const Navbar: React.FC<NavBarProps> = ({
   className = "",
   style,
 }) => {
+  const {
+    data: eventCategories,
+    isLoading: isLoadingEventCategories,
+    error: errorEventCategories,
+  } = useGetEventCategories();
+  const {
+    data: culturalPlaceCategories,
+    isLoading: isLoadingCulturalPlaceCategories,
+    error: errorCulturalPlaceCategories,
+  } = useGetCulturalPlaceCategories();
+
+  const eventOptions =
+    eventCategories?.map((cat) => ({
+      value: cat,
+      label: cat,
+    })) ?? [];
+
+  const culturalOptions =
+    culturalPlaceCategories?.map((cat) => ({
+      value: cat,
+      label: cat,
+    })) ?? [];
+
+  const categoryOptions = [
+    { value: "", label: "Categoría" },
+    ...eventOptions,
+    ...culturalOptions,
+  ];
+
+  const isLoading =
+    isLoadingEventCategories || isLoadingCulturalPlaceCategories;
+  const isError = Boolean(errorEventCategories || errorCulturalPlaceCategories);
+
   return (
     <nav className={`row py-md-4 gap-2 m-0 ${className}`} style={style}>
       <div className="row col-11 col-md-3 order-1">
@@ -57,12 +89,15 @@ export const Navbar: React.FC<NavBarProps> = ({
           value={itemType}
           onChange={onItemTypeChange}
         />
-        <Select
-          className="col shadow-sm"
-          options={CATEGORY_SELECT_OPTIONS}
-          value={category}
-          onChange={onCategoryChange}
-        />
+        {!isLoading && !isError && (
+          <Select
+            className="col shadow-sm"
+            options={categoryOptions}
+            value={category}
+            onChange={onCategoryChange}
+            style={{ maxWidth: 150 }}
+          />
+        )}
         <Range
           className="col bg-white shadow-sm"
           hideWhenMaxValue={true}

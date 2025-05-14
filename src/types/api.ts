@@ -32,6 +32,7 @@ export type EventResponse = {
   startDate: string;
   endDate: string;
   asistentes: string[];
+  comments: [];
   price: Price[] | null;
   description?: string;
   image?: string;
@@ -113,7 +114,7 @@ export type GetPaginatedEventsRequest = {
   userId?: string;
   eventType?: string;
   eventName?: string;
-  eventDate?: Date;
+  eventDate?: string;
   eventCategory?: string;
   page: number;
   limit: number;
@@ -146,7 +147,8 @@ export type GetCulturalPlacesRequest = {
   order?: string;
 };
 
-export type GetPaginatedCulturalPlacesResponse = Paginated<CulturalPlaceResponse>;
+export type GetPaginatedCulturalPlacesResponse =
+  Paginated<CulturalPlaceResponse>;
 
 export type GetCulturalPlaceByIdResponse = CulturalPlaceResponse;
 
@@ -211,9 +213,8 @@ export type ReviewResponse = {
     name: string;
   };
   text: string;
-  createdAt: string;
   date: string;
-  item: string;
+  event: string;
   value: number;
   responseTo: string;
 };
@@ -223,6 +224,17 @@ export type CreateReviewRequest = {
   value: number;
 };
 
+export type CreateResponseToReviewRequest = {
+  text: string;
+};
+
+export type GetRepliesRequest = {
+  itemId: string;
+  commentId: string;
+};
+
+export type GetRepliesResponse = ReviewResponse[];
+
 /* Analytics -------------------------------------------------------------------------*/
 
 export type GetUsersAnalyticsRequest = {
@@ -230,6 +242,14 @@ export type GetUsersAnalyticsRequest = {
 };
 
 export type GetUsersAnalyticsResponse = {
+  count: number;
+};
+
+export type GetEventsAnalyticsRequest = {
+  category?: string;
+};
+
+export type GetEventsAnalyticsResponse = {
   count: number;
 };
 
@@ -245,7 +265,7 @@ export type UserResponse = {
   chats: string[];
   asistsTo: string[];
   savedItems: string[];
-  userType: string;
+  userType?: string;
   createdAt: string;
   __v: number;
 };
@@ -259,4 +279,4 @@ export type GetUsersRequest = {
   order?: string;
 };
 
-export type GetUsersResponse = UserResponse[];
+export type GetPaginatedUsersResponse = Paginated<UserResponse>;

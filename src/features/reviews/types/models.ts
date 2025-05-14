@@ -1,15 +1,15 @@
 export type Review = {
   id: string;
-  user: string;
+  userId: string;
   username: string;
   rating: number;
   comment?: string;
   date: string;
-  replies: Reply[];
   itemId: string;
 };
 
 export type Reply = {
+  id: string;
   userId: string;
   username: string;
   comment: string;

@@ -1,4 +1,4 @@
-import { FC, ChangeEvent } from "react";
+import { FC, ChangeEvent, CSSProperties } from "react";
 import { SelectOption } from "../../shared/types/models";
 
 type SelectProps = {
@@ -7,6 +7,7 @@ type SelectProps = {
   value: string;
   onChange: (newValue: string) => void;
   className?: string;
+  style?: CSSProperties;
 };
 
 export const Select: FC<SelectProps> = ({
@@ -15,6 +16,7 @@ export const Select: FC<SelectProps> = ({
   value,
   onChange,
   className = "",
+  style,
 }) => {
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     onChange(e.target.value);
@@ -26,6 +28,7 @@ export const Select: FC<SelectProps> = ({
       value={value}
       onChange={handleChange}
       role="button"
+      style={style}
     >
       {placeholder && (
         <option value="" disabled>

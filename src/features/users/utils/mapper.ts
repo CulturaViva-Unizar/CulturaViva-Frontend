@@ -1,5 +1,5 @@
-import { UserResponse } from "../../../types/api";
-import { User } from "../types/models";
+import { GetPaginatedUsersResponse, UserResponse } from "../../../types/api";
+import { PaginatedUsersPage, User } from "../types/models";
 
 export const mapUserResponseToUser = (src: UserResponse): User => ({
   id: src._id,
@@ -7,3 +7,14 @@ export const mapUserResponseToUser = (src: UserResponse): User => ({
   email: src.email,
   active: src.active,
 });
+
+export const mapGetPaginatedUsersResponseToPaginatedUsersPage = (
+  src: GetPaginatedUsersResponse
+): PaginatedUsersPage => {
+  return {
+    currentPage: src.currentPage,
+    totalPages: src.totalPages,
+    totalItems: src.totalItems,
+    items: src.items.map(mapUserResponseToUser),
+  };
+};

@@ -7,7 +7,10 @@ import MainLayout from "../../../../components/layouts/main-layout";
 import { useNavigate } from "react-router";
 import { paths } from "../../../../config/paths";
 import { CulturalPlace } from "../../../../features/cultural-places/types/models";
-import { CATEGORY_SELECT_OPTIONS } from "../../../../shared/constants/select-options";
+import { useGetCulturalPlaceCategories } from "../../../../features/cultural-places/api/get-cultural-place-categories";
+import { useGetEventCategories } from "../../../../features/events/api/get-event-categories";
+import { useQueries } from "@tanstack/react-query";
+import { getReviewsByCulturalPlace } from "../../../../features/reviews/api/get-reviews-by-cultural-place";
 
 const pieData = {
   labels: ["Arte", "Ocio", "Otros"],
@@ -30,51 +33,109 @@ const pieOptions = {
 };
 
 function PopularCulturalPlaces() {
-  const { data: culturalPlaces = [], isLoading, error } = useGetCulturalPlaceBy();
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const itemsPerPage = 6;
-  const totalPages = Math.ceil(culturalPlaces.length / itemsPerPage);
-  const currentCulturalPlace = culturalPlaces.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+  const { data, isLoading, error } = useGetCulturalPlaceBy();
+  const culturalPlaces = data?.items.filter(
+    (p) => p.coordinates && p.coordinates.latitude && p.coordinates.longitude
   );
+  const [category, setCategory] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const navigate = useNavigate();
+
+  const {
+    data: eventCategories,
+    isLoading: isLoadingEventCategories,
+    error: errorEventCategories,
+  } = useGetEventCategories();
+  const {
+    data: culturalPlaceCategories,
+    isLoading: isLoadingCulturalPlaceCategories,
+    error: errorCulturalPlaceCategories,
+  } = useGetCulturalPlaceCategories();
+
+  const eventOptions =
+    eventCategories?.map((cat) => ({
+      value: cat,
+      label: cat,
+    })) ?? [];
+
+  const culturalOptions =
+    culturalPlaceCategories?.map((cat) => ({
+      value: cat,
+      label: cat,
+    })) ?? [];
+
+  const categoryOptions = [
+    { value: "", label: "Categoría" },
+    ...eventOptions,
+    ...culturalOptions,
+  ];
+
+  const reviewsQueries = useQueries({
+    queries: (culturalPlaces ?? []).map((p: CulturalPlace) => ({
+      queryKey: ["reviews", p.id],
+      queryFn: () => getReviewsByCulturalPlace(p.id),
+      enabled: !!culturalPlaces,
+    })),
+  });
 
   return (
     <MainLayout title="Populares">
       <div className="d-md-flex">
         <div className="col-md-4 d-flex flex-column align-items-center">
           <Select
-            options={CATEGORY_SELECT_OPTIONS}
-            initialValue=""
-            onChange={(newValue) => console.log(newValue)}
+            className="shadow-sm"
+            options={categoryOptions}
+            value={category}
+            onChange={setCategory}
+            style={{ maxWidth: 150 }}
           />
           <PieChart data={pieData} options={pieOptions} className="m-4" />
         </div>
         <div className="flex-column col-md-8 row">
           <div className="row g-4 m-0">
-            {currentCulturalPlace.map((culturalPlace: CulturalPlace) => (
-              <div className="col-md-6" key={culturalPlace.id}>
-                <Card
-                  image={culturalPlace.image}
-                  title={culturalPlace.title}
-                  location={culturalPlace.location}
-                  rating={culturalPlace.rating}
-                  reviews={culturalPlace.totalReviews}
-                  description={culturalPlace.description}
-                  className="rounded bg-light shadow"
-                  onClick={() =>
-                    navigate(
-                      paths.app.culturalPlaces.details.getHref(culturalPlace.id)
-                    )
-                  }
-                />
+            {culturalPlaces && culturalPlaces?.length > 0 ? (
+              culturalPlaces.map.map(
+                (culturalPlace: CulturalPlace, i: number) => {
+                  const rq = reviewsQueries[i];
+                  const reviews = rq.data ?? [];
+                  const totalReviews = reviews.length;
+                  const avgRating =
+                    totalReviews > 0
+                      ? reviews.reduce((sum, r) => sum + r.rating, 0) /
+                        totalReviews
+                      : 0;
+
+                  return (
+                    <div className="col-md-6" key={culturalPlace.id}>
+                      <Card
+                        image={culturalPlace.image}
+                        title={culturalPlace.title}
+                        location={culturalPlace.location}
+                        rating={avgRating}
+                        reviews={totalReviews}
+                        description={culturalPlace.description}
+                        className="rounded bg-light shadow"
+                        onClick={() =>
+                          navigate(
+                            paths.app.culturalPlaces.details.getHref(
+                              culturalPlace.id
+                            )
+                          )
+                        }
+                      />
+                    </div>
+                  );
+                }
+              )
+            ) : (
+              <div className="text-center">
+                <strong>Sin resultados :(</strong>
               </div>
-            ))}
+            )}
           </div>
           <BootstrapPagination
             currentPage={currentPage}
-            totalPages={totalPages}
+            totalPages={data!.totalPages}
             onPageChange={(page: number) => setCurrentPage(page)}
           />
         </div>

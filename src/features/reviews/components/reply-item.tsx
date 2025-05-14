@@ -9,10 +9,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { Link } from "react-router";
-import { useUser } from "../../lib/auth";
-import { paths } from "../../config/paths";
+import { useUser } from "../../../lib/auth";
+import { paths } from "../../../config/paths";
 
-export const Reply: React.FC<ReplyProps> = ({
+export const ReplyItem: React.FC<ReplyProps> = ({
   userId,
   username,
   comment,
@@ -70,7 +70,7 @@ export const Reply: React.FC<ReplyProps> = ({
       </button>
       {replies &&
         replies.map((childReply, index) => (
-          <Reply
+          <ReplyItem
             key={index}
             {...childReply}
             onReply={onReply}

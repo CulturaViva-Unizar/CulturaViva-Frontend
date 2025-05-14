@@ -20,9 +20,10 @@ import ListReviews from "../../reviews/components/list-reviews";
 type InfoEventProps = {
   event: Event;
   onClose: () => void;
+  className?: string;
 };
 
-const InfoEvent: FC<InfoEventProps> = ({ event, onClose }) => {
+const InfoEvent: FC<InfoEventProps> = ({ event, onClose, className = "" }) => {
   const {
     data: reviews = [],
     isLoading: isLoadingReviews,
@@ -30,7 +31,7 @@ const InfoEvent: FC<InfoEventProps> = ({ event, onClose }) => {
   } = useGetReviewsByEvent(event.id);
   const user = useUser();
   const request: GetPaginatedEventsRequest = {
-    userId: user.data!.id,
+    userId: user.data?.id,
     page: 1,
     limit: 100,
   };
@@ -84,7 +85,7 @@ const InfoEvent: FC<InfoEventProps> = ({ event, onClose }) => {
   console.log(reviews);
 
   return (
-    <div className="p-3">
+    <div className={`p-3 ${className}`}>
       <InfoItemHeader
         itemId={event.id}
         image={event.image}
@@ -95,11 +96,13 @@ const InfoEvent: FC<InfoEventProps> = ({ event, onClose }) => {
         onClose={onClose}
         className="mb-4"
       />
-      <AttendanceButton
-        eventId={event.id}
-        isAttendingInit={event.assistants.some((a) => a === user.data!.id)}
-        totalAssistantsInit={event.totalAssistants}
-      />
+      {user.data && (
+        <AttendanceButton
+          eventId={event.id}
+          isAttendingInit={event.assistants.some((a) => a === user.data?.id)}
+          totalAssistantsInit={event.totalAssistants}
+        />
+      )}
       <InfoItemActionButtons
         itemId={event.id}
         isSaved={isSaved}
@@ -134,7 +137,7 @@ const InfoEvent: FC<InfoEventProps> = ({ event, onClose }) => {
           <hr />
         </>
       )}
-      <ListReviews reviews={reviews} />
+      <ListReviews itemType={Items.Evento} reviews={reviews} />
     </div>
   );
 };

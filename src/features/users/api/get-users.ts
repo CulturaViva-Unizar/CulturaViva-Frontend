@@ -3,12 +3,14 @@ import { api } from "../../../lib/api-client";
 import {
   ApiResponse,
   GetUsersRequest,
-  GetUsersResponse,
+  GetPaginatedUsersResponse,
 } from "../../../types/api";
-import { User } from "../types/models";
-import { mapUserResponseToUser } from "../utils/mapper";
+import { PaginatedUsersPage } from "../types/models";
+import { mapGetPaginatedUsersResponseToPaginatedUsersPage } from "../utils/mapper";
 
-const getUsers = async (request: GetUsersRequest): Promise<User[]> => {
+const getUsers = async (
+  request: GetUsersRequest
+): Promise<PaginatedUsersPage> => {
   const params = new URLSearchParams();
 
   if (request.name) {
@@ -28,13 +30,13 @@ const getUsers = async (request: GetUsersRequest): Promise<User[]> => {
   params.append("limit", request.limit.toString());
 
   const url = `/users?${params.toString()}`;
-  const response: ApiResponse<GetUsersResponse> = await api.get("/users");
+  const response: ApiResponse<GetPaginatedUsersResponse> = await api.get(url);
 
-  return response.data.map(mapUserResponseToUser);
+  return mapGetPaginatedUsersResponseToPaginatedUsersPage(response.data);
 };
 
 export const useGetUsers = (request: GetUsersRequest) => {
-  return useQuery<User[], Error>({
+  return useQuery<PaginatedUsersPage, Error>({
     queryKey: ["users", request],
     queryFn: () => getUsers(request),
   });
