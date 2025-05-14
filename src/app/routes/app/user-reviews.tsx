@@ -7,9 +7,13 @@ import { ErrorMessage } from "../../../components/errors/error-message";
 import LoadingIndicator from "../../../components/ui/loading-indicator";
 import { useState } from "react";
 
-function UserComments() {
+function UserReviews() {
   const { userId } = useParams();
-  const { data: reviews = [], isLoading, error } = useGetReviewsByUser(userId ?? "");
+  const {
+    data: reviews = [],
+    isLoading,
+    error,
+  } = useGetReviewsByUser(userId ?? "");
   const [searchText, setSearchText] = useState<string>("");
 
   if (isLoading && !error) {
@@ -21,18 +25,28 @@ function UserComments() {
   }
 
   return (
-    <MainLayout title={`Comentarios de User ${userId}`}>
+    <MainLayout title={`Comentarios de ${reviews[0].username}`}>
       <div className="mt-3 mb-5 d-flex flex-column align-items-start align-items-md-center justify-content-center">
         <div className="col-12 col-md-5">
-          <SearchBar value={searchText} onSearch={setSearchText} />
+          <SearchBar
+            value={searchText}
+            onSearch={setSearchText}
+            className="shadow-sm rounded-pill"
+          />
         </div>
       </div>
-      {reviews.map((review, i) => (
-        <div key={i}>
+      {reviews.map((review) => (
+        <div key={review.id}>
           <CommentCard
             item={review.itemId}
             rating={review.rating}
-            date={review.date}
+            date={new Date(review.date).toLocaleString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+              day: "2-digit",
+              month: "2-digit",
+              year: "2-digit",
+            })}
             comment={review.comment ?? ""}
           />
           <hr />
@@ -42,4 +56,4 @@ function UserComments() {
   );
 }
 
-export default UserComments;
+export default UserReviews;

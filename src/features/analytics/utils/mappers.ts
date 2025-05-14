@@ -1,4 +1,7 @@
-import { GetUsersAnalyticsResponse } from "../../../types/api";
+import {
+  GetEventsAnalyticsResponse,
+  GetUsersAnalyticsResponse,
+} from "../../../types/api";
 import { Analytics } from "../types/models";
 
 export const mapGetUsersAnalyticsResponseToAnalytics = (
@@ -6,5 +9,13 @@ export const mapGetUsersAnalyticsResponseToAnalytics = (
 ): Analytics => {
   return {
     totalUsers: src.count,
+  };
+};
+
+export const mapGetEventsAnalyticsResponseToAnalytics = (
+  src: GetEventsAnalyticsResponse
+): Analytics => {
+  return {
+    totalEvents: src.count,
   };
 };

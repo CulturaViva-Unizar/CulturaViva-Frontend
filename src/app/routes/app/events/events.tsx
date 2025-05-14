@@ -1,7 +1,5 @@
 import SearchBar from "../../../../components/ui/search-bar";
 import { Select } from "../../../../components/ui/select";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowDownWideShort } from "@fortawesome/free-solid-svg-icons";
 import { Card } from "../../../../components/ui/card";
 import MainLayout from "../../../../components/layouts/main-layout";
 import { useNavigate } from "react-router";
@@ -18,12 +16,14 @@ import { useQueries } from "@tanstack/react-query";
 import { getReviewsByEvent } from "../../../../features/reviews/api/get-reviews-by-event";
 import { Event } from "../../../../features/events/types/models";
 import BootstrapPagination from "../../../../components/ui/bootstrap-pagination";
+import { SortButton } from "../../../../components/ui/sort-button";
 
 function Events() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchText, setSearchText] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [date, setDate] = useState<Date | null>(null);
+  const [sortBy, setSortBy] = useState<string>("");
   const request: GetEventsRequest = useMemo(
     () => ({
       name: searchText,
@@ -32,21 +32,34 @@ function Events() {
         ? format(date, "yyyy-MM-dd")
         : format(new Date(), "yyyy-MM-dd"),
       endDate: date ? format(date, "yyyy-MM-dd") : undefined,
+      sort: sortBy == "" ? undefined : "comments",
+      order: sortBy,
       page: 1,
       limit: 8,
     }),
-    [searchText, category, date]
+    [searchText, category, date, sortBy]
   );
   const { data, isLoading, error } = useGetEvents(request);
+  const events = data?.items.filter(
+    (e) => e.coordinates && e.coordinates.latitude && e.coordinates.longitude
+  );
   const navigate = useNavigate();
 
   const reviewsQueries = useQueries({
-    queries: (data?.items ?? []).map((e: Event) => ({
+    queries: (events ?? []).map((e: Event) => ({
       queryKey: ["reviews", e.id],
       queryFn: () => getReviewsByEvent(e.id),
-      enabled: !!data,
+      enabled: !!events,
     })),
   });
+
+  const handleOrderBy = () => {
+    if (!sortBy || sortBy == "asc") {
+      setSortBy("desc");
+    } else {
+      setSortBy("asc");
+    }
+  };
 
   if (isLoading && !error) {
     return <LoadingIndicator message="Cargando eventos..." />;
@@ -57,7 +70,7 @@ function Events() {
   }
 
   return (
-    <MainLayout title="Eventos">
+    <MainLayout title="Todos los eventos">
       <div className="mt-3 mb-5 d-flex flex-column align-items-start align-items-md-center justify-content-center">
         <div className="col-12 col-md-5">
           <SearchBar
@@ -78,14 +91,15 @@ function Events() {
             onChange={setDate}
             className="shadow-sm bg-white"
           />
-          <button className="btn btn-light rounded-pill text-nowrap shadow-sm">
-            Comentarios
-            <FontAwesomeIcon icon={faArrowDownWideShort} className="ps-2" />
-          </button>
+          <SortButton
+            label="Comentarios"
+            sortBy={sortBy}
+            onClick={handleOrderBy}
+          />
         </div>
       </div>
       <div className="row g-4">
-        {data!.items.map((event: Event, i: number) => {
+        {events && events.map((event: Event, i: number) => {
           const rq = reviewsQueries[i];
           const reviews = rq.data ?? [];
           const totalReviews = reviews.length;

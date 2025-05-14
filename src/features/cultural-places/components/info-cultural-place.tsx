@@ -18,11 +18,13 @@ import ListReviews from "../../reviews/components/list-reviews";
 type InfoCulturalPlaceProps = {
   culturalPlace: CulturalPlace;
   onClose: () => void;
+  className?: string;
 };
 
 const InfoCulturalPlace: FC<InfoCulturalPlaceProps> = ({
   culturalPlace,
   onClose,
+  className = "",
 }) => {
   const {
     data: reviews = [],
@@ -70,9 +72,7 @@ const InfoCulturalPlace: FC<InfoCulturalPlaceProps> = ({
 
     return dist;
   }, [reviews]);
-  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${
-    culturalPlace.coordinates!.latitude
-  },${culturalPlace.coordinates!.longitude}`;
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${culturalPlace.location}`;
 
   if (isLoading && !error) {
     return (
@@ -87,7 +87,7 @@ const InfoCulturalPlace: FC<InfoCulturalPlaceProps> = ({
   }
 
   return (
-    <div className="p-3">
+    <div className={`p-3 ${className}`}>
       <InfoItemHeader
         itemId={culturalPlace.id}
         image={culturalPlace.image}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -7,7 +7,6 @@ import {
   faComment,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import Swal from "sweetalert2";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { RatingStars } from "../../../components/ui/rating-stars";
@@ -173,7 +172,7 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
       </div>
       <div className="mb-2">
         <RatingStars rating={rating} />
-        <span className="text-muted ms-2">{date}</span>
+        <span className="text-muted ms-2">{new Date(date).toLocaleString([], {hour: '2-digit', minute:'2-digit', day: '2-digit', month: '2-digit', year: '2-digit'})}</span>
       </div>
       <p>{comment}</p>
       <button className="btn btn-sm mt-2" >

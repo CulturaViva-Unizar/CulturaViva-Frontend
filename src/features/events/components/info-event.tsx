@@ -20,9 +20,10 @@ import ListReviews from "../../reviews/components/list-reviews";
 type InfoEventProps = {
   event: Event;
   onClose: () => void;
+  className?: string;
 };
 
-const InfoEvent: FC<InfoEventProps> = ({ event, onClose }) => {
+const InfoEvent: FC<InfoEventProps> = ({ event, onClose, className = "" }) => {
   const {
     data: reviews = [],
     isLoading: isLoadingReviews,
@@ -82,7 +83,7 @@ const InfoEvent: FC<InfoEventProps> = ({ event, onClose }) => {
   }
 
   return (
-    <div className="p-3">
+    <div className={`p-3 ${className}`}>
       <InfoItemHeader
         itemId={event.id}
         image={event.image}

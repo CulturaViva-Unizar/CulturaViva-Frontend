@@ -21,24 +21,30 @@ function EventDetails() {
   }
 
   return (
-    <InfoEvent
-      event={{
-        id: event!.id,
-        title: event!.title,
-        description: event!.description,
-        image: event!.image,
-        category: event!.category,
-        location: event!.location,
-        coordinates: event!.coordinates,
-        startDate: event!.startDate,
-        endDate: event!.endDate,
-        totalAssistants: event!.totalAssistants,
-        assistants: event!.assistants,
-        price: event!.price,
-        instagram: event!.instagram,
-      }}
-      onClose={() => window.history.back()}
-    />
+    <div className="d-flex">
+      <div className="col-md-3"></div>
+      <InfoEvent
+        event={{
+          id: event!.id,
+          title: event!.title,
+          description: event!.description,
+          image: event!.image,
+          category: event!.category,
+          location: event!.location,
+          coordinates: event!.coordinates,
+          startDate: event!.startDate,
+          endDate: event!.endDate,
+          totalAssistants: event!.totalAssistants,
+          assistants: event!.assistants,
+          price: event!.price,
+          instagram: event!.instagram,
+          twitter: event!.twitter,
+        }}
+        onClose={() => window.history.back()}
+        className="col-md my-3"
+      />
+      <div className="col-md-3"></div>
+    </div>
   );
 }
 

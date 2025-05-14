@@ -1,7 +1,5 @@
 import SearchBar from "../../../../components/ui/search-bar";
 import { Select } from "../../../../components/ui/select";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowDownWideShort } from "@fortawesome/free-solid-svg-icons";
 import { Card } from "../../../../components/ui/card";
 import MainLayout from "../../../../components/layouts/main-layout";
 import { useNavigate } from "react-router";
@@ -14,44 +12,57 @@ import { CATEGORY_SELECT_OPTIONS } from "../../../../shared/constants/select-opt
 import { useState, useMemo } from "react";
 import { useQueries } from "@tanstack/react-query";
 import { getReviewsByCulturalPlace } from "../../../../features/reviews/api/get-reviews-by-cultural-place";
-import { DatePicker } from "../../../../components/ui/date-picker";
 import BootstrapPagination from "../../../../components/ui/bootstrap-pagination";
+import { SortButton } from "../../../../components/ui/sort-button";
 
 function CulturalPlaces() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchText, setSearchText] = useState<string>("");
   const [category, setCategory] = useState<string>("");
-  const [date, setDate] = useState<Date | null>(null);
+  const [sortBy, setSortBy] = useState<string>("");
   const request = useMemo(
     () => ({
       name: searchText,
       category,
+      sort: sortBy == "" ? undefined : "comments",
+      order: sortBy,
       page: 1,
       limit: 8,
     }),
-    [searchText, category]
+    [searchText, category, sortBy]
   );
   const { data, isLoading, error } = useGetCulturalPlaces(request);
+  const culturalPlaces = data?.items.filter(
+    (p) => p.coordinates && p.coordinates.latitude && p.coordinates.longitude
+  );
   const navigate = useNavigate();
 
   const reviewsQueries = useQueries({
-    queries: (data?.items ?? []).map((p: CulturalPlace) => ({
+    queries: (culturalPlaces ?? []).map((p: CulturalPlace) => ({
       queryKey: ["reviews", p.id],
       queryFn: () => getReviewsByCulturalPlace(p.id),
-      enabled: !!data,
+      enabled: !!culturalPlaces,
     })),
   });
 
+  const handleOrderBy = () => {
+    if (!sortBy || sortBy == "asc") {
+      setSortBy("desc");
+    } else {
+      setSortBy("asc");
+    }
+  };
+
   if (isLoading && !error) {
-    return <LoadingIndicator message="Cargando eventos..." />;
+    return <LoadingIndicator message="Cargando lugares culturales..." />;
   }
 
   if (error) {
-    return <ErrorMessage message="Error al cargar los eventos" />;
+    return <ErrorMessage message="Error al cargar los lugares culturales" />;
   }
 
   return (
-    <MainLayout title="Lugares culturales">
+    <MainLayout title="Todos los lugares culturales">
       <div className="mt-3 mb-5 d-flex flex-column align-items-start align-items-md-center justify-content-center">
         <div className="col-12 col-md-5">
           <SearchBar
@@ -67,45 +78,42 @@ function CulturalPlaces() {
             onChange={setCategory}
             className="shadow-sm"
           />
-          <DatePicker
-            value={date}
-            onChange={setDate}
-            className="shadow-sm bg-white"
+          <SortButton
+            label="Comentarios"
+            sortBy={sortBy}
+            onClick={handleOrderBy}
           />
-          <button className="btn btn-light rounded-pill text-nowrap shadow-sm">
-            Comentarios
-            <FontAwesomeIcon icon={faArrowDownWideShort} className="ps-2" />
-          </button>
         </div>
       </div>
       <div className="row g-4">
-        {data!.items.map((culturalPlace: CulturalPlace, i: number) => {
-          const rq = reviewsQueries[i];
-          const reviews = rq.data ?? [];
-          const totalReviews = reviews.length;
-          const avgRating =
-            totalReviews > 0
-              ? reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
-              : 0;
+        {culturalPlaces &&
+          culturalPlaces.map((culturalPlace: CulturalPlace, i: number) => {
+            const rq = reviewsQueries[i];
+            const reviews = rq.data ?? [];
+            const totalReviews = reviews.length;
+            const avgRating =
+              totalReviews > 0
+                ? reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
+                : 0;
 
-          return (
-            <div className="col-md-3" key={culturalPlace.id}>
-              <Card
-                title={culturalPlace.title}
-                location={culturalPlace.location}
-                rating={avgRating}
-                reviews={totalReviews}
-                description={culturalPlace.description}
-                className="h-100 rounded bg-light shadow"
-                onClick={() =>
-                  navigate(
-                    paths.app.culturalPlaces.details.getHref(culturalPlace.id)
-                  )
-                }
-              />
-            </div>
-          );
-        })}
+            return (
+              <div className="col-md-3" key={culturalPlace.id}>
+                <Card
+                  title={culturalPlace.title}
+                  location={culturalPlace.location}
+                  rating={avgRating}
+                  reviews={totalReviews}
+                  description={culturalPlace.description}
+                  className="h-100 rounded bg-light shadow"
+                  onClick={() =>
+                    navigate(
+                      paths.app.culturalPlaces.details.getHref(culturalPlace.id)
+                    )
+                  }
+                />
+              </div>
+            );
+          })}
       </div>
       <BootstrapPagination
         currentPage={currentPage}

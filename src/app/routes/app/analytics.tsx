@@ -12,7 +12,11 @@ import { useState } from "react";
 import { useGetUsersAnalytics } from "../../../features/analytics/api/get-users-analytics";
 import LoadingIndicator from "../../../components/ui/loading-indicator";
 import { ErrorMessage } from "../../../components/errors/error-message";
-import { GetUsersAnalyticsRequest } from "../../../types/api";
+import {
+  GetEventsAnalyticsRequest,
+  GetUsersAnalyticsRequest,
+} from "../../../types/api";
+import { useGetEventsAnalytics } from "../../../features/analytics/api/get-events-analytics";
 
 const labels = [
   "Enero",
@@ -81,6 +85,7 @@ const doughnutChartData = {
 
 function Analytics() {
   const [userFilterOption, setUserFilterOption] = useState("");
+  const [categoryFilterOption, setCategoryFilterOption] = useState("");
   const getUsersAnalyticsRequest: GetUsersAnalyticsRequest = {
     type: userFilterOption,
   };
@@ -89,8 +94,16 @@ function Analytics() {
     isLoading: isLoadingUsersAnalytics,
     error: errorUsersAnalytics,
   } = useGetUsersAnalytics(getUsersAnalyticsRequest);
-  const isLoading = isLoadingUsersAnalytics;
-  const isError = errorUsersAnalytics;
+  const getEventsAnalyticsRequest: GetEventsAnalyticsRequest = {
+    category: categoryFilterOption,
+  };
+  const {
+    data: eventsAnalytics,
+    isLoading: isLoadingEventsAnalytics,
+    error: errorEventsAnalytics,
+  } = useGetEventsAnalytics(getEventsAnalyticsRequest);
+  const isLoading = isLoadingUsersAnalytics || isLoadingEventsAnalytics;
+  const isError = errorUsersAnalytics || errorEventsAnalytics;
 
   if (isLoading && !isError) {
     return <LoadingIndicator message="Cargando estadísticas..." />;
@@ -142,12 +155,12 @@ function Analytics() {
               <h5>Eventos totales</h5>
               <Select
                 options={CATEGORY_SELECT_OPTIONS}
-                value=""
-                onChange={(newValue) => console.log(newValue)}
+                value={categoryFilterOption}
+                onChange={setCategoryFilterOption}
               />
             </div>
             <div className="card-body text-center">
-              <h1>120</h1>
+              <h1>{eventsAnalytics!.totalEvents}</h1>
             </div>
           </div>
         </div>

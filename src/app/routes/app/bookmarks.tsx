@@ -105,7 +105,6 @@ function Bookmarks() {
       <div className="row g-4">
         {data?.items.map((item) => {
           const isEvent = (item as Event).startDate !== undefined;
-
           return (
             <div className="col-md-4" key={item.id}>
               <Card
