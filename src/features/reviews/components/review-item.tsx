@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -8,14 +8,20 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import { Link } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import { RatingStars } from "../../../components/ui/rating-stars";
-import { useUser } from "../../../lib/auth";
+import { useLogout, useUser } from "../../../lib/auth";
 import { paths } from "../../../config/paths";
 import Swal from "sweetalert2";
 import { Items } from "../../../shared/types/enums";
 import { useDeleteReviewFromEvent } from "../api/delete-review-from-event";
 import { useDeleteReviewFromCulturalPlace } from "../api/delete-review-from-cultural-place";
+import { useCreateResponseToReview } from "../api/create-response";
+import { useGetRepliesByEvent } from "../api/get-replies-by-event";
+import { GetRepliesRequest } from "../../../types/api";
+import LoadingIndicator from "../../../components/ui/loading-indicator";
+import { ErrorMessage } from "../../../components/errors/error-message";
+import { ReplyItem } from "./reply-item";
 
 type ReviewItemProps = {
   id: string;
@@ -37,30 +43,28 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
   date,
 }) => {
   const user = useUser();
+  const logout = useLogout();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get("redirectTo");
   const deleteReviewFromEventMutation = useDeleteReviewFromEvent();
   const deleteReviewFromCulturalPlaceMutation =
     useDeleteReviewFromCulturalPlace();
+  const createResponseToReviewMutation = useCreateResponseToReview();
+  const request: GetRepliesRequest = useMemo(
+    () => ({
+      itemId,
+      commentId: id,
+    }),
+    [id, itemId]
+  );
+  const {
+    data: replies = [],
+    isLoading,
+    error,
+  } = useGetRepliesByEvent(request);
 
-  /*
-  const addReply = (
-    replyList: Reply[],
-    parentReply: Reply,
-    newReply: Reply
-  ): Reply[] => {
-    return replyList.map((reply) => {
-      if (reply === parentReply) {
-        return { ...reply, replies: [...(reply.replies || []), newReply] };
-      } else if (reply.replies) {
-        return {
-          ...reply,
-          replies: addReply(reply.replies, parentReply, newReply),
-        };
-      }
-      return reply;
-    });
-  };
-
-  const handleReply = (parentReply?: Reply) => {
+  const handleReply = (commentId: string) => {
     if (!user.data) {
       logout.mutate(undefined);
       navigate(paths.auth.login.getHref(redirectTo));
@@ -73,29 +77,19 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
       inputPlaceholder: "Escribe tu respuesta...",
       showCancelButton: true,
       confirmButtonText: "Enviar",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed && result.value) {
-        const newReply: Reply = {
-          userId: user.data!.id,
-          username: "Tú",
-          comment: result.value,
-          date: "hace un momento",
-          replies: [],
-          onReply: handleReply,
-          onDelete: handleDeleteComment,
-        };
-
-        setAllReplies((prevReplies) => {
-          if (parentReply) {
-            return addReply(prevReplies, parentReply, newReply);
-          } else {
-            return [...prevReplies, newReply];
-          }
+        await createResponseToReviewMutation.mutateAsync({
+          itemId,
+          itemType,
+          commentId,
+          data: {
+            text: result.value,
+          },
         });
       }
     });
   };
-  */
 
   const deleteReviewFromEvent = () => {
     deleteReviewFromEventMutation.mutate(
@@ -128,7 +122,7 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
   const handleDeleteReview = () => {
     Swal.fire({
       title: "¡ATENCIÓN!",
-      text: "Se va a eliminar un comentario",
+      text: "Se va a eliminar una reseña",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Eliminar",
@@ -148,6 +142,40 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
       }
     });
   };
+
+  const handleDeleteReply = () => {
+    Swal.fire({
+      title: "¡ATENCIÓN!",
+      text: "Se va a eliminar un comentario",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Eliminar",
+      reverseButtons: true,
+      customClass: {
+        confirmButton: "btn btn-danger ms-2",
+        cancelButton: "btn btn-secondary",
+      },
+      buttonsStyling: false,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (itemType == Items.Evento) {
+          deleteReplyFromEvent();
+        } else {
+          deleteReplyFromCulturalPlace();
+        }
+      }
+    });
+  };
+
+  if (isLoading && !error) {
+    return <LoadingIndicator message="Cargando respuestas de las reseñas..." />;
+  }
+
+  if (error) {
+    return (
+      <ErrorMessage message="Error cargando las respuestas de las reseñas" />
+    );
+  }
 
   return (
     <div className="mb-3">
@@ -182,7 +210,10 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
         </span>
       </div>
       <p>{comment}</p>
-      <button className="btn btn-sm mt-2">
+      {replies && replies.map((reply, index) => (
+        <ReplyItem key={index} {...reply} onReply={() => handleReply()} onDelete={handleDeleteReply} />
+      ))}
+      <button className="btn btn-sm mt-2" onClick={() => handleReply(id)}>
         <FontAwesomeIcon icon={faReply} className="me-2" /> Responder
       </button>
     </div>

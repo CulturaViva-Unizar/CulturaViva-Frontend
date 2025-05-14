@@ -114,7 +114,7 @@ export type GetPaginatedEventsRequest = {
   userId?: string;
   eventType?: string;
   eventName?: string;
-  eventDate?: Date;
+  eventDate?: string;
   eventCategory?: string;
   page: number;
   limit: number;
@@ -211,6 +211,17 @@ export type CreateReviewRequest = {
   text: string;
   value: number;
 };
+
+export type CreateResponseToReviewRequest = {
+  text: string;
+};
+
+export type GetRepliesRequest = {
+  itemId: string;
+  commentId: string;
+};
+
+export type GetRepliesResponse = ReviewResponse[];
 
 /* Analytics -------------------------------------------------------------------------*/
 

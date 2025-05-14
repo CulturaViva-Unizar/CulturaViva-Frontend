@@ -1,13 +1,5 @@
-import { Categories, Items, Timeframe } from "../types/enums";
+import { Items, Timeframe } from "../types/enums";
 import { SelectOption } from "../types/models";
-
-export const CATEGORY_SELECT_OPTIONS: SelectOption[] = [
-  { value: "", label: "Categoría" },
-  ...Object.values(Categories).map((v) => ({
-    value: v,
-    label: v,
-  })),
-];
 
 export const ITEM_TYPE_SELECT_OPTIONS: SelectOption[] = [
   { value: "", label: "Todos" },

@@ -33,7 +33,7 @@ const InfoCulturalPlace: FC<InfoCulturalPlaceProps> = ({
   } = useGetReviewsByCulturalPlace(culturalPlace.id);
   const user = useUser();
   const request: GetPaginatedEventsRequest = {
-    userId: user.data!.id,
+    userId: user.data?.id,
     page: 1,
     limit: 100,
   };

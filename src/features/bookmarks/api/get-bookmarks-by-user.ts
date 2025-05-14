@@ -20,7 +20,7 @@ export const getBookmarksByUser = async (
     params.append("name", request.eventName);
   }
   if (request.eventDate) {
-    params.append("date", request.eventDate.toISOString());
+    params.append("date", request.eventDate);
   }
   if (request.eventCategory) {
     params.append("category", request.eventCategory);
@@ -39,5 +39,6 @@ export const useGetBookmarksByUser = (request: GetPaginatedEventsRequest) => {
   return useQuery<BookmarksPage, Error>({
     queryKey: ["bookmarks", request],
     queryFn: () => getBookmarksByUser(request),
+    enabled: Boolean(request.userId)
   });
 };

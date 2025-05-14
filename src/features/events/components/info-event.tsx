@@ -31,7 +31,7 @@ const InfoEvent: FC<InfoEventProps> = ({ event, onClose, className = "" }) => {
   } = useGetReviewsByEvent(event.id);
   const user = useUser();
   const request: GetPaginatedEventsRequest = {
-    userId: user.data!.id,
+    userId: user.data?.id,
     page: 1,
     limit: 100,
   };
@@ -94,11 +94,13 @@ const InfoEvent: FC<InfoEventProps> = ({ event, onClose, className = "" }) => {
         onClose={onClose}
         className="mb-4"
       />
-      <AttendanceButton
-        eventId={event.id}
-        isAttendingInit={event.assistants.some((a) => a === user.data!.id)}
-        totalAssistantsInit={event.totalAssistants}
-      />
+      {user.data && (
+        <AttendanceButton
+          eventId={event.id}
+          isAttendingInit={event.assistants.some((a) => a === user.data?.id)}
+          totalAssistantsInit={event.totalAssistants}
+        />
+      )}
       <InfoItemActionButtons
         itemId={event.id}
         isSaved={isSaved}

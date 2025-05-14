@@ -105,16 +105,18 @@ const InfoItemActionButtons: FC<InfoItemActionButtonsProps> = ({
       className="row flex-nowrap overflow-x-auto hide-scrollbar gap-2 gx-2 py-3"
       style={{ WebkitOverflowScrolling: "touch" }}
     >
-      <Button
-        className={`btn rounded-pill w-auto ${
-          isSaved ? "btn-dark" : "btn-light"
-        }`}
-        onClick={toggleSaveBookmark}
-        disabled={isLoading}
-      >
-        <FontAwesomeIcon icon={faBookmark} className="me-2" />
-        {isLoading ? "Cargando..." : isSaved ? "Dejar de guardar" : "Guardar"}
-      </Button>
+      {userId && (
+        <Button
+          className={`btn rounded-pill w-auto ${
+            isSaved ? "btn-dark" : "btn-light"
+          }`}
+          onClick={toggleSaveBookmark}
+          disabled={isLoading}
+        >
+          <FontAwesomeIcon icon={faBookmark} className="me-2" />
+          {isLoading ? "Cargando..." : isSaved ? "Dejar de guardar" : "Guardar"}
+        </Button>
+      )}
 
       <Button
         as="a"

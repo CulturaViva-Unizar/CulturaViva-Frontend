@@ -8,12 +8,13 @@ import { useGetCulturalPlaces } from "../../../../features/cultural-places/api/g
 import { CulturalPlace } from "../../../../features/cultural-places/types/models";
 import { ErrorMessage } from "../../../../components/errors/error-message";
 import LoadingIndicator from "../../../../components/ui/loading-indicator";
-import { CATEGORY_SELECT_OPTIONS } from "../../../../shared/constants/select-options";
 import { useState, useMemo } from "react";
 import { useQueries } from "@tanstack/react-query";
 import { getReviewsByCulturalPlace } from "../../../../features/reviews/api/get-reviews-by-cultural-place";
 import BootstrapPagination from "../../../../components/ui/bootstrap-pagination";
 import { SortButton } from "../../../../components/ui/sort-button";
+import { useGetCulturalPlaceCategories } from "../../../../features/cultural-places/api/get-cultural-place-categories";
+import { useGetEventCategories } from "../../../../features/events/api/get-event-categories";
 
 function CulturalPlaces() {
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -31,11 +32,44 @@ function CulturalPlaces() {
     }),
     [searchText, category, sortBy]
   );
-  const { data, isLoading, error } = useGetCulturalPlaces(request);
+  const {
+    data,
+    isLoading: isLoadingCulturalPlaces,
+    error: errorCulturalPlaces,
+  } = useGetCulturalPlaces(request);
   const culturalPlaces = data?.items.filter(
     (p) => p.coordinates && p.coordinates.latitude && p.coordinates.longitude
   );
   const navigate = useNavigate();
+
+  const {
+    data: eventCategories,
+    isLoading: isLoadingEventCategories,
+    error: errorEventCategories,
+  } = useGetEventCategories();
+  const {
+    data: culturalPlaceCategories,
+    isLoading: isLoadingCulturalPlaceCategories,
+    error: errorCulturalPlaceCategories,
+  } = useGetCulturalPlaceCategories();
+
+  const eventOptions =
+    eventCategories?.map((cat) => ({
+      value: cat,
+      label: cat,
+    })) ?? [];
+
+  const culturalOptions =
+    culturalPlaceCategories?.map((cat) => ({
+      value: cat,
+      label: cat,
+    })) ?? [];
+
+  const categoryOptions = [
+    { value: "", label: "Categoría" },
+    ...eventOptions,
+    ...culturalOptions,
+  ];
 
   const reviewsQueries = useQueries({
     queries: (culturalPlaces ?? []).map((p: CulturalPlace) => ({
@@ -53,12 +87,20 @@ function CulturalPlaces() {
     }
   };
 
-  if (isLoading && !error) {
-    return <LoadingIndicator message="Cargando lugares culturales..." />;
+  const isLoading =
+    isLoadingEventCategories ||
+    isLoadingCulturalPlaceCategories ||
+    isLoadingCulturalPlaces;
+  const isError = Boolean(
+    errorEventCategories || errorCulturalPlaceCategories || errorCulturalPlaces
+  );
+
+  if (isLoading && !isError) {
+    return <LoadingIndicator message="Cargando eventos..." />;
   }
 
-  if (error) {
-    return <ErrorMessage message="Error al cargar los lugares culturales" />;
+  if (isError) {
+    return <ErrorMessage message="Error al cargar los eventos" />;
   }
 
   return (
@@ -73,10 +115,11 @@ function CulturalPlaces() {
         </div>
         <div className="d-flex gap-3 mt-3">
           <Select
-            options={CATEGORY_SELECT_OPTIONS}
-            value=""
-            onChange={setCategory}
             className="shadow-sm"
+            options={categoryOptions}
+            value={category}
+            onChange={setCategory}
+            style={{ maxWidth: 150 }}
           />
           <SortButton
             label="Comentarios"
@@ -86,7 +129,7 @@ function CulturalPlaces() {
         </div>
       </div>
       <div className="row g-4">
-        {culturalPlaces &&
+        {culturalPlaces && culturalPlaces?.length > 0 ? (
           culturalPlaces.map((culturalPlace: CulturalPlace, i: number) => {
             const rq = reviewsQueries[i];
             const reviews = rq.data ?? [];
@@ -99,6 +142,7 @@ function CulturalPlaces() {
             return (
               <div className="col-md-3" key={culturalPlace.id}>
                 <Card
+                  image={culturalPlace.image}
                   title={culturalPlace.title}
                   location={culturalPlace.location}
                   rating={avgRating}
@@ -113,7 +157,12 @@ function CulturalPlaces() {
                 />
               </div>
             );
-          })}
+          })
+        ) : (
+          <div className="text-center">
+            <strong>Sin resultados :(</strong>
+          </div>
+        )}
       </div>
       <BootstrapPagination
         currentPage={currentPage}
