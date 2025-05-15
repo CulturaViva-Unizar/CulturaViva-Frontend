@@ -5,12 +5,10 @@ import {
   GetUsersAnalyticsResponse,
 } from "../../../types/api";
 import { api } from "../../../lib/api-client";
-import { Analytics } from "../types/models";
-import { mapGetUsersAnalyticsResponseToAnalytics } from "../utils/mappers";
 
 export const getUsersAnalytics = async (
   request: GetUsersAnalyticsRequest
-): Promise<Analytics> => {
+): Promise<number> => {
   const params = new URLSearchParams();
 
   if (request.type) {
@@ -21,11 +19,11 @@ export const getUsersAnalytics = async (
     `/statistics/users?${params.toString()}`
   );
 
-  return mapGetUsersAnalyticsResponseToAnalytics(response.data);
+  return response.data.count;
 };
 
 export const useGetUsersAnalytics = (request: GetUsersAnalyticsRequest) => {
-  return useQuery<Analytics, Error>({
+  return useQuery<number, Error>({
     queryKey: ["analytics", "user", request],
     queryFn: () => getUsersAnalytics(request),
   });

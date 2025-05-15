@@ -14,32 +14,16 @@ import { getReviewsByEvent } from "../../../../features/reviews/api/get-reviews-
 import { ErrorMessage } from "../../../../components/errors/error-message";
 import LoadingIndicator from "../../../../components/ui/loading-indicator";
 import { useUser } from "../../../../lib/auth";
-import { useGetEventCategories } from "../../../../features/events/api/get-event-categories";
-
-const pieData = {
-  labels: ["Arte", "Ocio", "Otros"],
-  datasets: [
-    {
-      data: [40, 35, 25],
-      backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
-      hoverBackgroundColor: ["#FF4F74", "#2A92D6", "#FFB400"],
-    },
-  ],
-};
-
-const pieOptions = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: "bottom" as const,
-    },
-  },
-};
+import { useGetAssistedEventsByCategoryAndUserAnalytics } from "../../../../features/analytics/api/get-assisted-events-by-category-and-user";
+import { generateColors, pieOptions } from "../../../../utils/charts";
 
 function AssistedEvents() {
+  const navigate = useNavigate();
   const userId = useUser().data?.id;
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [category, setCategory] = useState<string>("");
+  const [eventCategories, setEventCategories] = useState<string[]>([]);
+
   const request: GetPaginatedEventsRequest = useMemo(
     () => ({
       userId,
@@ -54,21 +38,6 @@ function AssistedEvents() {
     isLoading: isLoadingEvents,
     error: errorEvents,
   } = useGetAssistedEventsByUser(request);
-  const navigate = useNavigate();
-
-  const {
-    data: eventCategories,
-    isLoading: isLoadingEventCategories,
-    error: errorEventCategories,
-  } = useGetEventCategories();
-
-  const categoryOptions = [
-    { value: "", label: "Categoría" },
-    ...(eventCategories?.map((cat) => ({
-      value: cat,
-      label: cat,
-    })) ?? []),
-  ];
 
   const reviewsQueries = useQueries({
     queries: (data?.items ?? []).map((e: Event) => ({
@@ -78,8 +47,72 @@ function AssistedEvents() {
     })),
   });
 
-  const isLoading = isLoadingEventCategories || isLoadingEvents;
-  const isError = Boolean(errorEventCategories || errorEvents);
+  const {
+    data: analyticsData,
+    isLoading: isLoadingAnalytics,
+    error: errorAnalytics,
+  } = useGetAssistedEventsByCategoryAndUserAnalytics(userId!);
+
+  const pieData = useMemo(() => {
+    if (!analyticsData) {
+      return {
+        labels: [],
+        datasets: [{ data: [], backgroundColor: [], hoverBackgroundColor: [] }],
+      };
+    }
+
+    const grouped: Record<string, number> = {};
+    // Filtra y agrupa por categoría no vacía
+    analyticsData
+      .filter((item) => item.category && item.category.trim() !== "")
+      .forEach((item) => {
+        grouped[item.category] = (grouped[item.category] || 0) + item.count;
+      });
+
+    const labels = Object.keys(grouped);
+    setEventCategories(labels);
+    const dataValues = labels.map((label) => grouped[label]);
+    const { backgroundColor, hoverBackgroundColor } = generateColors(
+      labels.length
+    );
+
+    return {
+      labels,
+      datasets: [
+        {
+          data: dataValues,
+          backgroundColor,
+          hoverBackgroundColor,
+        },
+      ],
+    };
+  }, [analyticsData]);
+
+  const chartOptions = useMemo(
+    () => ({
+      ...pieOptions,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      onClick: (evt: any, active: any[]) => {
+        if (!active.length) return;
+        const idx = active[0].index;
+        const label = pieData.labels[idx];
+        setCategory(label);
+        setCurrentPage(1);
+      },
+    }),
+    [pieData]
+  );
+
+  const categoryOptions = [
+    { value: "", label: "Categoría" },
+    ...(eventCategories?.map((cat) => ({
+      value: cat,
+      label: cat,
+    })) ?? []),
+  ];
+
+  const isLoading = isLoadingEvents || isLoadingAnalytics;
+  const isError = Boolean(errorEvents || errorAnalytics);
 
   if (isLoading && !isError) {
     return <LoadingIndicator message="Cargando eventos asistidos..." />;
@@ -92,7 +125,7 @@ function AssistedEvents() {
   return (
     <MainLayout title="Eventos asistidos">
       <div className="d-md-flex">
-        <div className="col-md-4 d-flex flex-column align-items-center">
+        <div className="col-md-3 d-flex flex-column align-items-center mt-4">
           <Select
             className="shadow"
             options={categoryOptions}
@@ -100,19 +133,24 @@ function AssistedEvents() {
             onChange={setCategory}
             style={{ maxWidth: 150 }}
           />
-          <PieChart data={pieData} options={pieOptions} className="m-4" />
+          <PieChart
+            data={pieData}
+            options={chartOptions}
+            className="m-4 h-100"
+          />
         </div>
-        <div className="flex-column col-md-8 row">
-          <div className="row g-4 m-0">
+        <div className="flex-column col-md-9 row">
+          <div className="row g-4 m-0 align-items-stretch">
             {data && data.items.length > 0 ? (
               data.items.map((event: Event, i: number) => {
                 const rq = reviewsQueries[i];
                 const reviews = rq.data ?? [];
                 const totalReviews = reviews.length;
+                const parentReviews = reviews.filter((r) => !r.responseTo);
                 const avgRating =
-                  totalReviews > 0
-                    ? reviews.reduce((sum, r) => sum + r.rating, 0) /
-                      totalReviews
+                  parentReviews.length > 0
+                    ? parentReviews.reduce((sum, r) => sum + r.rating, 0) /
+                      parentReviews.length
                     : 0;
 
                 return (

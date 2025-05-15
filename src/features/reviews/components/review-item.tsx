@@ -25,6 +25,7 @@ import { ReplyItem } from "./reply-item";
 import { useGetChatsByUser } from "../../chats/api/get-chats-by-user";
 import { Chat } from "../../chats/types/models";
 import { usePostNewChatByUser } from "../../chats/api/post-new-chat-by-user";
+import { formatDate } from "../../../utils/date";
 
 type ReviewItemProps = {
   id: string;
@@ -208,15 +209,7 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
       </div>
       <div className="mb-2">
         <RatingStars rating={rating} />
-        <span className="text-muted ms-2">
-          {new Date(date).toLocaleString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-            day: "2-digit",
-            month: "2-digit",
-            year: "2-digit",
-          })}
-        </span>
+        <span className="text-muted ms-2">{formatDate(date)}</span>
       </div>
       <p>{comment}</p>
       {replies &&

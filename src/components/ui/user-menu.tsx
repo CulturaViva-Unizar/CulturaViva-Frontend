@@ -185,7 +185,7 @@ export const UserMenu: FC<UserMenuProps> = ({ className = "" }) => {
                     className="dropdown-item py-2 btn"
                   >
                     <FontAwesomeIcon icon={faClock} className="col-1 me-2" />
-                    <span className="col">Próximos</span>
+                    <span className="col">Próximos a asistir</span>
                   </Link>
                 </li>
               </>

@@ -5,12 +5,10 @@ import {
   GetEventsAnalyticsResponse,
 } from "../../../types/api";
 import { api } from "../../../lib/api-client";
-import { Analytics } from "../types/models";
-import { mapGetEventsAnalyticsResponseToAnalytics } from "../utils/mappers";
 
 export const getEventsAnalytics = async (
   request: GetEventsAnalyticsRequest
-): Promise<Analytics> => {
+): Promise<number> => {
   const params = new URLSearchParams();
 
   if (request.category) {
@@ -21,11 +19,11 @@ export const getEventsAnalytics = async (
     `/statistics/events?${params.toString()}`
   );
 
-  return mapGetEventsAnalyticsResponseToAnalytics(response.data);
+  return response.data.count;
 };
 
 export const useGetEventsAnalytics = (request: GetEventsAnalyticsRequest) => {
-  return useQuery<Analytics, Error>({
+  return useQuery<number, Error>({
     queryKey: ["analytics", "events", request],
     queryFn: () => getEventsAnalytics(request),
   });

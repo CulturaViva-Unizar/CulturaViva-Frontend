@@ -18,6 +18,7 @@ import { useGetChatsByUser } from "../../chats/api/get-chats-by-user";
 import { usePostNewChatByUser } from "../../chats/api/post-new-chat-by-user";
 import { Chat } from "../../chats/types/models";
 import { useNavigate } from "react-router";
+import { formatDate } from "../../../utils/date";
 
 type ReplyItemProps = {
   id: string;
@@ -85,7 +86,7 @@ export const ReplyItem: React.FC<ReplyItemProps> = ({
       );
     }
   };
-  
+
   if (isLoading && !error) {
     return (
       <LoadingIndicator message="Cargando respuestas de los comentarios..." />
@@ -121,15 +122,7 @@ export const ReplyItem: React.FC<ReplyItemProps> = ({
           </button>
         )}
       </div>
-      <span className="text-muted small">
-        {new Date(date).toLocaleString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-          day: "2-digit",
-          month: "2-digit",
-          year: "2-digit",
-        })}
-      </span>
+      <span className="text-muted small">{formatDate(date)}</span>
       <p className="mb-2">{comment}</p>
       {user.data && user.data.id !== userId && (
         <button className="btn btn-sm mt-2" onClick={() => onReply(id)}>

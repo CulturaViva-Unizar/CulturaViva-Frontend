@@ -6,6 +6,7 @@ import { useGetReviewsByUser } from "../../../features/reviews/api/get-reviews-b
 import { ErrorMessage } from "../../../components/errors/error-message";
 import LoadingIndicator from "../../../components/ui/loading-indicator";
 import { useMemo, useState } from "react";
+import { formatDate } from "../../../utils/date";
 
 function UserReviews() {
   const { userId } = useParams();
@@ -54,13 +55,7 @@ function UserReviews() {
                 itemTitle={review.itemTitle!}
                 itemType={review.itemType!}
                 rating={review.rating}
-                date={new Date(review.date).toLocaleString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "2-digit",
-                })}
+                date={formatDate(review.date)}
                 comment={review.comment ?? ""}
                 deleted={review.deleted}
               />

@@ -274,6 +274,14 @@ export type GetEventsAnalyticsResponse = {
   count: number;
 };
 
+export type EventByCategoryAnalytics = {
+  category: string;
+  count: number;
+}
+
+export type GetEventsByCategoryResponse = EventByCategoryAnalytics[];
+
+
 /* Users -----------------------------------------------------------------------------*/
 
 export type UserResponse = {

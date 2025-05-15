@@ -9,7 +9,7 @@ import { GoBackBtn } from "../../../components/ui/go-back-btn";
 import { Message } from "../../../components/ui/message";
 import LoadingIndicator from "../../../components/ui/loading-indicator";
 import { ErrorMessage } from "../../../components/errors/error-message";
-
+import { formatDate } from "../../../utils/date";
 
 function ChatConversation() {
   const { chatId } = useParams<{ chatId: string }>();
@@ -25,17 +25,15 @@ function ChatConversation() {
     data: initialMessages = [],
     isLoading,
     isError,
-    error,
   } = useGetMessagesByChat(chatId ?? "");
 
-  const { messages: socketMessages, sendMessage } = useChat(chatId ?? "" );
+  const { messages: socketMessages, sendMessage } = useChat(chatId ?? "");
   const endRef = useRef<HTMLDivElement | null>(null);
   const [text, setText] = useState("");
   const height = window.innerWidth < 768 ? "95vh" : "85vh";
 
   const allMessages = [...initialMessages, ...socketMessages].sort(
-    (a, b) =>
-      new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
   );
 
   const handleSubmit = (e: FormEvent) => {
@@ -48,7 +46,7 @@ function ChatConversation() {
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [allMessages]);        // ← se ejecuta en cada cambio
+  }, [allMessages]); // ← se ejecuta en cada cambio
 
   if (!chatId) {
     return <ErrorMessage message="Conversación no válida" />;
@@ -56,10 +54,10 @@ function ChatConversation() {
 
   if (isLoading) {
     return <LoadingIndicator message="Cargando conversación..." />;
-  };
+  }
   if (isError) {
     return <ErrorMessage message="Error al cargar la conversación" />;
-  };
+  }
 
   return (
     <div
@@ -83,7 +81,7 @@ function ChatConversation() {
           <Message
             key={msg.id}
             message={msg.text}
-            dateTime={new Date(msg.timestamp).toLocaleString([], {hour: '2-digit', minute:'2-digit', day: '2-digit', month: '2-digit', year: '2-digit'})}
+            dateTime={formatDate(msg.timestamp)}
             isOwn={msg.user === userId}
           />
         ))}
@@ -92,11 +90,7 @@ function ChatConversation() {
       </div>
 
       {/* Formulario de envío */}
-      <form
-        onSubmit={handleSubmit}
-        className="d-flex align-items-center p-3"
-
-      >
+      <form onSubmit={handleSubmit} className="d-flex align-items-center p-3">
         <input
           type="text"
           className="form-control rounded-pill me-2 shadow"

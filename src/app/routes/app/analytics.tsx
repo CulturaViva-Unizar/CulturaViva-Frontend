@@ -88,7 +88,7 @@ function Analytics() {
     type: userFilterOption,
   };
   const {
-    data: usersAnalytics,
+    data: totalUsers,
     isLoading: isLoadingUsersAnalytics,
     error: errorUsersAnalytics,
   } = useGetUsersAnalytics(getUsersAnalyticsRequest);
@@ -96,7 +96,7 @@ function Analytics() {
     category: categoryFilterOption,
   };
   const {
-    data: eventsAnalytics,
+    data: totalEvents,
     isLoading: isLoadingEventsAnalytics,
     error: errorEventsAnalytics,
   } = useGetEventsAnalytics(getEventsAnalyticsRequest);
@@ -161,10 +161,11 @@ function Analytics() {
                 options={USER_ANALYTICS_FILTER_OPTIONS}
                 value={userFilterOption}
                 onChange={setUserFilterOption}
+                className="shadow-sm"
               />
             </div>
             <div className="card-body text-center">
-              <h1>{usersAnalytics!.totalUsers}</h1>
+              <h1>{totalUsers}</h1>
             </div>
           </div>
           <div className="card p-0 ms-3 mt-4">
@@ -179,7 +180,7 @@ function Analytics() {
               />
             </div>
             <div className="card-body text-center">
-              <h1>{eventsAnalytics!.totalEvents}</h1>
+              <h1>{totalEvents}</h1>
             </div>
           </div>
         </div>
