@@ -4,10 +4,7 @@ import { Select } from "../../../components/ui/select";
 import BarChart from "../../../components/ui/bar-chart";
 import LineChart from "../../../components/ui/line-chart";
 import DoughnutChart from "../../../components/ui/doughnut-chart";
-import {
-  CATEGORY_SELECT_OPTIONS,
-  USER_ANALYTICS_FILTER_OPTIONS,
-} from "../../../shared/constants/select-options";
+import { USER_ANALYTICS_FILTER_OPTIONS } from "../../../shared/constants/select-options";
 import { useState } from "react";
 import { useGetUsersAnalytics } from "../../../features/analytics/api/get-users-analytics";
 import LoadingIndicator from "../../../components/ui/loading-indicator";
@@ -17,6 +14,7 @@ import {
   GetUsersAnalyticsRequest,
 } from "../../../types/api";
 import { useGetEventsAnalytics } from "../../../features/analytics/api/get-events-analytics";
+import { useGetEventCategories } from "../../../features/events/api/get-event-categories";
 
 const labels = [
   "Enero",
@@ -102,8 +100,27 @@ function Analytics() {
     isLoading: isLoadingEventsAnalytics,
     error: errorEventsAnalytics,
   } = useGetEventsAnalytics(getEventsAnalyticsRequest);
-  const isLoading = isLoadingUsersAnalytics || isLoadingEventsAnalytics;
-  const isError = errorUsersAnalytics || errorEventsAnalytics;
+
+  const {
+    data: eventCategories,
+    isLoading: isLoadingEventCategories,
+    error: errorEventCategories,
+  } = useGetEventCategories();
+
+  const categoryOptions = [
+    { value: "", label: "Categoría" },
+    ...(eventCategories?.map((cat) => ({
+      value: cat,
+      label: cat,
+    })) ?? []),
+  ];
+
+  const isLoading =
+    isLoadingUsersAnalytics ||
+    isLoadingEventsAnalytics ||
+    isLoadingEventCategories;
+  const isError =
+    errorUsersAnalytics || errorEventsAnalytics || errorEventCategories;
 
   if (isLoading && !isError) {
     return <LoadingIndicator message="Cargando estadísticas..." />;
@@ -154,9 +171,11 @@ function Analytics() {
             <div className="card-header d-flex flex-column align-items-center justify-content-between py-3 gap-2">
               <h5>Eventos totales</h5>
               <Select
-                options={CATEGORY_SELECT_OPTIONS}
+                className="shadow-sm"
+                options={categoryOptions}
                 value={categoryFilterOption}
                 onChange={setCategoryFilterOption}
+                style={{ maxWidth: 150 }}
               />
             </div>
             <div className="card-body text-center">

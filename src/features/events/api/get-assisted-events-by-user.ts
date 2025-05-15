@@ -13,7 +13,7 @@ export const getAssistedEventsByUser = async (
     params.append("name", request.eventName);
   }
   if (request.eventDate) {
-    params.append("date", request.eventDate.toISOString());
+    params.append("date", request.eventDate);
   }
   if (request.eventCategory) {
     params.append("category", request.eventCategory);
@@ -22,7 +22,7 @@ export const getAssistedEventsByUser = async (
   params.append("page", request.page.toString());
   params.append("limit", request.limit.toString());
 
-  const url = `/users/${request.userId}/attending-events?${params.toString()}`;
+  const url = `/users/${request.userId}/attended-events?${params.toString()}`;
   const response: ApiResponse<GetPaginatedEventsResponse> = await api.get(url);
 
   return mapGetPaginatedEventsResponseToPaginatedEventsPage(response.data);

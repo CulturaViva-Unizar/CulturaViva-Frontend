@@ -14,13 +14,14 @@ import { getReviewsByCulturalPlace } from "../../../../features/reviews/api/get-
 import BootstrapPagination from "../../../../components/ui/bootstrap-pagination";
 import { SortButton } from "../../../../components/ui/sort-button";
 import { useGetCulturalPlaceCategories } from "../../../../features/cultural-places/api/get-cultural-place-categories";
-import { useGetEventCategories } from "../../../../features/events/api/get-event-categories";
 
 function CulturalPlaces() {
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchText, setSearchText] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("");
+
   const request = useMemo(
     () => ({
       name: searchText,
@@ -37,45 +38,25 @@ function CulturalPlaces() {
     isLoading: isLoadingCulturalPlaces,
     error: errorCulturalPlaces,
   } = useGetCulturalPlaces(request);
-  const culturalPlaces = data?.items.filter(
-    (p) => p.coordinates && p.coordinates.latitude && p.coordinates.longitude
-  );
-  const navigate = useNavigate();
-
-  const {
-    data: eventCategories,
-    isLoading: isLoadingEventCategories,
-    error: errorEventCategories,
-  } = useGetEventCategories();
   const {
     data: culturalPlaceCategories,
     isLoading: isLoadingCulturalPlaceCategories,
     error: errorCulturalPlaceCategories,
   } = useGetCulturalPlaceCategories();
 
-  const eventOptions =
-    eventCategories?.map((cat) => ({
-      value: cat,
-      label: cat,
-    })) ?? [];
-
-  const culturalOptions =
-    culturalPlaceCategories?.map((cat) => ({
-      value: cat,
-      label: cat,
-    })) ?? [];
-
   const categoryOptions = [
     { value: "", label: "Categoría" },
-    ...eventOptions,
-    ...culturalOptions,
+    ...(culturalPlaceCategories?.map((cat) => ({
+      value: cat,
+      label: cat,
+    })) ?? []),
   ];
 
   const reviewsQueries = useQueries({
-    queries: (culturalPlaces ?? []).map((p: CulturalPlace) => ({
+    queries: (data?.items ?? []).map((p: CulturalPlace) => ({
       queryKey: ["reviews", p.id],
       queryFn: () => getReviewsByCulturalPlace(p.id),
-      enabled: !!culturalPlaces,
+      enabled: !!data,
     })),
   });
 
@@ -87,13 +68,8 @@ function CulturalPlaces() {
     }
   };
 
-  const isLoading =
-    isLoadingEventCategories ||
-    isLoadingCulturalPlaceCategories ||
-    isLoadingCulturalPlaces;
-  const isError = Boolean(
-    errorEventCategories || errorCulturalPlaceCategories || errorCulturalPlaces
-  );
+  const isLoading = isLoadingCulturalPlaceCategories || isLoadingCulturalPlaces;
+  const isError = Boolean(errorCulturalPlaceCategories || errorCulturalPlaces);
 
   if (isLoading && !isError) {
     return <LoadingIndicator message="Cargando eventos..." />;
@@ -129,8 +105,8 @@ function CulturalPlaces() {
         </div>
       </div>
       <div className="row g-4">
-        {culturalPlaces && culturalPlaces?.length > 0 ? (
-          culturalPlaces.map((culturalPlace: CulturalPlace, i: number) => {
+        {data?.items && data.items.length > 0 ? (
+          data.items.map((culturalPlace: CulturalPlace, i: number) => {
             const rq = reviewsQueries[i];
             const reviews = rq.data ?? [];
             const totalReviews = reviews.length;

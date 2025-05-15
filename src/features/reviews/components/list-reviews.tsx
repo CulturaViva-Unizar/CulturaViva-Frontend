@@ -34,19 +34,21 @@ const ListReviews: FC<ListReviewsProps> = ({ itemType, reviews }) => {
         />
       </div>
       {reviews && reviews.length > 0 ? (
-        reviews.map((review) => (
-          <ReviewItem
-            key={review.id}
-            id={review.id}
-            itemId={review.itemId}
-            userId={review.userId}
-            username={review.username}
-            rating={review.rating}
-            comment={review.comment ?? ""}
-            date={review.date}
-            itemType={itemType}
-          />
-        ))
+        reviews
+          .filter((r) => !r.responseTo)
+          .map((review) => (
+            <ReviewItem
+              key={review.id}
+              id={review.id}
+              itemId={review.itemId}
+              userId={review.userId}
+              username={review.username}
+              rating={review.rating}
+              comment={review.comment ?? ""}
+              date={review.date}
+              itemType={itemType}
+            />
+          ))
       ) : (
         <div className="text-center border p-2 rounded">
           <span>No hay reseñas</span>

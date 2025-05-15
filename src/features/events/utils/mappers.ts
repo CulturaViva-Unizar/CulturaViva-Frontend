@@ -3,7 +3,7 @@ import { Price } from "../../../shared/types/models";
 import { PaginatedEventsPage, Event } from "../types/models";
 
 export const mapEventResponseToEvent = (src: EventResponse): Event => ({
-  id: src._id,
+  id: src.id,
   title: src.title,
   description: src.description,
   image: src.image,

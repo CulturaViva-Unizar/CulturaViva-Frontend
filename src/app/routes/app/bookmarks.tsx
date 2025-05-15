@@ -58,13 +58,13 @@ function Bookmarks() {
     error: errorCulturalPlaceCategories,
   } = useGetCulturalPlaceCategories();
 
-  const eventOptions =
+  const eventCategoriesOptions =
     eventCategories?.map((cat) => ({
       value: cat,
       label: cat,
     })) ?? [];
 
-  const culturalOptions =
+  const culturalPlaceCategoriesOptions =
     culturalPlaceCategories?.map((cat) => ({
       value: cat,
       label: cat,
@@ -72,8 +72,8 @@ function Bookmarks() {
 
   const categoryOptions = [
     { value: "", label: "Categoría" },
-    ...eventOptions,
-    ...culturalOptions,
+    ...eventCategoriesOptions,
+    ...culturalPlaceCategoriesOptions,
   ];
 
   const onNameChange = (newName: string) => {
@@ -145,7 +145,12 @@ function Bookmarks() {
         </div>
       </div>
       <div className="row g-4">
-        {data && data.items.length > 0 ? (
+        {!isLoading && !isError && (!data || data.items.length == 0) ? (
+          <div className="text-center">
+            <strong>Sin resultados :(</strong>
+          </div>
+        ) : (
+          data &&
           data.items.map((item) => {
             const isEvent = (item as Event).startDate !== undefined;
             return (
@@ -169,10 +174,6 @@ function Bookmarks() {
               </div>
             );
           })
-        ) : (
-          <div className="text-center">
-            <strong>Sin resultados :(</strong>
-          </div>
         )}
       </div>
       {data && (

@@ -5,7 +5,7 @@ import { CulturalPlace, PaginatedCulturalPlacesPage } from "../types/models";
 export const mapCulturalPlaceResponseToCulturalPlace = (
   src: CulturalPlaceResponse
 ): CulturalPlace => ({
-  id: src._id,
+  id: src.id,
   title: src.title,
   location: src.direction ?? undefined,
   description: src.description ?? undefined,

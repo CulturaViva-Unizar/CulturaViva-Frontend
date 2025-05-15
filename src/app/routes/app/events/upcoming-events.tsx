@@ -7,7 +7,6 @@ import MainLayout from "../../../../components/layouts/main-layout";
 import { useNavigate } from "react-router";
 import { paths } from "../../../../config/paths";
 import { Event } from "../../../../features/events/types/models";
-import { CATEGORY_SELECT_OPTIONS } from "../../../../shared/constants/select-options";
 import { useGetAttendingEventsByUser } from "../../../../features/events/api/get-attending-events-by-user";
 import { GetPaginatedEventsRequest } from "../../../../types/api";
 import { useQueries } from "@tanstack/react-query";
@@ -15,6 +14,7 @@ import { getReviewsByEvent } from "../../../../features/reviews/api/get-reviews-
 import LoadingIndicator from "../../../../components/ui/loading-indicator";
 import { ErrorMessage } from "../../../../components/errors/error-message";
 import { useUser } from "../../../../lib/auth";
+import { useGetEventCategories } from "../../../../features/events/api/get-event-categories";
 
 const pieData = {
   labels: ["Arte", "Ocio", "Otros"],
@@ -39,12 +39,17 @@ const pieOptions = {
 function UpcomingEvents() {
   const userId = useUser().data!.id;
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [category, setCategory] = useState<string>("");
   const request: GetPaginatedEventsRequest = {
     page: currentPage,
     limit: 6,
     userId,
   };
-  const { data, isLoading, error } = useGetAttendingEventsByUser(request);
+  const {
+    data,
+    isLoading: isLoadingEvents,
+    error: errorEvents,
+  } = useGetAttendingEventsByUser(request);
   const navigate = useNavigate();
 
   const reviewsQueries = useQueries({
@@ -55,11 +60,28 @@ function UpcomingEvents() {
     })),
   });
 
-  if (isLoading && !error) {
+  const {
+    data: eventCategories,
+    isLoading: isLoadingEventCategories,
+    error: errorEventCategories,
+  } = useGetEventCategories();
+
+  const categoryOptions = [
+    { value: "", label: "Categoría" },
+    ...(eventCategories?.map((cat) => ({
+      value: cat,
+      label: cat,
+    })) ?? []),
+  ];
+
+  const isLoading = isLoadingEventCategories || isLoadingEvents;
+  const isError = Boolean(errorEventCategories || errorEvents);
+
+  if (isLoading && !isError) {
     return <LoadingIndicator message="Cargando eventos próximos..." />;
   }
 
-  if (error) {
+  if (isError) {
     return <ErrorMessage message="Error al cargar los eventos" />;
   }
 
@@ -68,9 +90,11 @@ function UpcomingEvents() {
       <div className="d-md-flex">
         <div className="col-md-4 d-flex flex-column align-items-center">
           <Select
-            options={CATEGORY_SELECT_OPTIONS}
-            value=""
-            onChange={(newValue) => console.log(newValue)}
+            className="shadow-sm"
+            options={categoryOptions}
+            value={category}
+            onChange={setCategory}
+            style={{ maxWidth: 150 }}
           />
           <PieChart data={pieData} options={pieOptions} className="m-4" />
         </div>

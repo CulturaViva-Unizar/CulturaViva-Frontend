@@ -13,7 +13,7 @@ export const ErrorMessage: React.FC<{ message: string }> = ({ message }) => (
           variant="dark"
           size="sm"
           className="rounded-pill px-4"
-          onClick={() => window.location.assign(window.location.origin)}
+          onClick={() => window.location.assign(window.location.href)}
         >
           Volver a intentarlo
         </Button>

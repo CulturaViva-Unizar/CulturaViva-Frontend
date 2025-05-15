@@ -2,7 +2,7 @@ import { GetPaginatedUsersResponse, UserResponse } from "../../../types/api";
 import { PaginatedUsersPage, User } from "../types/models";
 
 export const mapUserResponseToUser = (src: UserResponse): User => ({
-  id: src._id,
+  id: src.id,
   name: src.name,
   email: src.email,
   active: src.active,

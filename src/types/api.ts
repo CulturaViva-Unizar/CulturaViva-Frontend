@@ -16,7 +16,7 @@ type Paginated<T> = {
 type Coordinates = {
   latitude: number;
   longitude: number;
-  _id?: string;
+  id?: string;
 };
 
 type Price = {
@@ -25,7 +25,7 @@ type Price = {
 };
 
 export type EventResponse = {
-  _id: string;
+  id: string;
   title: string;
   coordinates: Coordinates | null;
   itemType: string;
@@ -45,7 +45,7 @@ export type EventResponse = {
 };
 
 export type CulturalPlaceResponse = {
-  _id: string;
+  id: string;
   title: string;
   itemType: string;
   direction: string | null;
@@ -167,7 +167,7 @@ export type CreateBookmarkRequest = {
 type ChatResponse = {
   id: string;
   user: {
-    _id: string;
+    id: string;
     name: string;
   };
   createdAt: string;
@@ -207,20 +207,20 @@ export type GetReviewsByUserResponse = ReviewResponse[];
 export type GetReviewsByCulturalPlaceResponse = ReviewResponse[];
 
 export type ReviewResponse = {
-  _id: string;
+  id: string;
   user: {
-    _id: string;
+    id: string;
     name: string;
   };
   text: string;
   date: string;
   event: string;
   value: number;
-  responseTo: string;
+  responseTo?: string;
 };
 
 export type CreateReviewRequest = {
-  text: string;
+  text?: string;
   value: number;
 };
 
@@ -256,7 +256,7 @@ export type GetEventsAnalyticsResponse = {
 /* Users -----------------------------------------------------------------------------*/
 
 export type UserResponse = {
-  _id: string;
+  id: string;
   name: string;
   email: string;
   admin: boolean;

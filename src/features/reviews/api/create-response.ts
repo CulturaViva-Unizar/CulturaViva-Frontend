@@ -3,7 +3,7 @@ import { api } from "../../../lib/api-client";
 import { Items } from "../../../shared/types/enums";
 import { CreateResponseToReviewRequest } from "../../../types/api";
 
-const createResponseToReview = async ({
+const createResponse = async ({
   itemType,
   itemId,
   commentId,
@@ -27,10 +27,10 @@ const createResponseToReview = async ({
   }
 };
 
-export const useCreateResponseToReview = () => {
+export const useCreateResponse = () => {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: createResponseToReview,
+    mutationFn: createResponse,
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["reviews"] });
     },

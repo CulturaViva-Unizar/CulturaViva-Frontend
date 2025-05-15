@@ -122,44 +122,56 @@ const Map: React.FC<MapProps> = ({ events, culturalPlaces }) => {
       {userPosition && <Marker position={userPosition} />}
       <MarkerClusterGroup iconCreateFunction={eventClusterIcon}>
         {events.map((event) => {
-          const coords: [number, number] = [
-            event.coordinates!.latitude,
-            event.coordinates!.longitude,
-          ];
-          return (
-            <Marker
-              key={event.id}
-              position={coords}
-              icon={eventIcon}
-              eventHandlers={{
-                click: () => {
-                  setSelectedEvent(event);
-                  setShowEventDrawer(true);
-                },
-              }}
-            />
-          );
+          if (
+            event.coordinates &&
+            event.coordinates.latitude &&
+            event.coordinates.longitude
+          ) {
+            const coords: [number, number] = [
+              event.coordinates!.latitude,
+              event.coordinates!.longitude,
+            ];
+            return (
+              <Marker
+                key={event.id}
+                position={coords}
+                icon={eventIcon}
+                eventHandlers={{
+                  click: () => {
+                    setSelectedEvent(event);
+                    setShowEventDrawer(true);
+                  },
+                }}
+              />
+            );
+          }
         })}
       </MarkerClusterGroup>
       <MarkerClusterGroup iconCreateFunction={culturalClusterIcon}>
         {culturalPlaces.map((culturalPlace) => {
-          const coords: [number, number] = [
-            culturalPlace.coordinates!.latitude,
-            culturalPlace.coordinates!.longitude,
-          ];
-          return (
-            <Marker
-              key={culturalPlace.id}
-              position={coords}
-              icon={culturalPlaceIcon}
-              eventHandlers={{
-                click: () => {
-                  setSelectedCulturalPlace(culturalPlace);
-                  setShowEventDrawer(true);
-                },
-              }}
-            />
-          );
+          if (
+            culturalPlace.coordinates &&
+            culturalPlace.coordinates.latitude &&
+            culturalPlace.coordinates.longitude
+          ) {
+            const coords: [number, number] = [
+              culturalPlace.coordinates!.latitude,
+              culturalPlace.coordinates!.longitude,
+            ];
+            return (
+              <Marker
+                key={culturalPlace.id}
+                position={coords}
+                icon={culturalPlaceIcon}
+                eventHandlers={{
+                  click: () => {
+                    setSelectedCulturalPlace(culturalPlace);
+                    setShowEventDrawer(true);
+                  },
+                }}
+              />
+            );
+          }
         })}
       </MarkerClusterGroup>
 

@@ -5,7 +5,7 @@ import { useUser } from "../../../lib/auth";
 import { ChatMessage } from "../types/models";
 
 type SocketChatMessage = {
-  _id: string;
+  id: string;
   chat: string;
   user: string;
   text: string;
@@ -14,7 +14,7 @@ type SocketChatMessage = {
 
 function socketToChatMessage(msg: SocketChatMessage): ChatMessage {
   return {
-    _id: msg._id,
+    id: msg.id,
     text: msg.text,
     timestamp: msg.timestamp,
     user: msg.user,

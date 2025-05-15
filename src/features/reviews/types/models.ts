@@ -6,6 +6,7 @@ export type Review = {
   comment?: string;
   date: string;
   itemId: string;
+  responseTo?: string;
 };
 
 export type Reply = {
@@ -14,4 +15,5 @@ export type Reply = {
   username: string;
   comment: string;
   date: string;
+  responseTo: string;
 };

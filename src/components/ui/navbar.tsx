@@ -48,13 +48,13 @@ export const Navbar: React.FC<NavBarProps> = ({
     error: errorCulturalPlaceCategories,
   } = useGetCulturalPlaceCategories();
 
-  const eventOptions =
+  const eventCategoriesOptions =
     eventCategories?.map((cat) => ({
       value: cat,
       label: cat,
     })) ?? [];
 
-  const culturalOptions =
+  const culturalPlaceCategoriesOptions =
     culturalPlaceCategories?.map((cat) => ({
       value: cat,
       label: cat,
@@ -62,8 +62,8 @@ export const Navbar: React.FC<NavBarProps> = ({
 
   const categoryOptions = [
     { value: "", label: "Categoría" },
-    ...eventOptions,
-    ...culturalOptions,
+    ...eventCategoriesOptions,
+    ...culturalPlaceCategoriesOptions,
   ];
 
   const isLoading =

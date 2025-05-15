@@ -96,25 +96,9 @@ function Landing() {
       />
       {eventsData && culturalPlacesData && (
         <Map
-          events={
-            itemType == Items.Evento || !itemType
-              ? eventsData.items.filter(
-                  (e) =>
-                    e.coordinates &&
-                    e.coordinates.latitude &&
-                    e.coordinates.longitude
-                )
-              : []
-          }
+          events={itemType == Items.Evento || !itemType ? eventsData.items : []}
           culturalPlaces={
-            itemType == Items.Lugar || !itemType
-              ? culturalPlacesData.items.filter(
-                  (p) =>
-                    p.coordinates &&
-                    p.coordinates.latitude &&
-                    p.coordinates.longitude
-                )
-              : []
+            itemType == Items.Lugar || !itemType ? culturalPlacesData.items : []
           }
         />
       )}

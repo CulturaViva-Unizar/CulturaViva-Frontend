@@ -1,13 +1,13 @@
 export type Chat = {
   id: string;
   user: {
-    _id: string;
+    id: string;
     name: string;
   };
 };
 
 export type ChatMessage = {
-  _id: string;
+  id: string;
   text: string;
   timestamp: string;
   user: string;

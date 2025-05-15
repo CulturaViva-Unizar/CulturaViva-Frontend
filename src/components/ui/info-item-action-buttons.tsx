@@ -15,7 +15,7 @@ type InfoItemActionButtonsProps = {
   itemId: string;
   isSaved: boolean;
   isLoading: boolean;
-  mapsUrl: string;
+  mapsUrl?: string;
   instagramUrl?: string;
   twitterUrl?: string;
 };
@@ -118,16 +118,18 @@ const InfoItemActionButtons: FC<InfoItemActionButtonsProps> = ({
         </Button>
       )}
 
-      <Button
-        as="a"
-        href={mapsUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="btn btn-light rounded-pill w-auto"
-      >
-        <FontAwesomeIcon icon={faLocationArrow} className="me-2" />
-        Cómo llegar
-      </Button>
+      {mapsUrl && (
+        <Button
+          as="a"
+          href={mapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn btn-light rounded-pill w-auto"
+        >
+          <FontAwesomeIcon icon={faLocationArrow} className="me-2" />
+          Cómo llegar
+        </Button>
+      )}
 
       {instagramUrl && (
         <Button

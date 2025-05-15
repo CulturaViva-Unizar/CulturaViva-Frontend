@@ -16,7 +16,6 @@ import { getReviewsByEvent } from "../../../../features/reviews/api/get-reviews-
 import { Event } from "../../../../features/events/types/models";
 import BootstrapPagination from "../../../../components/ui/bootstrap-pagination";
 import { SortButton } from "../../../../components/ui/sort-button";
-import { useGetCulturalPlaceCategories } from "../../../../features/cultural-places/api/get-cultural-place-categories";
 import { useGetEventCategories } from "../../../../features/events/api/get-event-categories";
 
 function Events() {
@@ -45,9 +44,6 @@ function Events() {
     isLoading: isLoadingEvents,
     error: errorEvents,
   } = useGetEvents(request);
-  const events = data?.items.filter(
-    (e) => e.coordinates && e.coordinates.latitude && e.coordinates.longitude
-  );
   const navigate = useNavigate();
 
   const {
@@ -55,35 +51,20 @@ function Events() {
     isLoading: isLoadingEventCategories,
     error: errorEventCategories,
   } = useGetEventCategories();
-  const {
-    data: culturalPlaceCategories,
-    isLoading: isLoadingCulturalPlaceCategories,
-    error: errorCulturalPlaceCategories,
-  } = useGetCulturalPlaceCategories();
-
-  const eventOptions =
-    eventCategories?.map((cat) => ({
-      value: cat,
-      label: cat,
-    })) ?? [];
-
-  const culturalOptions =
-    culturalPlaceCategories?.map((cat) => ({
-      value: cat,
-      label: cat,
-    })) ?? [];
 
   const categoryOptions = [
     { value: "", label: "Categoría" },
-    ...eventOptions,
-    ...culturalOptions,
+    ...(eventCategories?.map((cat) => ({
+      value: cat,
+      label: cat,
+    })) ?? []),
   ];
 
   const reviewsQueries = useQueries({
-    queries: (events ?? []).map((e: Event) => ({
+    queries: (data?.items ?? []).map((e: Event) => ({
       queryKey: ["reviews", e.id],
       queryFn: () => getReviewsByEvent(e.id),
-      enabled: !!events,
+      enabled: !!data,
     })),
   });
 
@@ -95,13 +76,8 @@ function Events() {
     }
   };
 
-  const isLoading =
-    isLoadingEventCategories ||
-    isLoadingCulturalPlaceCategories ||
-    isLoadingEvents;
-  const isError = Boolean(
-    errorEventCategories || errorCulturalPlaceCategories || errorEvents
-  );
+  const isLoading = isLoadingEventCategories || isLoadingEvents;
+  const isError = Boolean(errorEventCategories || errorEvents);
 
   if (isLoading && !isError) {
     return <LoadingIndicator message="Cargando eventos..." />;
@@ -142,8 +118,8 @@ function Events() {
         </div>
       </div>
       <div className="row g-4">
-        {events && events.length > 0 ? (
-          events.map((event: Event, i: number) => {
+        {data?.items && data.items.length > 0 ? (
+          data.items.map((event: Event, i: number) => {
             const rq = reviewsQueries[i];
             const reviews = rq.data ?? [];
             const totalReviews = reviews.length;

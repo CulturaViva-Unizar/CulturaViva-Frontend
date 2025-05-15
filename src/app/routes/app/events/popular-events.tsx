@@ -67,13 +67,13 @@ function PopularEvents() {
     error: errorEventCategories,
   } = useGetEventCategories();
 
-  const eventOptions =
-    eventCategories?.map((cat) => ({
+  const categoryOptions = [
+    { value: "", label: "Categoría" },
+    ...(eventCategories?.map((cat) => ({
       value: cat,
       label: cat,
-    })) ?? [];
-
-  const categoryOptions = [{ value: "", label: "Categoría" }, ...eventOptions];
+    })) ?? []),
+  ];
 
   const isLoading = isLoadingEventCategories || isLoadingEvents;
   const isError = Boolean(errorEventCategories || errorEvents);

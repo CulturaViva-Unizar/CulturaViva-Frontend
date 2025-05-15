@@ -81,7 +81,7 @@ function ChatConversation() {
       <div className="flex-grow-1 d-flex flex-column overflow-auto p-3 bg-light border">
         {allMessages.map((msg) => (
           <Message
-            key={msg._id}
+            key={msg.id}
             message={msg.text}
             dateTime={new Date(msg.timestamp).toLocaleString([], {hour: '2-digit', minute:'2-digit', day: '2-digit', month: '2-digit', year: '2-digit'})}
             isOwn={msg.user === userId}

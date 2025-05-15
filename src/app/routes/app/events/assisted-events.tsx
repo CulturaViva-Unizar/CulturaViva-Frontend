@@ -7,7 +7,6 @@ import MainLayout from "../../../../components/layouts/main-layout";
 import { useNavigate } from "react-router";
 import { paths } from "../../../../config/paths";
 import { Event } from "../../../../features/events/types/models";
-import { CATEGORY_SELECT_OPTIONS } from "../../../../shared/constants/select-options";
 import { useGetAssistedEventsByUser } from "../../../../features/events/api/get-assisted-events-by-user";
 import { GetPaginatedEventsRequest } from "../../../../types/api";
 import { useQueries } from "@tanstack/react-query";
@@ -15,6 +14,7 @@ import { getReviewsByEvent } from "../../../../features/reviews/api/get-reviews-
 import { ErrorMessage } from "../../../../components/errors/error-message";
 import LoadingIndicator from "../../../../components/ui/loading-indicator";
 import { useUser } from "../../../../lib/auth";
+import { useGetEventCategories } from "../../../../features/events/api/get-event-categories";
 
 const pieData = {
   labels: ["Arte", "Ocio", "Otros"],
@@ -49,8 +49,26 @@ function AssistedEvents() {
     }),
     [category, currentPage, userId]
   );
-  const { data, isLoading, error } = useGetAssistedEventsByUser(request);
+  const {
+    data,
+    isLoading: isLoadingEvents,
+    error: errorEvents,
+  } = useGetAssistedEventsByUser(request);
   const navigate = useNavigate();
+
+  const {
+    data: eventCategories,
+    isLoading: isLoadingEventCategories,
+    error: errorEventCategories,
+  } = useGetEventCategories();
+
+  const categoryOptions = [
+    { value: "", label: "Categoría" },
+    ...(eventCategories?.map((cat) => ({
+      value: cat,
+      label: cat,
+    })) ?? []),
+  ];
 
   const reviewsQueries = useQueries({
     queries: (data?.items ?? []).map((e: Event) => ({
@@ -60,11 +78,14 @@ function AssistedEvents() {
     })),
   });
 
-  if (isLoading && !error) {
-    return <LoadingIndicator message="Cargando eventos populares..." />;
+  const isLoading = isLoadingEventCategories || isLoadingEvents;
+  const isError = Boolean(errorEventCategories || errorEvents);
+
+  if (isLoading && !isError) {
+    return <LoadingIndicator message="Cargando eventos asistidos..." />;
   }
 
-  if (error) {
+  if (isError) {
     return <ErrorMessage message="Error al cargar los eventos" />;
   }
 
@@ -74,40 +95,48 @@ function AssistedEvents() {
         <div className="col-md-4 d-flex flex-column align-items-center">
           <Select
             className="shadow"
-            options={CATEGORY_SELECT_OPTIONS}
-            value=""
+            options={categoryOptions}
+            value={category}
             onChange={setCategory}
+            style={{ maxWidth: 150 }}
           />
           <PieChart data={pieData} options={pieOptions} className="m-4" />
         </div>
         <div className="flex-column col-md-8 row">
           <div className="row g-4 m-0">
-            {data!.items.map((event: Event, i: number) => {
-              const rq = reviewsQueries[i];
-              const reviews = rq.data ?? [];
-              const totalReviews = reviews.length;
-              const avgRating =
-                totalReviews > 0
-                  ? reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
-                  : 0;
+            {data && data.items.length > 0 ? (
+              data.items.map((event: Event, i: number) => {
+                const rq = reviewsQueries[i];
+                const reviews = rq.data ?? [];
+                const totalReviews = reviews.length;
+                const avgRating =
+                  totalReviews > 0
+                    ? reviews.reduce((sum, r) => sum + r.rating, 0) /
+                      totalReviews
+                    : 0;
 
-              return (
-                <div className="col-md-6" key={event.id}>
-                  <Card
-                    image={event.image}
-                    title={event.title}
-                    location={event.location}
-                    rating={avgRating}
-                    reviews={totalReviews}
-                    description={event.description}
-                    className="rounded bg-light shadow"
-                    onClick={() =>
-                      navigate(paths.app.events.details.getHref(event.id))
-                    }
-                  />
-                </div>
-              );
-            })}
+                return (
+                  <div className="col-md-6" key={event.id}>
+                    <Card
+                      image={event.image}
+                      title={event.title}
+                      location={event.location}
+                      rating={avgRating}
+                      reviews={totalReviews}
+                      description={event.description}
+                      className="rounded bg-light shadow"
+                      onClick={() =>
+                        navigate(paths.app.events.details.getHref(event.id))
+                      }
+                    />
+                  </div>
+                );
+              })
+            ) : (
+              <div className="text-center">
+                <strong>Sin resultados :(</strong>
+              </div>
+            )}
           </div>
           <BootstrapPagination
             currentPage={currentPage}
