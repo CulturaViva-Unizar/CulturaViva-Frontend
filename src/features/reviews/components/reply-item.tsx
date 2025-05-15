@@ -8,13 +8,16 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import { Link } from "react-router";
 import { useUser } from "../../../lib/auth";
 import { paths } from "../../../config/paths";
 import { GetRepliesRequest } from "../../../types/api";
 import { useGetRepliesByEvent } from "../api/get-replies-by-event";
 import { ErrorMessage } from "../../../components/errors/error-message";
 import LoadingIndicator from "../../../components/ui/loading-indicator";
+import { useGetChatsByUser } from "../../chats/api/get-chats-by-user";
+import { usePostNewChatByUser } from "../../chats/api/post-new-chat-by-user";
+import { Chat } from "../../chats/types/models";
+import { useNavigate } from "react-router";
 
 type ReplyItemProps = {
   id: string;
@@ -38,6 +41,7 @@ export const ReplyItem: React.FC<ReplyItemProps> = ({
   onDelete,
 }) => {
   const user = useUser();
+  const navigate = useNavigate();
   const request: GetRepliesRequest = useMemo(
     () => ({
       itemId,
@@ -51,6 +55,37 @@ export const ReplyItem: React.FC<ReplyItemProps> = ({
     error,
   } = useGetRepliesByEvent(request);
 
+  const {
+    data: chats = [],
+    isLoading: chatsLoading,
+    isError: chatsError,
+  } = useGetChatsByUser(user.data?.id ?? "");
+
+  const { mutate: createChat, isPending: creatingChat } = usePostNewChatByUser(
+    user.data?.id ?? ""
+  );
+
+  const handleNewChat = () => {
+    if (!user.data || chatsLoading || chatsError) {
+      return;
+    }
+
+    const existing = chats.find((c: Chat) => c.user.id === userId);
+
+    if (existing) {
+      navigate(paths.app.chats.chat.getHref(existing.id));
+    } else {
+      createChat(
+        { user: userId },
+        {
+          onSuccess: (newChat) => {
+            navigate(paths.app.chats.chat.getHref(newChat.id));
+          },
+        }
+      );
+    }
+  };
+  
   if (isLoading && !error) {
     return (
       <LoadingIndicator message="Cargando respuestas de los comentarios..." />
@@ -68,12 +103,15 @@ export const ReplyItem: React.FC<ReplyItemProps> = ({
       <div className="d-flex align-items-center gap-2">
         <FontAwesomeIcon icon={faCircleUser} />
         <strong>{username}</strong>
-        <Link
-          to={paths.app.chats.getHref()}
-          className="btn btn-light rounded-circle"
-        >
-          <FontAwesomeIcon icon={faComment} />
-        </Link>
+        {user.data && user.data.id !== userId && (
+          <button
+            onClick={handleNewChat}
+            disabled={creatingChat || chatsLoading || chatsError}
+            className="btn btn-light rounded-circle"
+          >
+            <FontAwesomeIcon icon={faComment} />
+          </button>
+        )}
         {user.data?.admin && (
           <button
             className="btn btn-sm btn-danger rounded-circle"
@@ -95,10 +133,7 @@ export const ReplyItem: React.FC<ReplyItemProps> = ({
       <p className="mb-2">{comment}</p>
       {user.data && user.data.id !== userId && (
         <button className="btn btn-sm mt-2" onClick={() => onReply(id)}>
-          <FontAwesomeIcon icon={faReply} className="me-2" />{" "}
-          {user.data
-            ? "Responder"
-            : "Necesita iniciar sesión para poder responder"}
+          <FontAwesomeIcon icon={faReply} className="me-2" /> Responder
         </button>
       )}
       {replies &&
@@ -107,7 +142,7 @@ export const ReplyItem: React.FC<ReplyItemProps> = ({
             key={childReply.id}
             id={childReply.id}
             itemId={id}
-            userId={userId}
+            userId={childReply.userId}
             username={childReply.username}
             comment={childReply.comment}
             date={childReply.date}

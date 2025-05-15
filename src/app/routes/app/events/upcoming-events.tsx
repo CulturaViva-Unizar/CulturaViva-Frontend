@@ -2,7 +2,7 @@ import { Select } from "../../../../components/ui/select";
 import { Card } from "../../../../components/ui/card";
 import PieChart from "../../../../components/ui/pie-chart";
 import BootstrapPagination from "../../../../components/ui/bootstrap-pagination";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import MainLayout from "../../../../components/layouts/main-layout";
 import { useNavigate } from "react-router";
 import { paths } from "../../../../config/paths";
@@ -40,17 +40,35 @@ function UpcomingEvents() {
   const userId = useUser().data!.id;
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [category, setCategory] = useState<string>("");
-  const request: GetPaginatedEventsRequest = {
-    page: currentPage,
-    limit: 6,
-    userId,
-  };
+  const request: GetPaginatedEventsRequest = useMemo(
+    () => ({
+      userId,
+      category,
+      page: currentPage,
+      limit: 6,
+    }),
+    [category, currentPage, userId]
+  );
   const {
     data,
     isLoading: isLoadingEvents,
     error: errorEvents,
   } = useGetAttendingEventsByUser(request);
   const navigate = useNavigate();
+
+  const {
+    data: eventCategories,
+    isLoading: isLoadingEventCategories,
+    error: errorEventCategories,
+  } = useGetEventCategories();
+  
+  const categoryOptions = [
+    { value: "", label: "Categoría" },
+    ...(eventCategories?.map((cat) => ({
+      value: cat,
+      label: cat,
+    })) ?? []),
+  ];
 
   const reviewsQueries = useQueries({
     queries: (data?.items ?? []).map((e: Event) => ({
@@ -59,20 +77,6 @@ function UpcomingEvents() {
       enabled: !!data,
     })),
   });
-
-  const {
-    data: eventCategories,
-    isLoading: isLoadingEventCategories,
-    error: errorEventCategories,
-  } = useGetEventCategories();
-
-  const categoryOptions = [
-    { value: "", label: "Categoría" },
-    ...(eventCategories?.map((cat) => ({
-      value: cat,
-      label: cat,
-    })) ?? []),
-  ];
 
   const isLoading = isLoadingEventCategories || isLoadingEvents;
   const isError = Boolean(errorEventCategories || errorEvents);
@@ -86,7 +90,7 @@ function UpcomingEvents() {
   }
 
   return (
-    <MainLayout title="Próximos">
+    <MainLayout title="Eventos próximos a los que va a asistir">
       <div className="d-md-flex">
         <div className="col-md-4 d-flex flex-column align-items-center">
           <Select

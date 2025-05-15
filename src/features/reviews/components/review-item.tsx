@@ -224,7 +224,7 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
           <ReplyItem
             key={reply.id}
             id={reply.id}
-            itemId={id}
+            itemId={itemId}
             userId={reply.userId}
             username={reply.username}
             comment={reply.comment}
@@ -233,12 +233,18 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
             onDelete={handleDeleteComment}
           />
         ))}
-      {user.data && user.data.id !== userId && (
+      {!user.data ? (
+        <button
+          className="btn btn-sm mt-2"
+          onClick={() => handleReply(id)}
+          disabled
+        >
+          <FontAwesomeIcon icon={faReply} className="me-2" /> Necesita iniciar
+          sesión para poder responder
+        </button>
+      ) : (
         <button className="btn btn-sm mt-2" onClick={() => handleReply(id)}>
-          <FontAwesomeIcon icon={faReply} className="me-2" />{" "}
-          {user.data
-            ? "Responder"
-            : "Necesita iniciar sesión para poder responder"}
+          <FontAwesomeIcon icon={faReply} className="me-2" /> Responder
         </button>
       )}
     </div>

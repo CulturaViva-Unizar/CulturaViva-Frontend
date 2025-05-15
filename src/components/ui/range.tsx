@@ -1,12 +1,12 @@
 import { FC } from "react";
-import Swal from "sweetalert2";
+import Swal, { SweetAlertResult } from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 const MySwal = withReactContent(Swal);
 
 interface RangeProps {
-  value: number;
-  onChange: (newValue: number) => void;
+  value?: number;
+  onChange: (newValue?: number) => void;
   min?: number;
   max?: number;
   className?: string;
@@ -22,18 +22,18 @@ export const Range: FC<RangeProps> = ({
   hideWhenMaxValue = false,
 }) => {
   const openModal = async () => {
-    const { value: newValue } = await MySwal.fire({
+    const result: SweetAlertResult<string> = await MySwal.fire({
       title: "Seleccione un rango",
       html: `
         <div class="d-flex flex-column align-items-center">
           <div class="position-relative my-3" style="width: 80%;">
-            <input id="swal-range" type="range" min="${min}" max="${max}" value="${value}" class="form-range w-100" />
+            <input id="swal-range" type="range" min="${min}" max="${max}" value="${value ?? min}" class="form-range w-100" />
             <span
               id="swal-tooltip"
               class="position-absolute text-white text-nowrap rounded"
               style="top: -30px; left: 0; transform: translateX(-50%); background-color: #333; padding: 2px 6px; font-size: 0.8rem;"
             >
-              ${value}€
+              ${(value ?? min)}€
             </span>
           </div>
           <div class="d-flex justify-content-between" style="width: 80%;">
@@ -42,19 +42,18 @@ export const Range: FC<RangeProps> = ({
           </div>
         </div>
       `,
+      showDenyButton: true,
+      denyButtonText: "Borrar filtro",
+      denyButtonColor: "#d33",
       showCancelButton: true,
       cancelButtonText: "Cancelar",
       confirmButtonText: "Aceptar",
       preConfirm: () => {
-        const slider = document.getElementById(
-          "swal-range"
-        ) as HTMLInputElement;
-        return slider ? slider.value : null;
+        const slider = document.getElementById("swal-range") as HTMLInputElement;
+        return slider?.value ?? null;
       },
       didOpen: () => {
-        const slider = document.getElementById(
-          "swal-range"
-        ) as HTMLInputElement;
+        const slider = document.getElementById("swal-range") as HTMLInputElement;
         const tooltip = document.getElementById("swal-tooltip") as HTMLElement;
         if (slider && tooltip) {
           const updateTooltip = () => {
@@ -68,8 +67,11 @@ export const Range: FC<RangeProps> = ({
         }
       },
     });
-    if (newValue !== undefined && newValue !== null) {
-      onChange(Number(newValue));
+
+    if (result.isDenied) {
+      onChange(undefined);
+    } else if (result.isConfirmed && result.value !== null) {
+      onChange(Number(result.value));
     }
   };
 
@@ -78,7 +80,7 @@ export const Range: FC<RangeProps> = ({
       onClick={openModal}
       className={`btn rounded-pill text-nowrap ${className}`}
     >
-      Precio {(value !== null && value < max || !hideWhenMaxValue) && ` ${value}`}€
+      Precio {value && (value < max || !hideWhenMaxValue) ? ` ${value}` : ""}€
     </button>
   );
 };

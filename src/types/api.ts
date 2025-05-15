@@ -202,7 +202,7 @@ export type PostCreateChatResponse = {
 
 export type GetReviewsByEventResponse = ReviewResponse[];
 
-export type GetReviewsByUserResponse = ReviewResponse[];
+export type GetReviewsByUserResponse = UserReviewResponse[];
 
 export type GetReviewsByCulturalPlaceResponse = ReviewResponse[];
 
@@ -215,12 +215,33 @@ export type ReviewResponse = {
   text: string;
   date: string;
   event: string;
-  value: number;
+  value?: number;
   responseTo?: string;
+  deleted: boolean;
+  deletedAt: string | null;
+};
+
+export type UserReviewResponse = {
+  id: string;
+  user: {
+    id: string;
+    name: string;
+  };
+  text: string;
+  date: string;
+  event: {
+    itemType: string;
+    id: string;
+    title: string;
+  };
+  value?: number;
+  responseTo?: string;
+  deleted: boolean;
+  deletedAt: string | null;
 };
 
 export type CreateReviewRequest = {
-  text?: string;
+  text: string;
   value: number;
 };
 
@@ -272,7 +293,7 @@ export type UserResponse = {
 
 export type GetUsersRequest = {
   name?: string;
-  type?: string;
+  userType?: string;
   page: number;
   limit: number;
   sort?: string;
@@ -280,3 +301,7 @@ export type GetUsersRequest = {
 };
 
 export type GetPaginatedUsersResponse = Paginated<UserResponse>;
+
+export type PutUserRequest = {
+  active: boolean;
+};

@@ -45,6 +45,6 @@ export const FILTER_REVIEWS_OPTIONS: SelectOption[] = [
 
 export const USER_ANALYTICS_FILTER_OPTIONS: SelectOption[] = [
   { value: "", label: "Todos" },
-  { value: "activos", label: "activos" },
-  { value: "inactivos", label: "inactivos" },
+  { value: "habilitados", label: "habilitados" },
+  { value: "deshabilitados", label: "deshabilitados" },
 ];

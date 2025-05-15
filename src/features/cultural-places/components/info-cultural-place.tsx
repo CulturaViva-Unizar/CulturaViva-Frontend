@@ -73,7 +73,7 @@ const InfoCulturalPlace: FC<InfoCulturalPlaceProps> = ({
     return dist;
   }, [reviews]);
   const mapsUrl = culturalPlace.location
-    ? `https://www.google.com/maps/search/?api=1&query=${culturalPlace.location}`
+    ? `https://www.google.com/maps/search/?api=1&query=${culturalPlace.coordinates?.latitude},${culturalPlace.coordinates?.longitude}`
     : undefined;
 
   if (isLoading && !error) {

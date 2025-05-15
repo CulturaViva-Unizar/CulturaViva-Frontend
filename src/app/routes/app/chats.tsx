@@ -2,7 +2,7 @@ import { Outlet, useLocation } from "react-router";
 import { GoBackBtn } from "../../../components/ui/go-back-btn";
 import SearchBar from "../../../components/ui/search-bar";
 import { UserMenu } from "../../../components/ui/user-menu";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { ChatCard } from "../../../components/ui/chat-card";
 import { useGetChatsByUser } from "../../../features/chats/api/get-chats-by-user";
 import { useUser } from "../../../lib/auth";
@@ -24,10 +24,18 @@ function Chats() {
 
   useEffect(() => {
     setSelectedChat(location.pathname !== paths.app.chats.getHref());
-
     window.scrollTo(0, 0);
   }, [location]);
 
+  // Filtrar chats según searchText
+  const filteredChats = useMemo(
+    () =>
+      chats.filter((chat) =>
+        chat.user.name.toLowerCase().includes(searchText.toLowerCase())
+      ),
+    [chats, searchText]
+  );
+  
   if (isLoading && !error) {
     return <LoadingIndicator message="Cargando chats..." />;
   }
@@ -62,15 +70,18 @@ function Chats() {
             className="overflow-auto hide-scrollbar"
             style={{ maxHeight: "calc(100vh - 12%)" }}
           >
-            {chats.map((chat, i) => (
+            {filteredChats.length > 0 ? (
+              filteredChats.map((chat) => (
                 <ChatCard
-                  key={i}
+                  key={chat.id}
                   username={chat.user.name}
                   to={`${chat.id}`}
                   active={selectedChat}
                 />
               ))
-            }
+            ) : (
+              <p className="text-center text-muted">No se encontraron chats</p>
+            )}
           </div>
         </div>
         <div

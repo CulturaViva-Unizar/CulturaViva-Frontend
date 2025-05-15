@@ -15,8 +15,8 @@ type NavBarProps = {
   onItemTypeChange: (v: string) => void;
   category: string;
   onCategoryChange: (v: string) => void;
-  price: number;
-  onPriceChange: (v: number) => void;
+  price?: number;
+  onPriceChange: (v: number | undefined) => void;
   date: Date | null;
   onDateChange: (v: Date | null) => void;
   className?: string;

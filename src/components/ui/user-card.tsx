@@ -1,6 +1,6 @@
 import { faLock, faMessage, faUnlock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FC, useState } from "react";
+import { FC } from "react";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { Link } from "react-router";
@@ -12,7 +12,7 @@ type UserCardProps = {
   username: string;
   totalComments: number;
   deletedComments: number;
-  isEnabledInit: boolean;
+  isEnabled: boolean;
   className: string;
 };
 
@@ -21,24 +21,15 @@ export const UserCard: FC<UserCardProps> = ({
   username,
   totalComments,
   deletedComments,
-  isEnabledInit,
+  isEnabled,
   className = "",
 }) => {
-  const [isEnabled, setIsEnabled] = useState(isEnabledInit);
   const putUserMutation = usePutUser();
 
   const handleDisable = () => {
     Swal.fire({
       title: "¡ATENCIÓN!",
-      html: `
-        <p>Se va a deshabilitar la cuenta del usuario <b>${username}</b></p>
-        <select id="reasonSelect" class="form-select mt-3">
-          <option value="">Motivo</option>
-          <option value="razon1">Razón 1</option>
-          <option value="razon2">Razón 2</option>
-          <option value="razon3">Razón 3</option>
-        </select>
-      `,
+      text: `Se va a deshabilitar la cuenta del usuario ${username}`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Deshabilitar",
@@ -49,20 +40,10 @@ export const UserCard: FC<UserCardProps> = ({
         cancelButton: "btn btn-secondary",
       },
       buttonsStyling: false,
-      preConfirm: () => {
-        const selectElement = document.getElementById(
-          "reasonSelect"
-        ) as HTMLSelectElement;
-        const selectedValue = selectElement.value;
-        if (!selectedValue) {
-          Swal.showValidationMessage("Por favor, selecciona un motivo");
-        }
-        return { reason: selectedValue };
-      },
     }).then((result) => {
       if (result.isConfirmed) {
         putUserMutation.mutate(
-          { id: userId },
+          { id: userId, data: { active: !isEnabled } },
           {
             onSuccess: () => {
               Swal.fire(
@@ -70,7 +51,6 @@ export const UserCard: FC<UserCardProps> = ({
                 "El usuario se ha deshabilitado.",
                 "success"
               );
-              setIsEnabled(false);
             },
             onError: (err) => {
               Swal.fire("Error", err.message, "error");
@@ -97,7 +77,21 @@ export const UserCard: FC<UserCardProps> = ({
       buttonsStyling: false,
     }).then((result) => {
       if (result.isConfirmed) {
-        setIsEnabled(true);
+        putUserMutation.mutate(
+          { id: userId, data: { active: !isEnabled } },
+          {
+            onSuccess: () => {
+              Swal.fire(
+                "Habilitado",
+                "El usuario se ha vuelto a habilitar.",
+                "success"
+              );
+            },
+            onError: (err) => {
+              Swal.fire("Error", err.message, "error");
+            },
+          }
+        );
       }
     });
   };

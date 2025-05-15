@@ -47,7 +47,12 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
 
   const registering = useRegister({
     onSuccess: () => {
-      Swal.fire("¡Registro exitoso!", "Bienvenido", "success").then(() => {
+      Swal.fire({
+        title: "¡Registro exitoso!",
+        text: "Bienvenido",
+        icon: "success",
+        timer: 1500
+      }).then(() => {
         reset();
         onSuccess();
       });

@@ -18,7 +18,7 @@ function Landing() {
   const [itemType, setItemType] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [date, setDate] = useState<Date | null>(null);
-  const [price, setPrice] = useState<number>(0);
+  const [price, setPrice] = useState<number | undefined>(undefined);
   const userId = useUser().data?.id;
   const queryClient = useQueryClient();
   const eventRequest: GetEventsRequest = useMemo(

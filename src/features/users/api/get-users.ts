@@ -16,8 +16,10 @@ const getUsers = async (
   if (request.name) {
     params.append("name", request.name);
   }
-  if (request.type) {
-    params.append("type", request.type);
+  if (request.userType) {
+    const userType =
+      request.userType.charAt(0).toUpperCase() + request.userType.slice(1);
+    params.append("userType", userType);
   }
   if (request.sort) {
     params.append("sort", request.sort);

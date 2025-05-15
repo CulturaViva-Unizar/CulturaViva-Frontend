@@ -5,11 +5,12 @@ import { FC } from "react";
 interface RatingStarsProps {
   rating?: number;
   onClick?: (index: number) => void;
+  className?: string;
 }
 
-export const RatingStars: FC<RatingStarsProps> = ({ rating = 0, onClick }) => {
+export const RatingStars: FC<RatingStarsProps> = ({ rating = 0, onClick, className = "" }) => {
   return (
-    <>
+    <div className={`${className}`}>
       {[...Array(5)].map((_, i) => (
         <FontAwesomeIcon
           key={i}
@@ -19,6 +20,6 @@ export const RatingStars: FC<RatingStarsProps> = ({ rating = 0, onClick }) => {
           style={{ cursor: onClick ? "pointer" : "default" }}
         />
       ))}
-    </>
+    </div>
   );
 };

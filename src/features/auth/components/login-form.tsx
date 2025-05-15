@@ -31,7 +31,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
 
   const login = useLogin({
     onSuccess: () => {
-      Swal.fire("¡Bienvenido!", "Has iniciado sesión correctamente", "success").then(() => {
+      Swal.fire({
+        title: "¡Bienvenido!",
+        text: "Has iniciado sesión correctamente",
+        icon: "success",
+        timer: 1500
+      }).then(() => {
         reset();
         onSuccess();
       });

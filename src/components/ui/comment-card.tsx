@@ -5,32 +5,67 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { RatingStars } from "./rating-stars";
+import { useDeleteReviewFromCulturalPlace } from "../../features/reviews/api/delete-review-from-cultural-place";
+import { useDeleteReviewFromEvent } from "../../features/reviews/api/delete-review-from-event";
+import { Items } from "../../shared/types/enums";
 
 interface CommentCardProps {
-  item: string;
-  rating: number;
+  id: string;
+  itemId: string;
+  itemTitle: string;
+  itemType: string;
+  rating?: number;
   date: string;
   comment: string;
+  deleted: boolean;
 }
 
 export const CommentCard: React.FC<CommentCardProps> = ({
-  item,
-  rating = 0,
+  id,
+  itemId,
+  itemTitle,
+  itemType,
+  rating,
   comment,
   date,
+  deleted,
 }) => {
+  const deleteCommentFromEventMutation = useDeleteReviewFromEvent();
+  const deleteCommentFromCulturalPlaceMutation =
+    useDeleteReviewFromCulturalPlace();
+
+  const deleteCommentFromEvent = () => {
+    deleteCommentFromEventMutation.mutate(
+      { eventId: itemId, commentId: id },
+      {
+        onSuccess: () => {
+          Swal.fire("Eliminado", "Comentario eliminado.", "success");
+        },
+        onError: (err) => {
+          Swal.fire("Error", err.message, "error");
+        },
+      }
+    );
+  };
+
+  const deleteCommentFromCulturalPlace = () => {
+    deleteCommentFromCulturalPlaceMutation.mutate(
+      { culturalPlaceId: itemId, commentId: id },
+      {
+        onSuccess: () => {
+          Swal.fire("Eliminado", "Comentario eliminado.", "success");
+        },
+        onError: (err) => {
+          Swal.fire("Error", err.message, "error");
+        },
+      }
+    );
+  };
+
   const handleDeleteComment = () => {
     Swal.fire({
       title: "¡ATENCIÓN!",
-      html: `
-        <p>Se va a eliminar un comentario del evento ${item}</p>
-        <select id="reasonSelect" class="form-select mt-3">
-          <option value="">Motivo</option>
-          <option value="razon1">Razón 1</option>
-          <option value="razon2">Razón 2</option>
-          <option value="razon3">Razón 3</option>
-        </select>
-      `,
+      text: "Se va a eliminar una reseña",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Eliminar",
@@ -40,43 +75,38 @@ export const CommentCard: React.FC<CommentCardProps> = ({
         cancelButton: "btn btn-secondary",
       },
       buttonsStyling: false,
-      preConfirm: () => {
-        const selectElement = document.getElementById(
-          "reasonSelect"
-        ) as HTMLSelectElement;
-        const selectedValue = selectElement.value;
-        if (!selectedValue) {
-          Swal.showValidationMessage("Por favor, selecciona un motivo");
-        }
-        return { reason: selectedValue };
-      },
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire({
-          title: "Eliminado",
-          text: "El comentario ha sido eliminado.",
-          icon: "success",
-        });
+        if (itemType == Items.Evento) {
+          deleteCommentFromEvent();
+        } else {
+          deleteCommentFromCulturalPlace();
+        }
       }
     });
   };
 
   return (
-    <>
+    <div
+      style={deleted ? { backgroundColor: "#ff000022" } : {}}
+      className={`${deleted && "text-muted"}`}
+    >
       <div className="d-flex align-items-center justify-content-between gap-2">
-        <h2>{item}</h2>
-        <button
-          className="btn btn-sm btn-danger rounded-circle"
-          onClick={() => handleDeleteComment()}
-        >
-          <FontAwesomeIcon icon={faTrash} />
-        </button>
+        <h2>{itemTitle}</h2>
+        {!deleted && (
+          <button
+            className="btn btn-sm btn-danger rounded-circle"
+            onClick={handleDeleteComment}
+          >
+            <FontAwesomeIcon icon={faTrash} />
+          </button>
+        )}
       </div>
-      <div className="mb-2">
-        <RatingStars rating={rating} />
-        <span className="text-muted ms-2">{date}</span>
+      <div className="mb-2 d-flex">
+        {rating && <RatingStars rating={rating} className="me-2" />}
+        <span className="text-muted">{date}</span>
       </div>
       <p>{comment}</p>
-    </>
+    </div>
   );
 };

@@ -123,9 +123,11 @@ function Events() {
             const rq = reviewsQueries[i];
             const reviews = rq.data ?? [];
             const totalReviews = reviews.length;
+            const parentReviews = reviews.filter((r) => !r.responseTo);
             const avgRating =
-              totalReviews > 0
-                ? reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
+              parentReviews.length > 0
+                ? parentReviews.reduce((sum, r) => sum + r.rating, 0) /
+                  parentReviews.length
                 : 0;
 
             return (

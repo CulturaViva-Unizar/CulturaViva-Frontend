@@ -18,7 +18,7 @@ const Unauthorized = () => {
             <Link
               to={paths.auth.login.getHref()}
               replace
-              className="btn btn-primary shadow-sm rounded-pill px-4"
+              className="btn btn-dark shadow-sm rounded-pill px-4"
             >
               Iniciar sesión
             </Link>

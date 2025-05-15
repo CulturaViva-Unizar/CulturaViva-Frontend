@@ -1,3 +1,5 @@
+import { Items } from "../../../shared/types/enums";
+
 export type Review = {
   id: string;
   userId: string;
@@ -6,7 +8,10 @@ export type Review = {
   comment?: string;
   date: string;
   itemId: string;
+  itemType?: Items;
+  itemTitle?: string;
   responseTo?: string;
+  deleted: boolean;
 };
 
 export type Reply = {

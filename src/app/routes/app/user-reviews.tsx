@@ -5,7 +5,7 @@ import { CommentCard } from "../../../components/ui/comment-card";
 import { useGetReviewsByUser } from "../../../features/reviews/api/get-reviews-by-user";
 import { ErrorMessage } from "../../../components/errors/error-message";
 import LoadingIndicator from "../../../components/ui/loading-indicator";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 function UserReviews() {
   const { userId } = useParams();
@@ -15,6 +15,14 @@ function UserReviews() {
     error,
   } = useGetReviewsByUser(userId ?? "");
   const [searchText, setSearchText] = useState<string>("");
+
+  const filteredComments = useMemo(
+    () =>
+      reviews.filter((review) =>
+        review.itemTitle!.toLowerCase().includes(searchText.toLowerCase())
+      ),
+    [reviews, searchText]
+  );
 
   if (isLoading && !error) {
     return <LoadingIndicator message="Cargando comentarios..." />;
@@ -36,25 +44,31 @@ function UserReviews() {
         </div>
       </div>
       <div className="d-flex">
-        <div className="col-md-3"></div>
-        {reviews.map((review) => (
-          <div className="col-md" key={review.id}>
-            <CommentCard
-              item={review.itemId}
-              rating={review.rating}
-              date={new Date(review.date).toLocaleString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-                day: "2-digit",
-                month: "2-digit",
-                year: "2-digit",
-              })}
-              comment={review.comment ?? ""}
-            />
-            <hr />
-          </div>
-        ))}
-        <div className="col-md-3"></div>
+        <div className="col-md-4"></div>
+        <div className="col d-flex flex-column justify-content-center w-100">
+          {filteredComments.map((review) => (
+            <div key={review.id}>
+              <CommentCard
+                id={review.id}
+                itemId={review.itemId}
+                itemTitle={review.itemTitle!}
+                itemType={review.itemType!}
+                rating={review.rating}
+                date={new Date(review.date).toLocaleString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "2-digit",
+                })}
+                comment={review.comment ?? ""}
+                deleted={review.deleted}
+              />
+              <hr />
+            </div>
+          ))}
+        </div>
+        <div className="col-md-4"></div>
       </div>
     </MainLayout>
   );

@@ -22,7 +22,7 @@ function Users() {
   const request: GetUsersRequest = useMemo(
     () => ({
       name: searchText,
-      type: userFilterOption,
+      userType: userFilterOption,
       sort: sortBy == "" ? undefined : "comments",
       order: sortBy,
       page: currentPage,
@@ -84,24 +84,33 @@ function Users() {
         </div>
       </div>
       <div className="row g-4">
-        {data!.items.map((user: User, i: number) => {
-          const rq = reviewsQueries[i];
-          const reviews = rq.data ?? [];
-          const totalReviews = reviews.length;
+        {data?.items && data.items.length > 0 ? (
+          data.items.map((user: User, i: number) => {
+            const rq = reviewsQueries[i];
+            const reviews = rq.data ?? [];
+            const totalReviews = reviews.length;
+            const totalDeletedComments = reviews.filter(
+              (r) => r.deleted
+            ).length;
 
-          return (
-            <div className="col-md-4" key={user.id}>
-              <UserCard
-                className="rounded bg-light shadow"
-                userId={user.id}
-                username={user.name}
-                totalComments={totalReviews}
-                deletedComments={0}
-                isEnabledInit={user.active}
-              />
-            </div>
-          );
-        })}
+            return (
+              <div className="col-md-4" key={user.id}>
+                <UserCard
+                  className="h-100 rounded bg-light shadow"
+                  userId={user.id}
+                  username={user.name}
+                  totalComments={totalReviews}
+                  deletedComments={totalDeletedComments}
+                  isEnabled={user.active}
+                />
+              </div>
+            );
+          })
+        ) : (
+          <div className="text-center">
+            <strong>Sin resultados :(</strong>
+          </div>
+        )}
       </div>
       <BootstrapPagination
         currentPage={currentPage}
