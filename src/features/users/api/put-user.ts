@@ -12,6 +12,8 @@ export const usePutUser = () => {
     mutationFn: putUser,
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["users"] });
+      qc.invalidateQueries({ queryKey: ["analytics", "users"] });
+      qc.invalidateQueries({ queryKey: ["analytics", "disabledUsers"] });
     },
   });
 };

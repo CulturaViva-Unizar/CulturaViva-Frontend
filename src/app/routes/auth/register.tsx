@@ -4,11 +4,20 @@ import RegisterForm from "../../../features/auth/components/register-form";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { paths } from "../../../config/paths";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { useUser } from "../../../lib/auth";
+import { useEffect } from "react";
 
 const Register = () => {
   const navigate = useNavigate();
+  const user = useUser();
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo");
+
+  useEffect(() => {
+    if (user?.data) {
+      navigate(redirectTo || paths.app.getHref(), { replace: true });
+    }
+  }, [user, navigate, redirectTo]);
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100">

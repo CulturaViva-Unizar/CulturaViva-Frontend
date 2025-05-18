@@ -1,6 +1,6 @@
 import { faEuro, faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FC, useMemo } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { useUser } from "../../../lib/auth";
 import { Event } from "../types/models";
 import { useGetReviewsByEvent } from "../../reviews/api/get-reviews-by-event";
@@ -9,13 +9,14 @@ import { ErrorMessage } from "../../../components/errors/error-message";
 import { format } from "date-fns";
 import { useGetBookmarksByUser } from "../../bookmarks/api/get-bookmarks-by-user";
 import { GetPaginatedEventsRequest } from "../../../types/api";
-import { Rating } from "../../../components/ui/rating";
+import { Rating } from "../../reviews/components/rating";
 import { Items } from "../../../shared/types/enums";
 import InfoItemHeader from "../../../components/ui/info-item-header";
-import { AttendanceButton } from "../../../components/ui/attendance-button";
+import { AttendanceButton } from "./attendance-button";
 import InfoItemActionButtons from "../../../components/ui/info-item-action-buttons";
 import PostReview from "../../reviews/components/post-review";
 import ListReviews from "../../reviews/components/list-reviews";
+import { useSwipeable } from "react-swipeable";
 
 type InfoEventProps = {
   event: Event;
@@ -24,6 +25,24 @@ type InfoEventProps = {
 };
 
 const InfoEvent: FC<InfoEventProps> = ({ event, onClose, className = "" }) => {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  const [expanded, setExpanded] = useState(false);
+  const swipeHandlers = useSwipeable({
+    onSwipedUp: () => setExpanded(true),
+    onSwipedDown: () => setExpanded(false),
+    delta: 50,
+    preventDefaultTouchmoveEvent: true,
+    trackTouch: true,
+    trackMouse: false,
+  });
+
   const {
     data: reviews = [],
     isLoading: isLoadingReviews,
@@ -31,7 +50,6 @@ const InfoEvent: FC<InfoEventProps> = ({ event, onClose, className = "" }) => {
   } = useGetReviewsByEvent(event.id);
   const user = useUser();
   const request: GetPaginatedEventsRequest = {
-    userId: user.data?.id,
     page: 1,
     limit: 100,
   };
@@ -39,7 +57,7 @@ const InfoEvent: FC<InfoEventProps> = ({ event, onClose, className = "" }) => {
     data: bookmarks,
     isLoading: isLoadingBookmarks,
     error: errorBookmarks,
-  } = useGetBookmarksByUser(request);
+  } = useGetBookmarksByUser(user.data?.id ?? "", request);
   const isSaved = useMemo(
     () => !!bookmarks?.items.some((item) => item.id === event.id),
     [bookmarks, event.id]
@@ -87,7 +105,7 @@ const InfoEvent: FC<InfoEventProps> = ({ event, onClose, className = "" }) => {
     return <ErrorMessage message="Error al cargar la información del evento" />;
   }
 
-  return (
+  const renderContent = () => (
     <div className={`p-3 ${className}`}>
       <InfoItemHeader
         itemId={event.id}
@@ -141,6 +159,43 @@ const InfoEvent: FC<InfoEventProps> = ({ event, onClose, className = "" }) => {
         </>
       )}
       <ListReviews itemType={Items.Evento} reviews={reviews} />
+    </div>
+  );
+
+  if (!isMobile) {
+    return renderContent();
+  }
+
+  const collapsedHeight = 300;
+  const sheetStyle: React.CSSProperties = {
+    position: 'fixed',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: expanded ? '100vh' : `${collapsedHeight}px`,
+    transition: 'height 0.3s ease',
+    background: 'white',
+    boxShadow: '0 -2px 10px rgba(0,0,0,0.1)',
+    borderTopLeftRadius: '0.5rem',
+    borderTopRightRadius: '0.5rem',
+    overflow: 'hidden',
+    zIndex: 9999,
+  };
+
+  return (
+    <div {...swipeHandlers} style={sheetStyle}>
+      <div
+        style={{
+          width: '40px',
+          height: '4px',
+          background: '#ccc',
+          borderRadius: '2px',
+          margin: '8px auto',
+        }}
+      />
+      <div style={{ height: '100%', overflowY: 'auto' }}>
+        {renderContent()}
+      </div>
     </div>
   );
 };

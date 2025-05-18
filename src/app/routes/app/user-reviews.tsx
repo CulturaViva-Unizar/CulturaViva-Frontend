@@ -1,7 +1,7 @@
 import { useParams } from "react-router";
 import SearchBar from "../../../components/ui/search-bar";
 import MainLayout from "../../../components/layouts/main-layout";
-import { CommentCard } from "../../../components/ui/comment-card";
+import { CommentCard } from "../../../features/reviews/components/comment-card";
 import { useGetReviewsByUser } from "../../../features/reviews/api/get-reviews-by-user";
 import { ErrorMessage } from "../../../components/errors/error-message";
 import LoadingIndicator from "../../../components/ui/loading-indicator";

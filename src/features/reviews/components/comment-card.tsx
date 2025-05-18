@@ -5,9 +5,9 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { RatingStars } from "./rating-stars";
-import { useDeleteReviewFromCulturalPlace } from "../../features/reviews/api/delete-review-from-cultural-place";
-import { useDeleteReviewFromEvent } from "../../features/reviews/api/delete-review-from-event";
-import { Items } from "../../shared/types/enums";
+import { useDeleteReviewFromCulturalPlace } from "../api/delete-review-from-cultural-place";
+import { useDeleteReviewFromEvent } from "../api/delete-review-from-event";
+import { Items } from "../../../shared/types/enums";
 
 interface CommentCardProps {
   id: string;

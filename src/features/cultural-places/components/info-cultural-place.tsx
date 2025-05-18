@@ -1,8 +1,9 @@
 import { faEuro, faPhone, faClock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FC, useMemo } from "react";
+import React, { FC, useMemo, useState, useEffect } from "react";
+import { useSwipeable } from "react-swipeable";
 import { useUser } from "../../../lib/auth";
-import { Rating } from "../../../components/ui/rating";
+import { Rating } from "../../reviews/components/rating";
 import { CulturalPlace } from "../types/models";
 import { useGetReviewsByCulturalPlace } from "../../reviews/api/get-reviews-by-cultural-place";
 import { GetPaginatedEventsRequest } from "../../../types/api";
@@ -26,22 +27,36 @@ const InfoCulturalPlace: FC<InfoCulturalPlaceProps> = ({
   onClose,
   className = "",
 }) => {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  const [expanded, setExpanded] = useState(false);
+  const swipeHandlers = useSwipeable({
+    onSwipedUp: () => setExpanded(true),
+    onSwipedDown: () => setExpanded(false),
+    delta: 50,
+    preventDefaultTouchmoveEvent: true,
+    trackTouch: true,
+    trackMouse: false,
+  });
+
   const {
     data: reviews = [],
     isLoading: isLoadingReviews,
     error: errorReviews,
   } = useGetReviewsByCulturalPlace(culturalPlace.id);
   const user = useUser();
-  const request: GetPaginatedEventsRequest = {
-    userId: user.data?.id,
-    page: 1,
-    limit: 100,
-  };
+  const request: GetPaginatedEventsRequest = { page: 1, limit: 100 };
   const {
     data: bookmarks,
     isLoading: isLoadingBookmarks,
     error: errorBookmarks,
-  } = useGetBookmarksByUser(request);
+  } = useGetBookmarksByUser(user.data?.id ?? "", request);
   const isSaved = useMemo(
     () => !!bookmarks?.items.some((item) => item.id === culturalPlace.id),
     [bookmarks, culturalPlace.id]
@@ -49,27 +64,12 @@ const InfoCulturalPlace: FC<InfoCulturalPlaceProps> = ({
   const isLoading = isLoadingReviews || isLoadingBookmarks;
   const error = errorReviews || errorBookmarks;
   const avgRating = useMemo(
-    () =>
-      reviews && reviews.length > 0
-        ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
-        : 0,
+    () => (reviews.length ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length : 0),
     [reviews]
   );
   const ratingDistribution = useMemo(() => {
-    const dist: Record<1 | 2 | 3 | 4 | 5, number> = {
-      5: 0,
-      4: 0,
-      3: 0,
-      2: 0,
-      1: 0,
-    };
-
-    reviews.forEach((r) => {
-      if (r.rating >= 1 && r.rating <= 5) {
-        dist[r.rating as 1 | 2 | 3 | 4 | 5]++;
-      }
-    });
-
+    const dist: Record<1 | 2 | 3 | 4 | 5, number> = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+    reviews.forEach((r) => { if (r.rating >= 1 && r.rating <= 5) dist[r.rating as 1 | 2 | 3 | 4 | 5]++; });
     return dist;
   }, [reviews]);
   const mapsUrl = culturalPlace.location
@@ -88,7 +88,7 @@ const InfoCulturalPlace: FC<InfoCulturalPlaceProps> = ({
     );
   }
 
-  return (
+  const renderContent = () => (
     <div className={`p-3 ${className}`}>
       <InfoItemHeader
         itemId={culturalPlace.id}
@@ -142,6 +142,43 @@ const InfoCulturalPlace: FC<InfoCulturalPlaceProps> = ({
         </>
       )}
       <ListReviews reviews={reviews} itemType={Items.Lugar} />
+    </div>
+  );
+
+  if (!isMobile) {
+    return renderContent();
+  }
+
+  const collapsedHeight = 300;
+  const sheetStyle: React.CSSProperties = {
+    position: 'fixed',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: expanded ? '100vh' : `${collapsedHeight}px`,
+    transition: 'height 0.3s ease',
+    background: 'white',
+    boxShadow: '0 -2px 10px rgba(0,0,0,0.1)',
+    borderTopLeftRadius: '0.5rem',
+    borderTopRightRadius: '0.5rem',
+    overflow: 'hidden',
+    zIndex: 9999,
+  };
+
+  return (
+    <div {...swipeHandlers} style={sheetStyle}>
+      <div
+        style={{
+          width: '40px',
+          height: '4px',
+          background: '#ccc',
+          borderRadius: '2px',
+          margin: '8px auto',
+        }}
+      />
+      <div style={{ height: '100%', overflowY: 'auto' }}>
+        {renderContent()}
+      </div>
     </div>
   );
 };

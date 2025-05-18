@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { ApiResponse, GetEventsByCategoryResponse } from "../../../types/api";
+import { ApiResponse, GetItemsByCategoryResponse } from "../../../types/api";
 import { api } from "../../../lib/api-client";
-import { EventByCategory } from "../types/models";
+import { ItemByCategory } from "../types/models";
 
 export const getUpcomingEventsByCategoryAndUserAnalytics = async (
   id: string
-): Promise<EventByCategory[]> => {
-  const response: ApiResponse<GetEventsByCategoryResponse> = await api.get(
+): Promise<ItemByCategory[]> => {
+  const response: ApiResponse<GetItemsByCategoryResponse> = await api.get(
     `/statistics/users/${id}/upcoming-by-category`
   );
 
@@ -14,7 +14,7 @@ export const getUpcomingEventsByCategoryAndUserAnalytics = async (
 };
 
 export const useGetUpcomingEventsByCategoryAndUserAnalytics = (id: string) => {
-  return useQuery<EventByCategory[], Error>({
+  return useQuery<ItemByCategory[], Error>({
     queryKey: ["analytics", "upcoming-events"],
     queryFn: () => getUpcomingEventsByCategoryAndUserAnalytics(id),
   });

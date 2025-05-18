@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import { Button } from "react-bootstrap";
 import Swal from "sweetalert2";
-import { RatingStars } from "../../../components/ui/rating-stars";
+import { RatingStars } from "./rating-stars";
 import { useCreateReview } from "../api/create-review";
 import { Items } from "../../../shared/types/enums";
 

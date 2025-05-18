@@ -9,6 +9,7 @@ import {
   PointElement,
   LineElement,
 } from "chart.js";
+import { ChartProps } from "../../features/analytics/types/models";
 
 Chart.register(
   CategoryScale,

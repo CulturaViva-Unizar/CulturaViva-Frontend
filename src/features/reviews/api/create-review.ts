@@ -25,6 +25,7 @@ export const useCreateReview = () => {
     mutationFn: createReview,
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["reviews"] });
+      qc.invalidateQueries({ queryKey: ["analytics", "comments"] });
     },
   });
 };

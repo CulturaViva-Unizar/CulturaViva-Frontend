@@ -38,6 +38,7 @@ export const paths = {
       suggested: {
         path: "suggested",
         getHref: () => "/app/events/suggested",
+        admin: false,
       },
       popular: {
         path: "popular",
@@ -62,10 +63,6 @@ export const paths = {
       path: "places",
       getHref: () => "/app/places",
       admin: true,
-      suggested: {
-        path: "suggested",
-        getHref: () => "/app/places/suggested",
-      },
       popular: {
         path: "popular",
         getHref: () => "/app/places/popular",

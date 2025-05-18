@@ -1,7 +1,5 @@
 import SearchBar from "../../../components/ui/search-bar";
 import { Select } from "../../../components/ui/select";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowDownWideShort } from "@fortawesome/free-solid-svg-icons";
 import { Card } from "../../../components/ui/card";
 import BootstrapPagination from "../../../components/ui/bootstrap-pagination";
 import { useMemo, useState } from "react";
@@ -18,6 +16,11 @@ import { DatePicker } from "../../../components/ui/date-picker";
 import { useGetCulturalPlaceCategories } from "../../../features/cultural-places/api/get-cultural-place-categories";
 import { useGetEventCategories } from "../../../features/events/api/get-event-categories";
 import { format } from "date-fns";
+import { GetPaginatedBookmarksRequest } from "../../../types/api";
+import { useQueries } from "@tanstack/react-query";
+import { getReviewsByEvent } from "../../../features/reviews/api/get-reviews-by-event";
+import { getReviewsByCulturalPlace } from "../../../features/reviews/api/get-reviews-by-cultural-place";
+import { SortButton } from "../../../components/ui/sort-button";
 
 const ITEMS_PER_PAGE = 9;
 
@@ -29,23 +32,36 @@ function Bookmarks() {
   const [type, setType] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const request = useMemo(
+  const [orderBy, setOrderBy] = useState<string>("desc");
+
+  const handleOrderBy = () => {
+    if (orderBy == "asc") {
+      setOrderBy("desc");
+    } else {
+      setOrderBy("asc");
+    }
+  };
+
+  const request: GetPaginatedBookmarksRequest = useMemo(
     () => ({
-      userId: user.data!.id,
-      eventType: type,
-      eventName: name,
-      eventDate: date ? format(date, "yyyy-MM-dd") : undefined,
-      eventCategory: category,
+      itemType: type,
+      name,
+      startDate: date ? format(date, "yyyy-MM-dd") : undefined,
+      endDate: date ? format(date, "yyyy-MM-dd") : undefined,
+      category,
       page: currentPage,
       limit: ITEMS_PER_PAGE,
+      sort: "comments",
+      order: orderBy,
     }),
-    [user.data, type, name, date, category, currentPage]
+    [type, name, date, category, currentPage, orderBy]
   );
+
   const {
     data,
     isLoading: isLoadingBookmarks,
     error: errorBookmarks,
-  } = useGetBookmarksByUser(request);
+  } = useGetBookmarksByUser(user.data!.id, request);
 
   const {
     data: eventCategories,
@@ -58,17 +74,26 @@ function Bookmarks() {
     error: errorCulturalPlaceCategories,
   } = useGetCulturalPlaceCategories();
 
+  // Fetch reviews for each bookmarked item
+  const reviewsQueries = useQueries({
+    queries: (data?.items ?? []).map((item) => {
+      const isEvent = (item as Event).startDate !== undefined;
+      return {
+        queryKey: ["reviews", item.id],
+        queryFn: () =>
+          isEvent
+            ? getReviewsByEvent(item.id)
+            : getReviewsByCulturalPlace(item.id),
+        enabled: !!data,
+      };
+    }),
+  });
+
   const eventCategoriesOptions =
-    eventCategories?.map((cat) => ({
-      value: cat,
-      label: cat,
-    })) ?? [];
+    eventCategories?.map((cat) => ({ value: cat, label: cat })) ?? [];
 
   const culturalPlaceCategoriesOptions =
-    culturalPlaceCategories?.map((cat) => ({
-      value: cat,
-      label: cat,
-    })) ?? [];
+    culturalPlaceCategories?.map((cat) => ({ value: cat, label: cat })) ?? [];
 
   const categoryOptions = [
     { value: "", label: "Categoría" },
@@ -138,29 +163,42 @@ function Bookmarks() {
             value={date}
             onChange={onDateChange}
           />
-          <button className="col btn rounded-pill shadow-sm text-nowrap">
-            Comentarios
-            <FontAwesomeIcon icon={faArrowDownWideShort} className="ps-2" />
-          </button>
+          <SortButton
+            label="Comentarios"
+            sortBy={orderBy}
+            onClick={handleOrderBy}
+          />
         </div>
       </div>
       <div className="row g-4">
-        {!isLoading && !isError && (!data || data.items.length == 0) ? (
+        {!isLoading && !isError && (!data || data.items.length === 0) ? (
           <div className="text-center">
             <strong>Sin resultados :(</strong>
           </div>
         ) : (
           data &&
-          data.items.map((item) => {
+          data.items.map((item, i) => {
             const isEvent = (item as Event).startDate !== undefined;
+            const rq = reviewsQueries[i];
+            const allReviews = rq.data ?? [];
+            const parentReviews = isEvent
+              ? allReviews.filter((r) => !r.responseTo)
+              : allReviews;
+            const totalReviews = allReviews.length;
+            const avgRating =
+              parentReviews.length > 0
+                ? parentReviews.reduce((sum, r) => sum + r.rating, 0) /
+                  parentReviews.length
+                : 0;
+
             return (
               <div className="col-md-4" key={item.id}>
                 <Card
                   image={item.image}
                   title={item.title}
                   location={item.location}
-                  rating={5}
-                  reviews={0}
+                  rating={avgRating}
+                  reviews={totalReviews}
                   description={item.description}
                   className="h-100 rounded bg-light shadow"
                   onClick={() =>

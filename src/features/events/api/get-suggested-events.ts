@@ -2,34 +2,39 @@ import { useQuery } from "@tanstack/react-query";
 import {
   ApiResponse,
   GetPaginatedEventsResponse,
-  GetPopularEventsRequest,
+  GetSuggestedEventsRequest,
 } from "../../../types/api";
 import { api } from "../../../lib/api-client";
 import { mapGetPaginatedEventsResponseToPaginatedEventsPage } from "../utils/mappers";
 import { PaginatedEventsPage } from "../types/models";
 
-const getPopularEvents = async (
-  request: GetPopularEventsRequest
+const getSuggestedEvents = async (
+  id: string,
+  request: GetSuggestedEventsRequest
 ): Promise<PaginatedEventsPage> => {
   const params = new URLSearchParams();
 
-  if (request.category) {
-    params.append("category", request.category);
+  if (request.sort) {
+    params.append("sort", request.sort)
+  }
+  if (request.order) {
+    params.append("order", request.order)
   }
 
-  params.append("itemType", "Event");
+  params.append("type", request.type);
   params.append("page", request.page.toString());
   params.append("limit", request.limit.toString());
 
-  const url = `/users/popular-events?${params.toString()}`;
+  const url = `/users/${id}/recommended-items?${params.toString()}`;
   const response: ApiResponse<GetPaginatedEventsResponse> = await api.get(url);
 
   return mapGetPaginatedEventsResponseToPaginatedEventsPage(response.data);
 };
 
-export const useGetPopularEvents = (request: GetPopularEventsRequest) => {
+export const useGetSuggestedEvents = (id: string, request: GetSuggestedEventsRequest) => {
   return useQuery<PaginatedEventsPage, Error>({
-    queryKey: ["popularEvents", request],
-    queryFn: () => getPopularEvents(request),
+    queryKey: ["recommendedEvents", request],
+    queryFn: () => getSuggestedEvents(id, request),
+    enabled: Boolean(id),
   });
 };

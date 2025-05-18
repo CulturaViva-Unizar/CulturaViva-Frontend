@@ -132,6 +132,14 @@ export type GetPopularEventsRequest = {
   limit: number;
 };
 
+export type GetSuggestedEventsRequest = {
+  type: string;
+  sort?: string;
+  order?: string;
+  page: number;
+  limit: number;
+};
+
 /* Cultural places -------------------------------------------------------------------*/
 
 export type GetCulturalPlacesRequest = {
@@ -152,6 +160,20 @@ export type GetPaginatedCulturalPlacesResponse =
 
 export type GetCulturalPlaceByIdResponse = CulturalPlaceResponse;
 
+export type GetPopularCulturalPlacesRequest = {
+  category?: string;
+  page: number;
+  limit: number;
+};
+
+export type GetSuggestedCulturalPlacesRequest = {
+  type: string;
+  sort?: string;
+  order?: string;
+  page: number;
+  limit: number;
+};
+
 /* Bookmarks -------------------------------------------------------------------------*/
 
 export type BookmarkResponse = EventResponse | CulturalPlaceResponse;
@@ -160,6 +182,18 @@ export type GetBookmarksByUserResponse = Paginated<BookmarkResponse>;
 
 export type CreateBookmarkRequest = {
   eventId: string;
+};
+
+export type GetPaginatedBookmarksRequest = {
+  name?: string;
+  startDate?: string;
+  endDate?: string;
+  category?: string;
+  itemType?: string;
+  page: number;
+  limit: number;
+  sort?: string;
+  order?: string;
 };
 
 /* Chats -----------------------------------------------------------------------------*/
@@ -274,13 +308,34 @@ export type GetEventsAnalyticsResponse = {
   count: number;
 };
 
-export type EventByCategoryAnalytics = {
+export type ItemByCategoryAnalytics = {
   category: string;
   count: number;
-}
+};
 
-export type GetEventsByCategoryResponse = EventByCategoryAnalytics[];
+export type GetItemsByCategoryResponse = ItemByCategoryAnalytics[];
 
+export type GetTimeAnalyticsRequest = {
+  range: string;
+};
+
+export type GetCommentsAnalyticsResponse = [
+  {
+    totalEliminated: number;
+    totalAdded: number;
+  }
+];
+
+export type TimeAnalyticsResponse = {
+  total: number;
+  id: string;
+  name: string | null;
+  number?: number;
+};
+
+export type GetDisabledUsersAnalyticsResponse = {
+  stats: TimeAnalyticsResponse[];
+};
 
 /* Users -----------------------------------------------------------------------------*/
 
@@ -291,12 +346,11 @@ export type UserResponse = {
   admin: boolean;
   active: boolean;
   phone: string;
-  chats: string[];
-  asistsTo: string[];
-  savedItems: string[];
-  userType?: string;
+  userType: string;
   createdAt: string;
-  __v: number;
+  commentCount: number;
+  commentCountEnabled: number;
+  commentCountDisabled: number;
 };
 
 export type GetUsersRequest = {

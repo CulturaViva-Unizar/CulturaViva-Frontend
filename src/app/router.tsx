@@ -51,9 +51,7 @@ const createAppRouter = (queryClient: QueryClient) =>
               return {
                 ...route,
                 Component: (props: any) => (
-                  <ProtectedRoute
-                    admin={paths.app.events.assisted.admin}
-                  >
+                  <ProtectedRoute admin={paths.app.events.assisted.admin}>
                     <route.Component {...props} />
                   </ProtectedRoute>
                 ),
@@ -72,9 +70,7 @@ const createAppRouter = (queryClient: QueryClient) =>
                   return {
                     ...route,
                     Component: (props: any) => (
-                      <ProtectedRoute
-                        admin={paths.app.events.admin}
-                      >
+                      <ProtectedRoute admin={paths.app.events.admin}>
                         <route.Component {...props} />
                       </ProtectedRoute>
                     ),
@@ -82,17 +78,29 @@ const createAppRouter = (queryClient: QueryClient) =>
                 }),
             },
             {
-              path: paths.app.events.suggested.path,
-              lazy: () =>
-                import("./routes/app/events/suggested-events").then(
-                  convert(queryClient)
-                ),
-            },
-            {
               path: paths.app.events.popular.path,
               lazy: () =>
                 import("./routes/app/events/popular-events").then(
                   convert(queryClient)
+                ),
+            },
+            {
+              path: paths.app.events.suggested.path,
+              lazy: () =>
+                import("./routes/app/events/suggested-events").then(
+                  (module) => {
+                    const route = convert(queryClient)(module);
+                    return {
+                      ...route,
+                      Component: (props: any) => (
+                        <ProtectedRoute
+                          admin={paths.app.events.suggested.admin}
+                        >
+                          <route.Component {...props} />
+                        </ProtectedRoute>
+                      ),
+                    };
+                  }
                 ),
             },
             {
@@ -103,9 +111,7 @@ const createAppRouter = (queryClient: QueryClient) =>
                   return {
                     ...route,
                     Component: (props: any) => (
-                      <ProtectedRoute
-                        admin={paths.app.events.assisted.admin}
-                      >
+                      <ProtectedRoute admin={paths.app.events.assisted.admin}>
                         <route.Component {...props} />
                       </ProtectedRoute>
                     ),
@@ -120,9 +126,7 @@ const createAppRouter = (queryClient: QueryClient) =>
                   return {
                     ...route,
                     Component: (props: any) => (
-                      <ProtectedRoute
-                        admin={paths.app.events.upcoming.admin}
-                      >
+                      <ProtectedRoute admin={paths.app.events.upcoming.admin}>
                         <route.Component {...props} />
                       </ProtectedRoute>
                     ),
@@ -151,22 +155,13 @@ const createAppRouter = (queryClient: QueryClient) =>
                     return {
                       ...route,
                       Component: (props: any) => (
-                        <ProtectedRoute
-                          admin={paths.app.culturalPlaces.admin}
-                        >
+                        <ProtectedRoute admin={paths.app.culturalPlaces.admin}>
                           <route.Component {...props} />
                         </ProtectedRoute>
                       ),
                     };
                   }
                 ),
-            },
-            {
-              path: paths.app.culturalPlaces.suggested.path,
-              lazy: () =>
-                import(
-                  "./routes/app/cultural-places/suggested-cultural-places"
-                ).then(convert(queryClient)),
             },
             {
               path: paths.app.culturalPlaces.popular.path,
@@ -207,9 +202,7 @@ const createAppRouter = (queryClient: QueryClient) =>
               return {
                 ...route,
                 Component: (props: any) => (
-                  <ProtectedRoute
-                    admin={paths.app.comments.admin}
-                  >
+                  <ProtectedRoute admin={paths.app.comments.admin}>
                     <route.Component {...props} />
                   </ProtectedRoute>
                 ),
@@ -249,9 +242,7 @@ const createAppRouter = (queryClient: QueryClient) =>
               return {
                 ...route,
                 Component: (props: any) => (
-                  <ProtectedRoute
-                    admin={paths.app.analytics.admin}
-                  >
+                  <ProtectedRoute admin={paths.app.analytics.admin}>
                     <route.Component {...props} />
                   </ProtectedRoute>
                 ),

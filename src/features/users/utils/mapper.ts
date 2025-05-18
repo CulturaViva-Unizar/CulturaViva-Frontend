@@ -6,6 +6,9 @@ export const mapUserResponseToUser = (src: UserResponse): User => ({
   name: src.name,
   email: src.email,
   active: src.active,
+  commentCount: src.commentCount,
+  commentCountDisabled: src.commentCountDisabled,
+  commentCountEnabled: src.commentCountEnabled,
 });
 
 export const mapGetPaginatedUsersResponseToPaginatedUsersPage = (

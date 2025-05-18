@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import { Select } from "../../../components/ui/select";
 import {
   FILTER_REVIEWS_OPTIONS,
@@ -7,6 +7,7 @@ import {
 import { ReviewItem } from "./review-item";
 import { Review } from "../types/models";
 import { Items } from "../../../shared/types/enums";
+import { ORDER_REVIEW_COMPARATORS } from "../../../utils/review-utils";
 
 type ListReviewsProps = {
   itemType: Items;
@@ -16,6 +17,24 @@ type ListReviewsProps = {
 const ListReviews: FC<ListReviewsProps> = ({ itemType, reviews }) => {
   const [orderReviewOption, setOrderReviewOption] = useState("");
   const [filterReviewOption, setFilterReviewOption] = useState("");
+
+  const visibleReviews = useMemo(() => {
+    if (!reviews) return [];
+
+    let list = reviews.filter((r) => !r.responseTo);
+
+    if (filterReviewOption) {
+      const ratingFilter = Number(filterReviewOption);
+      list = list.filter((r) => r.rating === ratingFilter);
+    }
+
+    const comparator = ORDER_REVIEW_COMPARATORS[orderReviewOption];
+    if (comparator) {
+      list = [...list].sort(comparator);
+    }
+
+    return list;
+  }, [reviews, filterReviewOption, orderReviewOption]);
 
   return (
     <>
@@ -33,22 +52,20 @@ const ListReviews: FC<ListReviewsProps> = ({ itemType, reviews }) => {
           onChange={setFilterReviewOption}
         />
       </div>
-      {reviews && reviews.length > 0 ? (
-        reviews
-          .filter((r) => !r.responseTo)
-          .map((review) => (
-            <ReviewItem
-              key={review.id}
-              id={review.id}
-              itemId={review.itemId}
-              userId={review.userId}
-              username={review.username}
-              rating={review.rating}
-              comment={review.comment ?? ""}
-              date={review.date}
-              itemType={itemType}
-            />
-          ))
+      {visibleReviews.length > 0 ? (
+        visibleReviews.map((review: Review) => (
+          <ReviewItem
+            key={review.id}
+            id={review.id}
+            itemId={review.itemId}
+            userId={review.userId}
+            username={review.username}
+            rating={review.rating}
+            comment={review.comment ?? ""}
+            date={review.date}
+            itemType={itemType}
+          />
+        ))
       ) : (
         <div className="text-center border p-2 rounded">
           <span>No hay reseñas</span>

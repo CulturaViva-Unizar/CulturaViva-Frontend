@@ -5,7 +5,17 @@ export type ChartProps = {
   className?: string;
 };
 
-export type EventByCategory = {
+export type ItemByCategory = {
   category: string;
   count: number;
+};
+
+export type CommentsAnalytics = {
+  totalEliminated: number;
+  totalAdded: number;
+};
+
+export type TimeAnalytics = {
+  total: number;
+  date: string;
 };

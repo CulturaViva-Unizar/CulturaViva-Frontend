@@ -20,18 +20,18 @@ function CulturalPlaces() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchText, setSearchText] = useState<string>("");
   const [category, setCategory] = useState<string>("");
-  const [sortBy, setSortBy] = useState<string>("");
+  const [orderBy, setOrderBy] = useState<string>("desc");
 
   const request = useMemo(
     () => ({
       name: searchText,
       category,
-      sort: sortBy == "" ? undefined : "comments",
-      order: sortBy,
+      sort: "comments",
+      order: orderBy,
       page: 1,
       limit: 8,
     }),
-    [searchText, category, sortBy]
+    [searchText, category, orderBy]
   );
   const {
     data,
@@ -61,10 +61,10 @@ function CulturalPlaces() {
   });
 
   const handleOrderBy = () => {
-    if (!sortBy || sortBy == "asc") {
-      setSortBy("desc");
+    if (!orderBy || orderBy == "asc") {
+      setOrderBy("desc");
     } else {
-      setSortBy("asc");
+      setOrderBy("asc");
     }
   };
 
@@ -99,7 +99,7 @@ function CulturalPlaces() {
           />
           <SortButton
             label="Comentarios"
-            sortBy={sortBy}
+            sortBy={orderBy}
             onClick={handleOrderBy}
           />
         </div>

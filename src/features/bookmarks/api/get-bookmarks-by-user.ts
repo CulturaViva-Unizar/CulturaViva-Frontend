@@ -2,43 +2,58 @@ import { useQuery } from "@tanstack/react-query";
 import {
   ApiResponse,
   GetBookmarksByUserResponse,
-  GetPaginatedEventsRequest,
+  GetPaginatedBookmarksRequest,
 } from "../../../types/api";
 import { api } from "../../../lib/api-client";
 import { BookmarksPage } from "../types/models";
 import { mapGetBookmarksByUserResponseToBookmarksPage } from "../utils/mappers";
+import { Items } from "../../../shared/types/enums";
 
 export const getBookmarksByUser = async (
-  request: GetPaginatedEventsRequest
+  userId: string,
+  request: GetPaginatedBookmarksRequest
 ): Promise<BookmarksPage> => {
   const params = new URLSearchParams();
 
-  if (request.eventType) {
-    params.append("type", request.eventType);
+  if (request.itemType) {
+    const itemType = request.itemType == Items.Evento ? "Event" : "Place";
+    params.append("itemType", itemType);
   }
-  if (request.eventName) {
-    params.append("name", request.eventName);
+  if (request.name) {
+    params.append("name", request.name);
   }
-  if (request.eventDate) {
-    params.append("date", request.eventDate);
+  if (request.startDate) {
+    params.append("startDate", request.startDate);
   }
-  if (request.eventCategory) {
-    params.append("category", request.eventCategory);
+  if (request.endDate) {
+    params.append("endDate", request.endDate);
+  }
+  if (request.category) {
+    params.append("category", request.category);
+  }
+  if (request.sort) {
+    params.append("sort", request.sort);
+  }
+  if (request.order) {
+    params.append("order", request.order);
   }
 
   params.append("page", request.page.toString());
   params.append("limit", request.limit.toString());
 
-  const url = `/users/${request.userId}/saved-events?${params.toString()}`;
+  const url = `/users/${userId}/saved-events?${params.toString()}`;
   const response: ApiResponse<GetBookmarksByUserResponse> = await api.get(url);
 
   return mapGetBookmarksByUserResponseToBookmarksPage(response.data);
 };
 
-export const useGetBookmarksByUser = (request: GetPaginatedEventsRequest) => {
+export const useGetBookmarksByUser = (
+  userId: string,
+  request: GetPaginatedBookmarksRequest
+) => {
   return useQuery<BookmarksPage, Error>({
-    queryKey: ["bookmarks", request],
-    queryFn: () => getBookmarksByUser(request),
-    enabled: Boolean(request.userId)
+    queryKey: ["bookmarks", userId, request],
+    queryFn: () => getBookmarksByUser(userId, request),
+    enabled: Boolean(userId),
   });
 };

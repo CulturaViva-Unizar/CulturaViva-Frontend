@@ -4,8 +4,8 @@ import { FC } from "react";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { Link } from "react-router";
-import { paths } from "../../config/paths";
-import { usePutUser } from "../../features/users/api/put-user";
+import { paths } from "../../../config/paths";
+import { usePutUser } from "../api/put-user";
 
 type UserCardProps = {
   userId: string;

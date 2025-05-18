@@ -12,6 +12,7 @@ export const useDeleteReviewFromEvent = () => {
       deleteReviewFromEvent(commentId, eventId),
     onSuccess: (_, { eventId }) => {
       qc.invalidateQueries({ queryKey: ["reviews", eventId] });
+      qc.invalidateQueries({ queryKey: ["analytics", "comments"] });
     },
   });
 };

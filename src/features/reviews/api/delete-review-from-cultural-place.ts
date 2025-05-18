@@ -19,6 +19,7 @@ export const useDeleteReviewFromCulturalPlace = () => {
       deleteReviewFromCulturalPlace(commentId, culturalPlaceId),
     onSuccess: (_, { culturalPlaceId }) => {
       qc.invalidateQueries({ queryKey: ["reviews", culturalPlaceId] });
+      qc.invalidateQueries({ queryKey: ["analytics", "comments"] });
     },
   });
 };

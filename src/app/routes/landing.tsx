@@ -59,13 +59,12 @@ function Landing() {
   useEffect(() => {
     if (queryClient && userId) {
       const request: GetPaginatedEventsRequest = {
-        userId,
         page: 1,
         limit: 100,
       };
       queryClient.prefetchQuery({
         queryKey: ["bookmarks", request],
-        queryFn: () => getBookmarksByUser(request),
+        queryFn: () => getBookmarksByUser(userId, request),
       });
     }
   }, [queryClient, userId]);

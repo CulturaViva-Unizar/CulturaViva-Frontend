@@ -1,4 +1,4 @@
-import { UserCard } from "../../../components/ui/user-card";
+import { UserCard } from "../../../features/users/components/user-card";
 import SearchBar from "../../../components/ui/search-bar";
 import { Select } from "../../../components/ui/select";
 import BootstrapPagination from "../../../components/ui/bootstrap-pagination";
@@ -9,42 +9,32 @@ import { ErrorMessage } from "../../../components/errors/error-message";
 import { useMemo, useState } from "react";
 import { GetUsersRequest } from "../../../types/api";
 import { USER_ANALYTICS_FILTER_OPTIONS } from "../../../shared/constants/select-options";
-import { useQueries } from "@tanstack/react-query";
 import { User } from "../../../features/users/types/models";
-import { getReviewsByUser } from "../../../features/reviews/api/get-reviews-by-user";
 import { SortButton } from "../../../components/ui/sort-button";
 
 function Users() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchText, setSearchText] = useState<string>("");
   const [userFilterOption, setUserFilterOption] = useState("");
-  const [sortBy, setSortBy] = useState<string>("");
+  const [orderBy, setOrderBy] = useState<string>("desc");
   const request: GetUsersRequest = useMemo(
     () => ({
       name: searchText,
       userType: userFilterOption,
-      sort: sortBy == "" ? undefined : "comments",
-      order: sortBy,
+      sort: "comments",
+      order: orderBy,
       page: currentPage,
       limit: 6,
     }),
-    [searchText, userFilterOption, sortBy, currentPage]
+    [searchText, userFilterOption, orderBy, currentPage]
   );
   const { data, isLoading, error } = useGetUsers(request);
 
-  const reviewsQueries = useQueries({
-    queries: (data?.items ?? []).map((u: User) => ({
-      queryKey: ["reviews", u.id],
-      queryFn: () => getReviewsByUser(u.id),
-      enabled: !!data,
-    })),
-  });
-
   const handleOrderBy = () => {
-    if (!sortBy || sortBy == "asc") {
-      setSortBy("desc");
+    if (orderBy == "asc") {
+      setOrderBy("desc");
     } else {
-      setSortBy("asc");
+      setOrderBy("asc");
     }
   };
 
@@ -78,34 +68,25 @@ function Users() {
           />
           <SortButton
             label="Comentarios"
-            sortBy={sortBy}
+            sortBy={orderBy}
             onClick={handleOrderBy}
           />
         </div>
       </div>
       <div className="row g-4">
         {data?.items && data.items.length > 0 ? (
-          data.items.map((user: User, i: number) => {
-            const rq = reviewsQueries[i];
-            const reviews = rq.data ?? [];
-            const totalReviews = reviews.length;
-            const totalDeletedComments = reviews.filter(
-              (r) => r.deleted
-            ).length;
-
-            return (
-              <div className="col-md-4" key={user.id}>
-                <UserCard
-                  className="h-100 rounded bg-light shadow"
-                  userId={user.id}
-                  username={user.name}
-                  totalComments={totalReviews}
-                  deletedComments={totalDeletedComments}
-                  isEnabled={user.active}
-                />
-              </div>
-            );
-          })
+          data.items.map((user: User) => (
+            <div className="col-md-4" key={user.id}>
+              <UserCard
+                className="h-100 rounded bg-light shadow"
+                userId={user.id}
+                username={user.name}
+                totalComments={user.commentCount}
+                deletedComments={user.commentCountDisabled}
+                isEnabled={user.active}
+              />
+            </div>
+          ))
         ) : (
           <div className="text-center">
             <strong>Sin resultados :(</strong>

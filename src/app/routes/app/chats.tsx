@@ -3,7 +3,7 @@ import { GoBackBtn } from "../../../components/ui/go-back-btn";
 import SearchBar from "../../../components/ui/search-bar";
 import { UserMenu } from "../../../components/ui/user-menu";
 import { useState, useEffect, useMemo } from "react";
-import { ChatCard } from "../../../components/ui/chat-card";
+import { ChatCard } from "../../../features/chats/components/chat-card";
 import { useGetChatsByUser } from "../../../features/chats/api/get-chats-by-user";
 import { useUser } from "../../../lib/auth";
 import LoadingIndicator from "../../../components/ui/loading-indicator";

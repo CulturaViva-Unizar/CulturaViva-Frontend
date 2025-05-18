@@ -23,7 +23,7 @@ function Events() {
   const [searchText, setSearchText] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [date, setDate] = useState<Date | null>(null);
-  const [sortBy, setSortBy] = useState<string>("");
+  const [orderBy, setOrderBy] = useState<string>("desc");
   const request: GetEventsRequest = useMemo(
     () => ({
       name: searchText,
@@ -32,12 +32,12 @@ function Events() {
         ? format(date, "yyyy-MM-dd")
         : format(new Date(), "yyyy-MM-dd"),
       endDate: date ? format(date, "yyyy-MM-dd") : undefined,
-      sort: sortBy == "" ? undefined : "comments",
-      order: sortBy,
+      sort: "comments",
+      order: orderBy,
       page: 1,
       limit: 8,
     }),
-    [searchText, category, date, sortBy]
+    [searchText, category, date, orderBy]
   );
   const {
     data,
@@ -69,10 +69,10 @@ function Events() {
   });
 
   const handleOrderBy = () => {
-    if (!sortBy || sortBy == "asc") {
-      setSortBy("desc");
+    if (!orderBy || orderBy == "asc") {
+      setOrderBy("desc");
     } else {
-      setSortBy("asc");
+      setOrderBy("asc");
     }
   };
 
@@ -112,7 +112,7 @@ function Events() {
           />
           <SortButton
             label="Comentarios"
-            sortBy={sortBy}
+            sortBy={orderBy}
             onClick={handleOrderBy}
           />
         </div>

@@ -9,10 +9,10 @@ export enum Colors {
 }
 
 export enum Timeframe {
-  Semana = "semana",
-  Mes = "mes",
-  TresMeses = "3meses",
-  SeisMeses = "6meses",
-  NueveMeses = "9meses",
-  Anio = "año",
+  Semana = "1w",
+  Mes = "1m",
+  TresMeses = "3m",
+  SeisMeses = "6m",
+  NueveMeses = "9m",
+  Anio = "12m",
 }

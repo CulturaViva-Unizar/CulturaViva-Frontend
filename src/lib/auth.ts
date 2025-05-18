@@ -30,6 +30,10 @@ const loginFn = async (data: LoginUserRequest): Promise<LoggedUser> => {
 
 const registerFn = async (data: CreateUserRequest): Promise<LoggedUser> => {
   const response: ApiResponse<CreateUserRespose> = await api.post("/auth/register", data);
+
+  TokenService.setAccessToken(response.data.accessToken);
+  TokenService.saveUser(response.data.user);
+
   return response.data.user;
 };
 const authConfig = { userFn, loginFn, registerFn, logoutFn };

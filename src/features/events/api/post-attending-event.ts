@@ -16,9 +16,9 @@ export const usePostAttendingEvent = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: postAttendingEvent,
-    onSuccess: (_, { userId }) => {
+    onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["attendingEvents"] });
-      qc.invalidateQueries({ queryKey: ["events", userId] });
+      qc.invalidateQueries({ queryKey: ["events"] });
     },
   });
 };

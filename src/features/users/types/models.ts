@@ -5,6 +5,9 @@ export type User = {
   name: string;
   email: string;
   active: boolean;
+  commentCount: number;
+  commentCountEnabled: number;
+  commentCountDisabled: number;
 };
 
 export type PaginatedUsersPage = Paginated<User>;

@@ -140,18 +140,6 @@ export const UserMenu: FC<UserMenuProps> = ({ className = "" }) => {
             </li>
             <li>
               <Link
-                to={paths.app.events.suggested.getHref()}
-                className="dropdown-item py-2 btn"
-              >
-                <FontAwesomeIcon icon={faThumbsUp} className="col-1 me-2" />
-                <span className="col">Recomendaciones</span>
-              </Link>
-            </li>
-            <li>
-              <hr className="dropdown-divider mx-3" />
-            </li>
-            <li>
-              <Link
                 to={paths.app.events.popular.getHref()}
                 className="dropdown-item py-2 btn"
               >
@@ -161,6 +149,18 @@ export const UserMenu: FC<UserMenuProps> = ({ className = "" }) => {
             </li>
             {user.data && (
               <>
+                <li>
+                  <hr className="dropdown-divider mx-3" />
+                </li>
+                <li>
+                  <Link
+                    to={paths.app.events.suggested.getHref()}
+                    className="dropdown-item py-2 btn"
+                  >
+                    <FontAwesomeIcon icon={faThumbsUp} className="col-1 me-2" />
+                    <span className="col">Recomendaciones</span>
+                  </Link>
+                </li>
                 <li>
                   <hr className="dropdown-divider mx-3" />
                 </li>
@@ -240,18 +240,6 @@ export const UserMenu: FC<UserMenuProps> = ({ className = "" }) => {
                 </li>
               </>
             )}
-            <li>
-              <Link
-                to={paths.app.culturalPlaces.suggested.getHref()}
-                className="dropdown-item py-2 btn"
-              >
-                <FontAwesomeIcon icon={faThumbsUp} className="col-1 me-2" />
-                <span className="col">Recomendaciones</span>
-              </Link>
-            </li>
-            <li>
-              <hr className="dropdown-divider mx-3" />
-            </li>
             <li>
               <Link
                 to={paths.app.culturalPlaces.popular.getHref()}

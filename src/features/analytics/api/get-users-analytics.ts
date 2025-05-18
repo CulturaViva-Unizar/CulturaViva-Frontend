@@ -24,7 +24,7 @@ export const getUsersAnalytics = async (
 
 export const useGetUsersAnalytics = (request: GetUsersAnalyticsRequest) => {
   return useQuery<number, Error>({
-    queryKey: ["analytics", "user", request],
+    queryKey: ["analytics", "users", request],
     queryFn: () => getUsersAnalytics(request),
   });
 };

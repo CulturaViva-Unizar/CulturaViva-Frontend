@@ -8,6 +8,7 @@ import {
   LinearScale,
   BarElement,
 } from "chart.js";
+import { ChartProps } from "../../features/analytics/types/models";
 
 Chart.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 

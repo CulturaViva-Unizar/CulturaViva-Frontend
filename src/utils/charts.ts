@@ -5,6 +5,31 @@ export const pieOptions = {
   },
 };
 
+export const doughnutOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "bottom" as const,
+    },
+  },
+};
+
+export const barOptions = {
+  plugins: {
+    legend: {
+      display: false,
+    },
+  },
+};
+
+export const lineOptions = {
+  plugins: {
+    legend: {
+      display: false,
+    },
+  },
+};
+
 export function generateColors(count: number) {
   const backgroundColor: string[] = [];
   const hoverBackgroundColor: string[] = [];

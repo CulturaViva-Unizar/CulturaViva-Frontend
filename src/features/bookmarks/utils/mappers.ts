@@ -8,7 +8,7 @@ import { mapEventResponseToEvent } from "../../events/utils/mappers";
 import { BookmarksPage } from "../types/models";
 
 function isEventResponse(item: BookmarkResponse): item is EventResponse {
-  return "startDate" in item;
+  return item.itemType == "Event";
 }
 
 export const mapGetBookmarksByUserResponseToBookmarksPage = (

@@ -9,7 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { useNavigate } from "react-router";
-import { RatingStars } from "../../../components/ui/rating-stars";
+import { RatingStars } from "./rating-stars";
 import { useUser } from "../../../lib/auth";
 import { paths } from "../../../config/paths";
 import Swal from "sweetalert2";
@@ -229,11 +229,9 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
       {!user.data ? (
         <button
           className="btn btn-sm mt-2"
-          onClick={() => handleReply(id)}
           disabled
         >
-          <FontAwesomeIcon icon={faReply} className="me-2" /> Necesita iniciar
-          sesión para poder responder
+          <FontAwesomeIcon icon={faReply} className="me-2" /> Necesita iniciar sesión para poder responder
         </button>
       ) : (
         <button className="btn btn-sm mt-2" onClick={() => handleReply(id)}>

@@ -3,10 +3,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, useState } from "react";
 import { Button } from "react-bootstrap";
 import Swal from "sweetalert2";
-import { usePostAttendingEvent } from "../../features/events/api/post-attending-event";
-import { useDeleteAttendingEvent } from "../../features/events/api/delete-attending-event";
-import { useUser } from "../../lib/auth";
-import { CreateBookmarkRequest } from "../../types/api";
+import { usePostAttendingEvent } from "../api/post-attending-event";
+import { useDeleteAttendingEvent } from "../api/delete-attending-event";
+import { useUser } from "../../../lib/auth";
+import { CreateBookmarkRequest } from "../../../types/api";
 
 type AttendanceButtonProps = {
   eventId: string;

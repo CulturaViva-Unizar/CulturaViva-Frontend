@@ -33,6 +33,7 @@ export const useCreateResponse = () => {
     mutationFn: createResponse,
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["reviews"] });
+      qc.invalidateQueries({ queryKey: ["analytics", "comments"] });
     },
   });
 };
