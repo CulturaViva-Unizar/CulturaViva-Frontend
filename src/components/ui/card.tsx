@@ -46,7 +46,7 @@ export const Card: FC<CardProps> = ({
           <h5 className="card-title">{title}</h5>
           <p className="card-text text-muted mb-0">{location}</p>
           <div className="d-flex align-items-center gap-1">
-            <p className="card-text text-muted mb-0">{rating}</p>
+            <p className="card-text text-muted mb-0">{Number(rating.toFixed(1))}</p>
             <FontAwesomeIcon icon={faStar} color="gold" />
             <p className="card-text text-muted mb-0">({reviews})</p>
           </div>

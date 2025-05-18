@@ -10,6 +10,7 @@ import { CreateBookmarkRequest } from "../../types/api";
 import { faInstagram, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { useNavigate } from "react-router";
 import { paths } from "../../config/paths";
+import { extractLastUrl } from "../../utils/url";
 
 type InfoItemActionButtonsProps = {
   itemId: string;
@@ -146,7 +147,7 @@ const InfoItemActionButtons: FC<InfoItemActionButtonsProps> = ({
       {twitterUrl && (
         <Button
           as="a"
-          href={twitterUrl}
+          href={extractLastUrl(twitterUrl)}
           target="_blank"
           rel="noopener noreferrer"
           className="btn btn-light rounded-circle w-auto"

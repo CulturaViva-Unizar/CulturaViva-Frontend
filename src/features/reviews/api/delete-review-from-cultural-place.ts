@@ -3,9 +3,15 @@ import { api } from "../../../lib/api-client";
 
 const deleteReviewFromCulturalPlace = async (
   commentId: string,
+  motivo: string,
   culturalPlaceId: string
 ) => {
-  await api.delete(`/items/places/${culturalPlaceId}/comments/${commentId}`);
+  const params = new URLSearchParams();
+  params.append("motivo", motivo);
+
+  await api.delete(
+    `/items/places/${culturalPlaceId}/comments/${commentId}?${params.toString()}`
+  );
 };
 
 export const useDeleteReviewFromCulturalPlace = () => {
@@ -13,10 +19,10 @@ export const useDeleteReviewFromCulturalPlace = () => {
   return useMutation<
     void,
     Error,
-    { commentId: string; culturalPlaceId: string }
+    { commentId: string; motivo: string; culturalPlaceId: string }
   >({
-    mutationFn: ({ commentId, culturalPlaceId }) =>
-      deleteReviewFromCulturalPlace(commentId, culturalPlaceId),
+    mutationFn: ({ commentId, motivo, culturalPlaceId }) =>
+      deleteReviewFromCulturalPlace(commentId, motivo, culturalPlaceId),
     onSuccess: (_, { culturalPlaceId }) => {
       qc.invalidateQueries({ queryKey: ["reviews", culturalPlaceId] });
       qc.invalidateQueries({ queryKey: ["analytics", "comments"] });

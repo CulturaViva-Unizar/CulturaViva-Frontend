@@ -23,7 +23,7 @@ export const Rating: React.FC<RatingProps> = ({
   return (
     <div className="d-flex align-items-center">
       <div className="col-4 text-center me-3">
-        <h1>{rating}</h1>
+        <h1>{Number(rating.toFixed(1))}</h1>
         <RatingStars rating={rating} />
         <p className="text-muted">({totalReviews})</p>
       </div>

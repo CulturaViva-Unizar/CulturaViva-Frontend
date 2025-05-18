@@ -4,6 +4,8 @@ import { ApiResponse, LoggedUser, LoginUserResponse } from "../../../types/api";
 import { TokenService } from "../../../lib/token-service";
 
 async function loginGoogle(): Promise<LoggedUser> {
+  window.location.href = import.meta.env.VITE_API_URL + "/auth/google";
+  
   const response: ApiResponse<LoginUserResponse> = await api.get(
     `/auth/google`
   );

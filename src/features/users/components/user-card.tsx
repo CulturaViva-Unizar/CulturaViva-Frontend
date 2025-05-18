@@ -27,9 +27,14 @@ export const UserCard: FC<UserCardProps> = ({
   const putUserMutation = usePutUser();
 
   const handleDisable = () => {
+    const offcanvasEl = document.querySelector(".offcanvas.show");
+    if (offcanvasEl) offcanvasEl.setAttribute("inert", "");
+
     Swal.fire({
       title: "¡ATENCIÓN!",
       text: `Se va a deshabilitar la cuenta del usuario ${username}`,
+      input: "text",
+      inputPlaceholder: "Escribe el motivo...",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Deshabilitar",
@@ -43,7 +48,7 @@ export const UserCard: FC<UserCardProps> = ({
     }).then((result) => {
       if (result.isConfirmed) {
         putUserMutation.mutate(
-          { id: userId, data: { active: !isEnabled } },
+          { id: userId, motivo: result.value, data: { active: !isEnabled } },
           {
             onSuccess: () => {
               Swal.fire(
@@ -66,6 +71,8 @@ export const UserCard: FC<UserCardProps> = ({
       title: "¡ATENCIÓN!",
       text: `Se va a volver a habilitar la cuenta del usuario '${username}'`,
       icon: "warning",
+      input: "text",
+      inputPlaceholder: "Escribe el motivo...",
       showCancelButton: true,
       confirmButtonText: "Habilitar",
       cancelButtonText: "Cancelar",
@@ -78,7 +85,7 @@ export const UserCard: FC<UserCardProps> = ({
     }).then((result) => {
       if (result.isConfirmed) {
         putUserMutation.mutate(
-          { id: userId, data: { active: !isEnabled } },
+          { id: userId, motivo: result.value, data: { active: !isEnabled } },
           {
             onSuccess: () => {
               Swal.fire(

@@ -83,7 +83,7 @@ const InfoItemHeader: FC<InfoItemHeaderProps> = ({
           <h2>{title}</h2>
           <span className="text-muted">{location}</span>
           <div className="d-flex align-items-center gap-1 my-1">
-            <span className="text-muted">{avgRating}</span>
+            <span className="text-muted">{Number(avgRating.toFixed(1))}</span>
             <FontAwesomeIcon icon={faStar} color="gold" />
             <span className="text-muted">({totalReviews})</span>
           </div>

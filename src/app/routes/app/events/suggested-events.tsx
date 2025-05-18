@@ -11,22 +11,19 @@ import { useQueries } from "@tanstack/react-query";
 import { getReviewsByEvent } from "../../../../features/reviews/api/get-reviews-by-event";
 import { ErrorMessage } from "../../../../components/errors/error-message";
 import LoadingIndicator from "../../../../components/ui/loading-indicator";
+import BootstrapPagination from "../../../../components/ui/bootstrap-pagination";
 
 function SuggestedEvents() {
   const user = useUser();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [sort, setSort] = useState<string | undefined>(undefined);
-  const [order, setOrder] = useState<string | undefined>(undefined);
   const request: GetSuggestedEventsRequest = useMemo(
     () => ({
       type: "Event",
-      sort,
-      order,
       page: currentPage,
       limit: 6,
     }),
-    [currentPage, order, sort]
+    [currentPage]
   );
   const { data, isLoading, error } = useGetSuggestedEvents(
     user.data!.id,
@@ -78,7 +75,7 @@ function SuggestedEvents() {
                   rating={avgRating}
                   reviews={totalReviews}
                   description={event.description}
-                  className="rounded bg-light shadow"
+                  className="rounded bg-light shadow h-100"
                   onClick={() =>
                     navigate(paths.app.events.details.getHref(event.id))
                   }
@@ -86,6 +83,11 @@ function SuggestedEvents() {
               </div>
             );
           })}
+        <BootstrapPagination
+          currentPage={currentPage}
+          totalPages={data!.totalPages}
+          onPageChange={(page: number) => setCurrentPage(page)}
+        />
       </div>
     </MainLayout>
   );

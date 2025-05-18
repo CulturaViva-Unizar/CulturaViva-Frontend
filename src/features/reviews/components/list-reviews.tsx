@@ -7,7 +7,7 @@ import {
 import { ReviewItem } from "./review-item";
 import { Review } from "../types/models";
 import { Items } from "../../../shared/types/enums";
-import { ORDER_REVIEW_COMPARATORS } from "../../../utils/review-utils";
+import { ORDER_REVIEW_COMPARATORS } from "../../../utils/review";
 
 type ListReviewsProps = {
   itemType: Items;

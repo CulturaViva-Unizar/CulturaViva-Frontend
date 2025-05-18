@@ -69,7 +69,9 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
     const existing = chats.find((c: Chat) => c.user.id === userId);
 
     if (existing) {
-      navigate(paths.app.chats.chat.getHref(existing.id));
+      navigate(paths.app.chats.chat.getHref(existing.id), {
+        state: { username: existing.user.name },
+      });
     } else {
       createChat(
         { user: userId },
@@ -122,9 +124,9 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
     });
   };
 
-  const deleteCommentFromEvent = (commentId: string) => {
+  const deleteCommentFromEvent = (commentId: string, motivo: string) => {
     deleteCommentFromEventMutation.mutate(
-      { eventId: itemId, commentId },
+      { eventId: itemId, motivo, commentId },
       {
         onSuccess: () => {
           Swal.fire("Eliminado", "Comentario eliminado.", "success");
@@ -136,9 +138,12 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
     );
   };
 
-  const deleteCommentFromCulturalPlace = (commentId: string) => {
+  const deleteCommentFromCulturalPlace = (
+    commentId: string,
+    motivo: string
+  ) => {
     deleteCommentFromCulturalPlaceMutation.mutate(
-      { culturalPlaceId: itemId, commentId },
+      { culturalPlaceId: itemId, motivo, commentId },
       {
         onSuccess: () => {
           Swal.fire("Eliminado", "Comentario eliminado.", "success");
@@ -151,10 +156,15 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
   };
 
   const handleDeleteComment = (commentId: string) => {
+    const offcanvasEl = document.querySelector(".offcanvas.show");
+    if (offcanvasEl) offcanvasEl.setAttribute("inert", "");
+
     Swal.fire({
       title: "¡ATENCIÓN!",
       text: "Se va a eliminar una reseña",
       icon: "warning",
+      input: "text",
+      inputPlaceholder: "Escribe el motivo...",
       showCancelButton: true,
       confirmButtonText: "Eliminar",
       reverseButtons: true,
@@ -166,9 +176,9 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
     }).then((result) => {
       if (result.isConfirmed) {
         if (itemType == Items.Evento) {
-          deleteCommentFromEvent(commentId);
+          deleteCommentFromEvent(commentId, result.value);
         } else {
-          deleteCommentFromCulturalPlace(commentId);
+          deleteCommentFromCulturalPlace(commentId, result.value);
         }
       }
     });
@@ -227,11 +237,9 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
           />
         ))}
       {!user.data ? (
-        <button
-          className="btn btn-sm mt-2"
-          disabled
-        >
-          <FontAwesomeIcon icon={faReply} className="me-2" /> Necesita iniciar sesión para poder responder
+        <button className="btn btn-sm mt-2" disabled>
+          <FontAwesomeIcon icon={faReply} className="me-2" /> Necesita iniciar
+          sesión para poder responder
         </button>
       ) : (
         <button className="btn btn-sm mt-2" onClick={() => handleReply(id)}>
