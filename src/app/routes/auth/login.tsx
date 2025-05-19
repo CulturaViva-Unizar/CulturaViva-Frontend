@@ -6,6 +6,7 @@ import { paths } from "../../../config/paths";
 import { useEffect } from "react";
 import { useUser } from "../../../lib/auth";
 import LoginGoogleButton from "../../../features/auth/components/login-google-button";
+import LoginMetaButton from "../../../features/auth/components/login-meta-button";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -31,11 +32,10 @@ const Login = () => {
           }}
         />
         <div className="mt-3">
-          <LoginGoogleButton           
-          onSuccess={() => {
-            navigate(paths.app.getHref());
-          }}
-        />
+          <LoginGoogleButton />
+        </div>
+        <div className="mt-3">
+          <LoginMetaButton />
         </div>
         <div className="d-flex align-items-center mt-2">
           <span className="text-secondary">¿Aún no tienes una cuenta?</span>

@@ -5,6 +5,7 @@ import { decodeBase64Url } from "../../../utils/url";
 import { LoggedUser } from "../../../types/api";
 import { TokenService } from "../../../lib/token-service";
 import { paths } from "../../../config/paths";
+import LoadingIndicator from "../../../components/ui/loading-indicator";
 
 export default function OAuthSuccessPage() {
   const navigate = useNavigate();
@@ -36,5 +37,5 @@ export default function OAuthSuccessPage() {
     handleOAuth();
   }, [search, navigate]);
 
-  return <p>Cargando…</p>;
+  return <LoadingIndicator message="Cargando..." />;;
 }

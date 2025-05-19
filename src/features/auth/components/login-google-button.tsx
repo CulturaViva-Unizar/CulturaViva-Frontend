@@ -1,15 +1,8 @@
-// src/components/LoginGoogleButton.tsx
 import React from "react";
-import Swal from "sweetalert2";
-import axios, { AxiosError } from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 
-type LoginGoogleButtonProps = {
-  onSuccess: () => void;
-};
-
-const LoginGoogleButton: React.FC<LoginGoogleButtonProps> = ({ onSuccess }) => {
+const LoginGoogleButton: React.FC = () => {
   const handleLogin = () => {
     window.location.href = import.meta.env.VITE_API_URL + `/auth/google?origin=${encodeURIComponent(window.location.origin)}`;
   };
