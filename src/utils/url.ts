@@ -6,3 +6,13 @@ export function extractLastUrl(str: string) {
   // Si hay al menos una coincidencia, devolvemos la última.
   return matches ? matches[matches.length - 1] : str;
 }
+
+export function decodeBase64Url<T = unknown>(str: string): T | null {
+  try {
+    const norm = str.replace(/-/g, "+").replace(/_/g, "/");
+    const json = atob(norm);
+    return JSON.parse(json) as T;
+  } catch {
+    return null;
+  }
+}

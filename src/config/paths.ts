@@ -22,6 +22,11 @@ export const paths = {
       path: "/unauthorized",
       getHref: () => "/unauthorized",
     },
+    googleCallbackSuccess: {
+      path: "/auth/google/callback/login/success",
+      getHref: (token: string, userB64: string) =>
+        `/auth/google/callback/login/success?token=${token}&user=${userB64}`,
+    },
   },
   app: {
     path: "/app",

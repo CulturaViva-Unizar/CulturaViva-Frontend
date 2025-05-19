@@ -1,0 +1,40 @@
+// src/pages/OAuthSuccessPage.tsx
+import { useEffect } from "react";
+import { useNavigate, useLocation } from "react-router";
+import { decodeBase64Url } from "../../../utils/url";
+import { LoggedUser } from "../../../types/api";
+import { TokenService } from "../../../lib/token-service";
+import { paths } from "../../../config/paths";
+
+export default function OAuthSuccessPage() {
+  const navigate = useNavigate();
+  const { search } = useLocation();
+
+  async function handleOAuth() {
+    const params = new URLSearchParams(search);
+    const token = params.get("token");
+    const userEnc = params.get("user");
+
+    if (!token || !userEnc) {
+      navigate(paths.auth.login.getHref());
+      return;
+    }
+
+    const user = decodeBase64Url<LoggedUser>(userEnc);
+    if (!user) {
+      navigate(paths.auth.login.getHref());
+      return;
+    }
+
+    TokenService.setAccessToken(token);
+    TokenService.saveUser(user);
+
+    navigate(paths.app.getHref());
+  }
+
+  useEffect(() => {
+    handleOAuth();
+  }, [search, navigate]);
+
+  return <p>Cargando…</p>;
+}

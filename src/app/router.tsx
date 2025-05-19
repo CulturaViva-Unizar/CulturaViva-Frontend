@@ -35,6 +35,10 @@ const createAppRouter = (queryClient: QueryClient) =>
       lazy: () => import("./routes/auth/register").then(convert(queryClient)),
     },
     {
+      path: paths.auth.googleCallbackSuccess.path,
+      lazy: () => import("./routes/auth/oauth-success").then(convert(queryClient)),
+    },
+    {
       path: paths.auth.unauthorized.path,
       lazy: () =>
         import("./routes/auth/unauthorized").then(convert(queryClient)),
