@@ -1,3 +1,14 @@
+# CulturaViva FrontEnd
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=CulturaViva-Unizar_CulturaViva-Frontend&metric=alert_status&token=2a42335bf26d08fafe31e23a0553766da8a85147)](https://sonarcloud.io/summary/new_code?id=CulturaViva-Unizar_CulturaViva-Frontend)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=CulturaViva-Unizar_CulturaViva-Frontend&metric=bugs&token=2a42335bf26d08fafe31e23a0553766da8a85147)](https://sonarcloud.io/summary/new_code?id=CulturaViva-Unizar_CulturaViva-Frontend)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=CulturaViva-Unizar_CulturaViva-Frontend&metric=code_smells&token=2a42335bf26d08fafe31e23a0553766da8a85147)](https://sonarcloud.io/summary/new_code?id=CulturaViva-Unizar_CulturaViva-Frontend)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=CulturaViva-Unizar_CulturaViva-Frontend&metric=duplicated_lines_density&token=2a42335bf26d08fafe31e23a0553766da8a85147)](https://sonarcloud.io/summary/new_code?id=CulturaViva-Unizar_CulturaViva-Frontend)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=CulturaViva-Unizar_CulturaViva-Frontend&metric=ncloc&token=2a42335bf26d08fafe31e23a0553766da8a85147)](https://sonarcloud.io/summary/new_code?id=CulturaViva-Unizar_CulturaViva-Frontend)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=CulturaViva-Unizar_CulturaViva-Frontend&metric=reliability_rating&token=2a42335bf26d08fafe31e23a0553766da8a85147)](https://sonarcloud.io/summary/new_code?id=CulturaViva-Unizar_CulturaViva-Frontend)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=CulturaViva-Unizar_CulturaViva-Frontend&metric=sqale_index&token=2a42335bf26d08fafe31e23a0553766da8a85147)](https://sonarcloud.io/summary/new_code?id=CulturaViva-Unizar_CulturaViva-Frontend)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=CulturaViva-Unizar_CulturaViva-Frontend&metric=sqale_rating&token=2a42335bf26d08fafe31e23a0553766da8a85147)](https://sonarcloud.io/summary/new_code?id=CulturaViva-Unizar_CulturaViva-Frontend)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=CulturaViva-Unizar_CulturaViva-Frontend&metric=vulnerabilities&token=2a42335bf26d08fafe31e23a0553766da8a85147)](https://sonarcloud.io/summary/new_code?id=CulturaViva-Unizar_CulturaViva-Frontend)
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
