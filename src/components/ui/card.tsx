@@ -43,7 +43,12 @@ export const Card: FC<CardProps> = ({
           </div>
         )}
         <div className="col card-body">
-          <h5 className="card-title">{title}</h5>
+          <h5 className="card-title">
+            {title.length > 65
+              ? `${title.slice(0, 65)}...`
+              : title
+            }
+            </h5>
           <p className="card-text text-muted mb-0">{location}</p>
           <div className="d-flex align-items-center gap-1">
             <p className="card-text text-muted mb-0">{Number(rating.toFixed(1))}</p>

@@ -28,10 +28,10 @@ function CulturalPlaces() {
       category,
       sort: "comments",
       order: orderBy,
-      page: 1,
-      limit: 8,
+      page: currentPage,
+      limit: 6,
     }),
-    [searchText, category, orderBy]
+    [searchText, category, orderBy, currentPage]
   );
   const {
     data,
@@ -116,7 +116,7 @@ function CulturalPlaces() {
                 : 0;
 
             return (
-              <div className="col-md-3" key={culturalPlace.id}>
+              <div className="col-md-4" key={culturalPlace.id} style={{ height: 180 }}>
                 <Card
                   image={culturalPlace.image}
                   title={culturalPlace.title}

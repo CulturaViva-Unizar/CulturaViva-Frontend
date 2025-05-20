@@ -124,11 +124,11 @@ function PopularCulturalPlaces() {
       <div className="d-md-flex">
         <div className="col-md-4 d-flex flex-column align-items-center mt-4">
           <Select
-            className="shadow-sm"
+            className="shadow"
             options={categoryOptions}
             value={category}
             onChange={setCategory}
-            style={{ maxWidth: 150 }}
+            style={{ maxWidth: 300 }}
           />
           <PieChart
             data={pieData}
@@ -150,7 +150,7 @@ function PopularCulturalPlaces() {
                     : 0;
 
                 return (
-                  <div className="col-md-6" key={culturalPlace.id}>
+                  <div className="col-md-6" key={culturalPlace.id} style={{ height: 180 }}>
                     <Card
                       image={culturalPlace.image}
                       title={culturalPlace.title}
@@ -158,7 +158,7 @@ function PopularCulturalPlaces() {
                       rating={avgRating}
                       reviews={totalReviews}
                       description={culturalPlace.description}
-                      className="rounded bg-light shadow"
+                      className="rounded bg-light shadow h-100"
                       onClick={() =>
                         navigate(
                           paths.app.culturalPlaces.details.getHref(

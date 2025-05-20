@@ -67,7 +67,7 @@ function SuggestedEvents() {
                 : 0;
 
             return (
-              <div className="col-md-4">
+              <div className="col-md-4" style={{ height: 250 }}>
                 <Card
                   image={event.image}
                   title={event.title}

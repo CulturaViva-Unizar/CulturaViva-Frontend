@@ -29,7 +29,7 @@ function UpcomingEvents() {
       userId,
       category,
       page: currentPage,
-      limit: 6,
+      limit: 4,
     }),
     [category, currentPage, userId]
   );
@@ -131,7 +131,7 @@ function UpcomingEvents() {
             options={categoryOptions}
             value={category}
             onChange={setCategory}
-            style={{ maxWidth: 150 }}
+            style={{ maxWidth: 300 }}
           />
           <PieChart
             data={pieData}
@@ -153,7 +153,7 @@ function UpcomingEvents() {
                   : 0;
 
               return (
-                <div className="col-md-4 d-flex">
+                <div className="col-md-6 d-flex" style={{ height: 250 }}>
                   <Card
                     image={event.image}
                     title={event.title}

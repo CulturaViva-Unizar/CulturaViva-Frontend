@@ -29,7 +29,7 @@ function AssistedEvents() {
       userId,
       category,
       page: currentPage,
-      limit: 6,
+      limit: 4,
     }),
     [category, currentPage, userId]
   );
@@ -131,7 +131,7 @@ function AssistedEvents() {
             options={categoryOptions}
             value={category}
             onChange={setCategory}
-            style={{ maxWidth: 150 }}
+            style={{ maxWidth: 300 }}
           />
           <PieChart
             data={pieData}
@@ -154,7 +154,7 @@ function AssistedEvents() {
                     : 0;
 
                 return (
-                  <div className="col-md-6" key={event.id}>
+                  <div className="col-md-6" key={event.id} style={{ height: 250 }}>
                     <Card
                       image={event.image}
                       title={event.title}
@@ -162,7 +162,7 @@ function AssistedEvents() {
                       rating={avgRating}
                       reviews={totalReviews}
                       description={event.description}
-                      className="rounded bg-light shadow"
+                      className="rounded bg-light shadow h-100"
                       onClick={() =>
                         navigate(paths.app.events.details.getHref(event.id))
                       }

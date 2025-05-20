@@ -26,7 +26,7 @@ function PopularEvents() {
     () => ({
       category,
       page: currentPage,
-      limit: 6,
+      limit: 4,
     }),
     [category, currentPage]
   );
@@ -149,7 +149,7 @@ function PopularEvents() {
                     : 0;
 
                 return (
-                  <div className="col-md-4 d-flex" key={event.id}>
+                  <div className="col-md-6 d-flex" key={event.id} style={{ height: 250 }}>
                     <Card
                       image={event.image}
                       title={event.title}

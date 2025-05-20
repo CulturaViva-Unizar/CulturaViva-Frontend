@@ -192,7 +192,7 @@ function Bookmarks() {
                 : 0;
 
             return (
-              <div className="col-md-4" key={item.id}>
+              <div className="col-md-4" key={item.id} style={{ height: 300 }}>
                 <Card
                   image={item.image}
                   title={item.title}

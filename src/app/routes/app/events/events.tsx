@@ -34,10 +34,10 @@ function Events() {
       endDate: date ? format(date, "yyyy-MM-dd") : undefined,
       sort: "comments",
       order: orderBy,
-      page: 1,
-      limit: 8,
+      page: currentPage,
+      limit: 6,
     }),
-    [searchText, category, date, orderBy]
+    [searchText, category, date, orderBy, currentPage]
   );
   const {
     data,
@@ -131,7 +131,7 @@ function Events() {
                 : 0;
 
             return (
-              <div className="col-md-3" key={event.id}>
+              <div className="col-md-4" key={event.id} style={{ height: 250 }}>
                 <Card
                   image={event.image}
                   title={event.title}
