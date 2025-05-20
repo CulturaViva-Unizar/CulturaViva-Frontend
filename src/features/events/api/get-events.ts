@@ -24,7 +24,7 @@ const getEvents = async (request: GetEventsRequest): Promise<PaginatedEventsPage
     params.append("endDate", request.endDate);
   }
   if (request.maxPrice) {
-    params.append("price", request.maxPrice.toString());
+    params.append("maxPrice", request.maxPrice.toString());
   }
   if (request.sort) {
     params.append("sort", request.sort);

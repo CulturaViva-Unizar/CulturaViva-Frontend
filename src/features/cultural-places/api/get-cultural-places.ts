@@ -22,7 +22,7 @@ const getCulturalPlaces = async (
     params.append("category", request.category);
   }
   if (request.maxPrice) {
-    params.append("price", request.maxPrice.toString());
+    params.append("maxPrice", request.maxPrice.toString());
   }
   if (request.sort) {
     params.append("sort", request.sort);

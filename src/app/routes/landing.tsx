@@ -97,7 +97,7 @@ function Landing() {
         <Map
           events={itemType == Items.Evento || !itemType ? eventsData.items : []}
           culturalPlaces={
-            itemType == Items.Lugar || !itemType ? culturalPlacesData.items : []
+            (itemType == Items.Lugar || !itemType) && date == null ? culturalPlacesData.items : []
           }
         />
       )}

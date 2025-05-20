@@ -22,7 +22,7 @@ import { getReviewsByEvent } from "../../../features/reviews/api/get-reviews-by-
 import { getReviewsByCulturalPlace } from "../../../features/reviews/api/get-reviews-by-cultural-place";
 import { SortButton } from "../../../components/ui/sort-button";
 
-const ITEMS_PER_PAGE = 9;
+const ITEMS_PER_PAGE = 6;
 
 function Bookmarks() {
   const user = useUser();
