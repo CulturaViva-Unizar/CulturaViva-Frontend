@@ -4,7 +4,9 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 
 const LoginGoogleButton: React.FC = () => {
   const handleLogin = () => {
-    window.location.href = import.meta.env.VITE_API_URL + `/auth/google?origin=${encodeURIComponent(window.location.origin)}`;
+    const authUrl = new URL('/auth/google', import.meta.env.VITE_API_URL);
+    authUrl.searchParams.set('origin', window.location.origin);
+    window.location.href = authUrl.toString();
   };
 
   return (

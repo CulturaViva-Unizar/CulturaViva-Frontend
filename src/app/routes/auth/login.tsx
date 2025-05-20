@@ -6,7 +6,7 @@ import { paths } from "../../../config/paths";
 import { useEffect } from "react";
 import { useUser } from "../../../lib/auth";
 import LoginGoogleButton from "../../../features/auth/components/login-google-button";
-import LoginMetaButton from "../../../features/auth/components/login-meta-button";
+import LoginGithubButton from "../../../features/auth/components/login-github-button";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ const Login = () => {
           <LoginGoogleButton />
         </div>
         <div className="mt-3">
-          <LoginMetaButton />
+          <LoginGithubButton />
         </div>
         <div className="d-flex align-items-center mt-2">
           <span className="text-secondary">¿Aún no tienes una cuenta?</span>
