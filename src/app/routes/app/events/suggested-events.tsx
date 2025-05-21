@@ -75,7 +75,7 @@ function SuggestedEvents() {
                   rating={avgRating}
                   reviews={totalReviews}
                   description={event.description}
-                  className="rounded bg-light shadow h-100"
+                  className="rounded bg-light shadow h-100 w-100"
                   onClick={() =>
                     navigate(paths.app.events.details.getHref(event.id))
                   }

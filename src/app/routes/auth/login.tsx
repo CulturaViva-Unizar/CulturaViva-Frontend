@@ -52,7 +52,7 @@ const Login = () => {
             replace
             className="btn btn-outline-secondary rounded-pill"
           >
-            Continuar sin iniciar sesión
+            Continuar sin cuenta
           </Link>
         </div>
       </div>

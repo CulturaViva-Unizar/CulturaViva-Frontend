@@ -1,7 +1,6 @@
 import { faEuro, faPhone, faClock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { FC, useMemo, useState, useEffect } from "react";
-import { useSwipeable } from "react-swipeable";
+import { FC, useMemo } from "react";
 import { useUser } from "../../../lib/auth";
 import { Rating } from "../../reviews/components/rating";
 import { CulturalPlace } from "../types/models";
@@ -15,6 +14,7 @@ import InfoItemActionButtons from "../../../components/ui/info-item-action-butto
 import PostReview from "../../reviews/components/post-review";
 import { Items } from "../../../shared/types/enums";
 import ListReviews from "../../reviews/components/list-reviews";
+import { isEmptyOrSpaces } from "../../../utils/common";
 
 type InfoCulturalPlaceProps = {
   culturalPlace: CulturalPlace;
@@ -27,24 +27,6 @@ const InfoCulturalPlace: FC<InfoCulturalPlaceProps> = ({
   onClose,
   className = "",
 }) => {
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
-
-  const [expanded, setExpanded] = useState(false);
-  const swipeHandlers = useSwipeable({
-    onSwipedUp: () => setExpanded(true),
-    onSwipedDown: () => setExpanded(false),
-    delta: 50,
-    preventDefaultTouchmoveEvent: true,
-    trackTouch: true,
-    trackMouse: false,
-  });
-
   const {
     data: reviews = [],
     isLoading: isLoadingReviews,
@@ -88,7 +70,7 @@ const InfoCulturalPlace: FC<InfoCulturalPlaceProps> = ({
     );
   }
 
-  const renderContent = () => (
+  return (
     <div className={`p-3 ${className}`}>
       <InfoItemHeader
         itemId={culturalPlace.id}
@@ -121,7 +103,7 @@ const InfoCulturalPlace: FC<InfoCulturalPlaceProps> = ({
           {culturalPlace.phone}
         </div>
       )}
-      {culturalPlace.openingHours && (
+      {!isEmptyOrSpaces(culturalPlace.openingHours) && (
         <div className="mb-2">
           <FontAwesomeIcon icon={faClock} className="me-2" />
           {culturalPlace.openingHours}
@@ -142,43 +124,6 @@ const InfoCulturalPlace: FC<InfoCulturalPlaceProps> = ({
         </>
       )}
       <ListReviews reviews={reviews} itemType={Items.Lugar} />
-    </div>
-  );
-
-  if (!isMobile) {
-    return renderContent();
-  }
-
-  const collapsedHeight = 300;
-  const sheetStyle: React.CSSProperties = {
-    position: 'fixed',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: expanded ? '100vh' : `${collapsedHeight}px`,
-    transition: 'height 0.3s ease',
-    background: 'white',
-    boxShadow: '0 -2px 10px rgba(0,0,0,0.1)',
-    borderTopLeftRadius: '0.5rem',
-    borderTopRightRadius: '0.5rem',
-    overflow: 'hidden',
-    zIndex: 9999,
-  };
-
-  return (
-    <div {...swipeHandlers} style={sheetStyle}>
-      <div
-        style={{
-          width: '40px',
-          height: '4px',
-          background: '#ccc',
-          borderRadius: '2px',
-          margin: '8px auto',
-        }}
-      />
-      <div style={{ height: '100%', overflowY: 'auto' }}>
-        {renderContent()}
-      </div>
     </div>
   );
 };

@@ -24,8 +24,8 @@ export const useDeleteReviewFromEvent = () => {
     mutationFn: ({ commentId, motivo, eventId }) =>
       deleteReviewFromEvent(commentId, motivo, eventId),
     onSuccess: (_, { eventId }) => {
-      qc.invalidateQueries({ queryKey: ["reviews", eventId] });
-      qc.invalidateQueries({ queryKey: ["analytics", "comments"] });
+      qc.removeQueries({ queryKey: ["reviews", eventId] });
+      qc.removeQueries({ queryKey: ["analytics", "comments"] });
     },
   });
 };

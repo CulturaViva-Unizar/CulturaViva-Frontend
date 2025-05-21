@@ -10,8 +10,8 @@ export const useDeleteAttendingEvent = () => {
   return useMutation<void, Error, { userId: string; eventId: string }>({
     mutationFn: ({ userId, eventId }) => deleteAttendingEvent(userId, eventId),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["attendingEvents"] });
-      qc.invalidateQueries({ queryKey: ["events"] });
+      qc.removeQueries({ queryKey: ["attendingEvents"] });
+      qc.removeQueries({ queryKey: ["events"] });
     },
   });
 };

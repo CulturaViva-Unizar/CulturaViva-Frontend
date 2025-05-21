@@ -22,9 +22,9 @@ export const usePutUser = () => {
   return useMutation({
     mutationFn: putUser,
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["users"] });
-      qc.invalidateQueries({ queryKey: ["analytics", "users"] });
-      qc.invalidateQueries({ queryKey: ["analytics", "disabledUsers"] });
+      qc.removeQueries({ queryKey: ["users"] });
+      qc.removeQueries({ queryKey: ["analytics", "users"] });
+      qc.removeQueries({ queryKey: ["analytics", "disabledUsers"] });
     },
   });
 };

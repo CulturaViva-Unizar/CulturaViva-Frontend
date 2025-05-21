@@ -1,3 +1,5 @@
+import { useQueryClient } from "@tanstack/react-query";
+
 export class TokenService {
     private static ACCESS_KEY = "token";
     private static USER_KEY = "user";
@@ -22,5 +24,8 @@ export class TokenService {
     static clear() {
         localStorage.removeItem(this.ACCESS_KEY);
         localStorage.removeItem(this.USER_KEY);
+
+        const qc = useQueryClient();
+        qc.removeQueries();
     }
 }

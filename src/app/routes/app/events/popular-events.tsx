@@ -21,6 +21,7 @@ function PopularEvents() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [category, setCategory] = useState<string>("");
   const [eventCategories, setEventCategories] = useState<string[]>([]);
+  const height = window.innerWidth < 768 ? 320 : 250;
 
   const request: GetPopularEventsRequest = useMemo(
     () => ({
@@ -149,7 +150,7 @@ function PopularEvents() {
                     : 0;
 
                 return (
-                  <div className="col-md-6 d-flex" key={event.id} style={{ height: 250 }}>
+                  <div className="col-md-6 d-flex" key={event.id} style={{ height: height }}>
                     <Card
                       image={event.image}
                       title={event.title}
@@ -157,7 +158,7 @@ function PopularEvents() {
                       rating={avgRating}
                       reviews={totalReviews}
                       description={event.description}
-                      className="h-100 rounded bg-light shadow"
+                      className="h-100 w-100 rounded bg-light shadow"
                       onClick={() =>
                         navigate(paths.app.events.details.getHref(event.id))
                       }

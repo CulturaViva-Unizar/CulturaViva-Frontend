@@ -3,9 +3,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import RegisterForm from "../../../features/auth/components/register-form";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { paths } from "../../../config/paths";
-import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { useUser } from "../../../lib/auth";
 import { useEffect } from "react";
+import LoginGithubButton from "../../../features/auth/components/login-github-button";
+import LoginGoogleButton from "../../../features/auth/components/login-google-button";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -30,13 +31,12 @@ const Register = () => {
             navigate(paths.app.getHref());
           }}
         />
-        <button
-          type="button"
-          className="btn btn-danger shadow-sm rounded-pill mt-2"
-          disabled={false}
-        >
-          <FontAwesomeIcon icon={faGoogle} /> Registrarse con Google
-        </button>
+        <div className="mt-3">
+          <LoginGoogleButton text="Registrarse con Google" />
+        </div>
+        <div className="mt-3">
+          <LoginGithubButton text="Registrarse con GitHub" />
+        </div>
         <div className="d-flex align-items-center mt-3">
           <span className="text-secondary">¿Ya tienes una cuenta?</span>
           <Link
@@ -52,7 +52,7 @@ const Register = () => {
             replace
             className="btn btn-outline-secondary rounded-pill"
           >
-            Continuar sin iniciar sesión
+            Continuar sin cuenta
           </Link>
         </div>
       </div>

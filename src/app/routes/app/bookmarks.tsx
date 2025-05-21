@@ -200,7 +200,7 @@ function Bookmarks() {
                   rating={avgRating}
                   reviews={totalReviews}
                   description={item.description}
-                  className="h-100 rounded bg-light shadow"
+                  className="h-100 w-100 rounded bg-light shadow"
                   onClick={() =>
                     navigate(
                       isEvent

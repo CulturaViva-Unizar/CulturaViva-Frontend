@@ -17,7 +17,7 @@ export const usePostNewChatByUser = (userId: string) => {
   return useMutation({
     mutationFn: postNewChatByUser,
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['chats', userId]});
+      qc.removeQueries({ queryKey: ['chats', userId]});
     },
   });
 };

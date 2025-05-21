@@ -32,8 +32,8 @@ export const useCreateResponse = () => {
   return useMutation({
     mutationFn: createResponse,
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["reviews"] });
-      qc.invalidateQueries({ queryKey: ["analytics", "comments"] });
+      qc.removeQueries({ queryKey: ["reviews"] });
+      qc.removeQueries({ queryKey: ["analytics", "comments"] });
     },
   });
 };

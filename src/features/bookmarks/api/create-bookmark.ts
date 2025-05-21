@@ -18,11 +18,11 @@ export const useCreateBookmark = () => {
   const user = useUser();
   return useMutation({
     mutationFn: createBookmark,
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["bookmarks", user.data?.id] });
-      qc.invalidateQueries({ queryKey: ["events"] });
-      qc.invalidateQueries({ queryKey: ["culturalPlaces"] });
-      qc.invalidateQueries({ queryKey: ["analytics", "savedItems"] });
+    onSuccess: async () => {
+      qc.removeQueries({ queryKey: ["bookmarks", user.data?.id] });
+      qc.removeQueries({ queryKey: ["events"] });
+      qc.removeQueries({ queryKey: ["culturalPlaces"] });
+      qc.removeQueries({ queryKey: ["analytics", "savedItems"] });
     },
   });
 };

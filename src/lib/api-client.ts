@@ -42,7 +42,8 @@ api.interceptors.response.use(
   (error: AxiosError) => {
     const status = error.response?.status;
     const unauthorizedPath = paths.auth.unauthorized.getHref();
-    if (status === 401 && window.location.pathname !== unauthorizedPath) {
+    const loginPath = paths.auth.login.getHref();
+    if (status === 401 && window.location.pathname !== unauthorizedPath && window.location.pathname !== loginPath) {
       TokenService.clear();
       window.location.href = unauthorizedPath;
     }

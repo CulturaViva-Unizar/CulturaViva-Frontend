@@ -18,6 +18,7 @@ import { FC, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useLogout, useUser } from "../../lib/auth";
 import { paths } from "../../config/paths";
+import Swal from "sweetalert2";
 
 interface UserMenuProps {
   className?: string;
@@ -32,6 +33,12 @@ export const UserMenu: FC<UserMenuProps> = ({ className = "" }) => {
 
   const handleLogout = () => {
     logout.mutate(undefined);
+    Swal.fire({
+      title: "¡Hasta luego!",
+      text: "Esperamos verte pronto",
+      icon: "success",
+      timer: 1500,
+    });
     navigate(paths.app.getHref());
   };
 

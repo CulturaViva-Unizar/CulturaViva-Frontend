@@ -124,7 +124,7 @@ function CulturalPlaces() {
                   rating={avgRating}
                   reviews={totalReviews}
                   description={culturalPlace.description}
-                  className="h-100 rounded bg-light shadow"
+                  className="h-100 w-100 rounded bg-light shadow"
                   onClick={() =>
                     navigate(
                       paths.app.culturalPlaces.details.getHref(culturalPlace.id)

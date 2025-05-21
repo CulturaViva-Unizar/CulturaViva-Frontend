@@ -24,8 +24,8 @@ export const useDeleteReviewFromCulturalPlace = () => {
     mutationFn: ({ commentId, motivo, culturalPlaceId }) =>
       deleteReviewFromCulturalPlace(commentId, motivo, culturalPlaceId),
     onSuccess: (_, { culturalPlaceId }) => {
-      qc.invalidateQueries({ queryKey: ["reviews", culturalPlaceId] });
-      qc.invalidateQueries({ queryKey: ["analytics", "comments"] });
+      qc.removeQueries({ queryKey: ["reviews", culturalPlaceId] });
+      qc.removeQueries({ queryKey: ["analytics", "comments"] });
     },
   });
 };

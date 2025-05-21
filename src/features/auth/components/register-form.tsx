@@ -14,10 +14,7 @@ const registerSchema = z
   .object({
     email: z.string().email("Email inválido"),
     name: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
-    phone: z
-      .string()
-      .regex(/^[0-9+\s\-]+$/, "Teléfono inválido")
-      .min(9, "El teléfono debe tener al menos 9 dígitos"),
+    phone: z.string(),
     password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
     confirmPassword: z.string(),
   })
@@ -39,7 +36,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
     defaultValues: {
       email: "",
       name: "",
-      phone: "",
+      phone: "000000000",
       password: "",
       confirmPassword: "",
     },
@@ -107,24 +104,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
         />
         {errors.name && (
           <div className="invalid-feedback">{errors.name.message}</div>
-        )}
-      </div>
-
-      <div className="mb-3">
-        <label htmlFor="phone" className="form-label">
-          Teléfono
-        </label>
-        <input
-          type="tel"
-          inputMode="tel"
-          pattern="[0-9+\s\-]+"
-          id="phone"
-          className={`form-control ${errors.phone ? "is-invalid" : ""}`}
-          {...register("phone")}
-          disabled={registering.isPending}
-        />
-        {errors.phone && (
-          <div className="invalid-feedback">{errors.phone.message}</div>
         )}
       </div>
 

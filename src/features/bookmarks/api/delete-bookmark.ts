@@ -12,9 +12,9 @@ export const useDeleteBookmark = () => {
   return useMutation<void, Error, { userId: string; eventId: string }>({
     mutationFn: ({ userId, eventId }) => deleteBookmark(userId, eventId),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["bookmarks", user.data?.id] });
-      qc.invalidateQueries({ queryKey: ["events"] });
-      qc.invalidateQueries({ queryKey: ["culturalPlaces"] });
+      qc.removeQueries({ queryKey: ["bookmarks", user.data?.id] });
+      qc.removeQueries({ queryKey: ["events"] });
+      qc.removeQueries({ queryKey: ["culturalPlaces"] });
     },
   });
 };
