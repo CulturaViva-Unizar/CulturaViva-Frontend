@@ -224,7 +224,7 @@ const createAppRouter = (queryClient: QueryClient) =>
             {
               index: true,
               element: (
-                <h3 className="d-flex bg-light align-items-center justify-content-center">
+                <h3 className="d-flex sticky-md-top align-items-center justify-content-center h-100">
                   Selecciona un chat
                 </h3>
               ),

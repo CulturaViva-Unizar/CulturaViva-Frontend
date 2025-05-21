@@ -130,6 +130,7 @@ const InfoEvent: FC<InfoEventProps> = ({ event, onClose, className = "" }) => {
       <Rating
         rating={avgRating}
         totalReviews={reviews.length}
+        totalRatedReviews={parentReviews.length}
         ratingDistribution={ratingDistribution}
       />
       <hr />

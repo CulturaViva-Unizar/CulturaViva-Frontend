@@ -2,6 +2,7 @@ import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { api } from "../../../lib/api-client";
 import { Items } from "../../../shared/types/enums";
 import { CreateResponseToReviewRequest } from "../../../types/api";
+import { useUser } from "../../../lib/auth";
 
 const createResponse = async ({
   itemType,
@@ -29,11 +30,16 @@ const createResponse = async ({
 
 export const useCreateResponse = () => {
   const qc = useQueryClient();
+  const user = useUser();
   return useMutation({
     mutationFn: createResponse,
     onSuccess: () => {
-      qc.removeQueries({ queryKey: ["reviews"] });
-      qc.removeQueries({ queryKey: ["analytics", "comments"] });
+      qc.invalidateQueries({ queryKey: ["reviews"] });
+      qc.invalidateQueries({ queryKey: ["replies"] });
+      qc.invalidateQueries({ queryKey: ["analytics", "comments"] });
+      qc.removeQueries({ queryKey: ["events"] });
+      qc.removeQueries({ queryKey: ["culturalPlaces"] });
+      qc.removeQueries({ queryKey: ["bookmarks", user.data?.id] });
     },
   });
 };

@@ -21,6 +21,7 @@ function CulturalPlaces() {
   const [searchText, setSearchText] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [orderBy, setOrderBy] = useState<string>("desc");
+  const height = window.innerWidth < 768 ? 200 : 180;
 
   const request = useMemo(
     () => ({
@@ -81,17 +82,20 @@ function CulturalPlaces() {
 
   return (
     <MainLayout title="Todos los lugares culturales">
-      <div className="mt-3 mb-5 d-flex flex-column align-items-start align-items-md-center justify-content-center">
-        <div className="col-12 col-md-5">
+      <div className="py-3 row gap-2 justify-content-center">
+        <div className="row col-12 col-md-4">
           <SearchBar
+            className="rounded-pill shadow-sm"
             value={searchText}
             onSearch={setSearchText}
-            className="shadow-sm rounded-pill"
           />
         </div>
-        <div className="d-flex gap-3 mt-3">
+        <div
+          className="row col-12 col-md-3 gap-2 gx-2 py-1 flex-nowrap overflow-x-auto hide-scrollbar"
+          style={{ WebkitOverflowScrolling: "touch" }}
+        >
           <Select
-            className="shadow-sm"
+            className="col shadow-sm"
             options={categoryOptions}
             value={category}
             onChange={setCategory}
@@ -116,7 +120,7 @@ function CulturalPlaces() {
                 : 0;
 
             return (
-              <div className="col-md-4" key={culturalPlace.id} style={{ height: 180 }}>
+              <div className="col-md-4" key={culturalPlace.id} style={{ height}}>
                 <Card
                   image={culturalPlace.image}
                   title={culturalPlace.title}

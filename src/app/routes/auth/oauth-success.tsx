@@ -6,10 +6,12 @@ import { LoggedUser } from "../../../types/api";
 import { TokenService } from "../../../lib/token-service";
 import { paths } from "../../../config/paths";
 import LoadingIndicator from "../../../components/ui/loading-indicator";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function OAuthSuccessPage() {
   const navigate = useNavigate();
   const { search } = useLocation();
+  const queryClient = useQueryClient();
 
   async function handleOAuth() {
     const params = new URLSearchParams(search);
@@ -30,6 +32,8 @@ export default function OAuthSuccessPage() {
     TokenService.setAccessToken(token);
     TokenService.saveUser(user);
 
+    queryClient.clear();
+
     navigate(paths.app.getHref());
   }
 
@@ -39,3 +43,7 @@ export default function OAuthSuccessPage() {
 
   return <LoadingIndicator message="Cargando..." />;;
 }
+function userQueryClient() {
+  throw new Error("Function not implemented.");
+}
+

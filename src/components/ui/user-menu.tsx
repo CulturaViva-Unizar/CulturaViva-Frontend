@@ -12,6 +12,7 @@ import {
   faUsers,
   faChartLine,
   faLandmark,
+  faUserTie,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, useState } from "react";
@@ -19,6 +20,8 @@ import { Link, useNavigate } from "react-router";
 import { useLogout, useUser } from "../../lib/auth";
 import { paths } from "../../config/paths";
 import Swal from "sweetalert2";
+import { useQueryClient } from "@tanstack/react-query";
+import { TokenService } from "../../lib/token-service";
 
 interface UserMenuProps {
   className?: string;
@@ -30,32 +33,43 @@ export const UserMenu: FC<UserMenuProps> = ({ className = "" }) => {
   const user = useUser();
   const logout = useLogout();
   const navigate = useNavigate();
-
+  const maxHeight = window.innerWidth < 768 ? 42 : 56;
+  const queryClient = useQueryClient();
+  
   const handleLogout = () => {
-    logout.mutate(undefined);
-    Swal.fire({
-      title: "¡Hasta luego!",
-      text: "Esperamos verte pronto",
-      icon: "success",
-      timer: 1500,
+    logout.mutate(undefined, {
+      onSuccess: () => {
+        queryClient.clear();
+        
+        Swal.fire({
+          title: "¡Hasta luego!",
+          text: "Esperamos verte pronto",
+          icon: "success",
+          timer: 1500,
+        });
+        navigate(paths.app.getHref());
+      }
     });
-    navigate(paths.app.getHref());
   };
 
   const handleLogin = () => {
-    logout.mutate(undefined);
     navigate(paths.auth.login.getHref());
   };
 
   return (
     <div className={`dropdown ${className}`}>
       <button
-        className="btn rounded-circle p-0 h-100 bg-white border-0"
+        className={`btn rounded-circle h-100 bg-white shadow border-0 ${user.data?.admin ? "py-2" : "p-0"}`}
         type="button"
         data-bs-toggle="dropdown"
         aria-expanded="false"
+        style={{ maxHeight }}
       >
-        <FontAwesomeIcon icon={faCircleUser} className="h-100" />
+        {user.data && user.data.admin ? (
+          <FontAwesomeIcon icon={faUserTie} className="h-100" />
+        ) : (
+          <FontAwesomeIcon icon={faCircleUser} className="h-100" />
+        )}
       </button>
       <ul
         className="dropdown-menu px-3 py-4 mt-3"

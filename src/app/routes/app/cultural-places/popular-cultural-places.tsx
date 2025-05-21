@@ -20,6 +20,7 @@ function PopularCulturalPlaces() {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [category, setCategory] = useState<string>("");
+  const height = window.innerWidth < 768 ? 200 : 180;
   const [culturalPlaceCategories, setCulturalPlaceCategories] = useState<
     string[]
   >([]);
@@ -150,7 +151,7 @@ function PopularCulturalPlaces() {
                     : 0;
 
                 return (
-                  <div className="col-md-6" key={culturalPlace.id} style={{ height: 180 }}>
+                  <div className="col-md-6" key={culturalPlace.id} style={{ height }}>
                     <Card
                       image={culturalPlace.image}
                       title={culturalPlace.title}

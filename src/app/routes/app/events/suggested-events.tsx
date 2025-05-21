@@ -17,6 +17,7 @@ function SuggestedEvents() {
   const user = useUser();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const height = window.innerWidth < 768 ? 320 : 250;
   const request: GetSuggestedEventsRequest = useMemo(
     () => ({
       type: "Event",
@@ -67,7 +68,7 @@ function SuggestedEvents() {
                 : 0;
 
             return (
-              <div className="col-md-4" style={{ height: 250 }}>
+              <div className="col-md-4" style={{ height }}>
                 <Card
                   image={event.image}
                   title={event.title}

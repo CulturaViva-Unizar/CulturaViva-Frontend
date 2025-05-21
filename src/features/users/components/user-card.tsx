@@ -51,11 +51,12 @@ export const UserCard: FC<UserCardProps> = ({
           { id: userId, motivo: result.value, data: { active: !isEnabled } },
           {
             onSuccess: () => {
-              Swal.fire(
-                "Deshabilitado",
-                "El usuario se ha deshabilitado.",
-                "success"
-              );
+              Swal.fire({
+                title: "Deshabilitado",
+                text: "El usuario se ha deshabilitado.",
+                icon: "success",
+                timer: 1500
+              });
             },
             onError: (err) => {
               Swal.fire("Error", err.message, "error");
@@ -88,11 +89,12 @@ export const UserCard: FC<UserCardProps> = ({
           { id: userId, motivo: result.value, data: { active: !isEnabled } },
           {
             onSuccess: () => {
-              Swal.fire(
-                "Habilitado",
-                "El usuario se ha vuelto a habilitar.",
-                "success"
-              );
+              Swal.fire({
+                title: "Habilitado",
+                text: "El usuario se ha vuelto a habilitar.",
+                icon: "success",
+                timer: 1500
+              });
             },
             onError: (err) => {
               Swal.fire("Error", err.message, "error");

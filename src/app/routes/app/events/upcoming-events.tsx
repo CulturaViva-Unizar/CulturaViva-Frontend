@@ -23,11 +23,12 @@ function UpcomingEvents() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [category, setCategory] = useState<string>("");
   const [eventCategories, setEventCategories] = useState<string[]>([]);
+  const height = window.innerWidth < 768 ? 320 : 250;
 
   const request: GetPaginatedEventsRequest = useMemo(
     () => ({
       userId,
-      category,
+      eventCategory: category,
       page: currentPage,
       limit: 4,
     }),
@@ -125,57 +126,65 @@ function UpcomingEvents() {
   return (
     <MainLayout title="Eventos próximos a los que va a asistir">
       <div className="d-md-flex">
-        <div className="col-md-3 d-flex flex-column align-items-center mt-4">
-          <Select
-            className="shadow"
-            options={categoryOptions}
-            value={category}
-            onChange={setCategory}
-            style={{ maxWidth: 300 }}
-          />
-          <PieChart
-            data={pieData}
-            options={chartOptions}
-            className="m-4 h-100"
-          />
-        </div>
-        <div className="flex-column col-md-9 row">
-          <div className="row g-4 m-0 align-items-stretch">
-            {data!.items.map((event: Event, i: number) => {
-              const rq = reviewsQueries[i];
-              const reviews = rq.data ?? [];
-              const totalReviews = reviews.length;
-              const parentReviews = reviews.filter((r) => !r.responseTo);
-              const avgRating =
-                parentReviews.length > 0
-                  ? parentReviews.reduce((sum, r) => sum + r.rating, 0) /
-                    parentReviews.length
-                  : 0;
-
-              return (
-                <div className="col-md-6 d-flex" style={{ height: 250 }}>
-                  <Card
-                    image={event.image}
-                    title={event.title}
-                    location={event.location}
-                    rating={avgRating}
-                    reviews={totalReviews}
-                    description={event.description}
-                    className="h-100 w-100 rounded bg-light shadow"
-                    onClick={() =>
-                      navigate(paths.app.events.details.getHref(event.id))
-                    }
-                  />
-                </div>
-              );
-            })}
+        {!data || data.items.length == 0 ? (
+          <div className="text-center w-100 p-5">
+            <strong>Sin resultados :(</strong>
           </div>
-          <BootstrapPagination
-            currentPage={currentPage}
-            totalPages={data!.totalPages}
-            onPageChange={(page: number) => setCurrentPage(page)}
-          />
-        </div>
+        ) : (
+          <>
+            <div className="col-md-3 d-flex flex-column align-items-center mt-4">
+              <Select
+                className="shadow"
+                options={categoryOptions}
+                value={category}
+                onChange={setCategory}
+                style={{ maxWidth: 300 }}
+              />
+              <PieChart
+                data={pieData}
+                options={chartOptions}
+                className="m-4 h-100"
+              />
+            </div>
+            <div className="flex-column col-md-9 row">
+              <div className="row g-4 m-0 align-items-stretch">
+                {data!.items.map((event: Event, i: number) => {
+                  const rq = reviewsQueries[i];
+                  const reviews = rq.data ?? [];
+                  const totalReviews = reviews.length;
+                  const parentReviews = reviews.filter((r) => !r.responseTo);
+                  const avgRating =
+                    parentReviews.length > 0
+                      ? parentReviews.reduce((sum, r) => sum + r.rating, 0) /
+                      parentReviews.length
+                      : 0;
+
+                  return (
+                    <div className="col-md-6 d-flex" style={{ height }}>
+                      <Card
+                        image={event.image}
+                        title={event.title}
+                        location={event.location}
+                        rating={avgRating}
+                        reviews={totalReviews}
+                        description={event.description}
+                        className="h-100 w-100 rounded bg-light shadow"
+                        onClick={() =>
+                          navigate(paths.app.events.details.getHref(event.id))
+                        }
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+              <BootstrapPagination
+                currentPage={currentPage}
+                totalPages={data!.totalPages}
+                onPageChange={(page: number) => setCurrentPage(page)}
+              />
+            </div>
+          </>
+        )}
       </div>
     </MainLayout>
   );

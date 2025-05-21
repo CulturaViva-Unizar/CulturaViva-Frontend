@@ -120,6 +120,12 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
             text: result.value,
           },
         });
+        Swal.fire({
+          title: "¡Gracias!",
+          text: "Tu respuesta ha sido enviada.",
+          icon: "success",
+          timer: 1500,
+        });
       }
     });
   };

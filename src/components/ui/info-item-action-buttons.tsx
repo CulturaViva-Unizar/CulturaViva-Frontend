@@ -40,11 +40,12 @@ const InfoItemActionButtons: FC<InfoItemActionButtonsProps> = ({
       { userId: userId!, eventId: itemId },
       {
         onSuccess: () => {
-          Swal.fire(
-            "Desmarcado",
-            "Se ha eliminado de tus Guardados.",
-            "success"
-          );
+          Swal.fire({
+            title: "Desmarcado",
+            text: "Se ha eliminado de tus Guardados.",
+            icon: "success",
+            timer: 1500
+          });
         },
         onError: (err) => {
           Swal.fire("Error", err.message, "error");

@@ -7,13 +7,14 @@ type SortButtonProps = {
   label: string;
   sortBy: string;
   onClick: () => void;
+  className?: string;
 };
 
-export const SortButton: FC<SortButtonProps> = ({ label, sortBy, onClick }) => {
+export const SortButton: FC<SortButtonProps> = ({ label, sortBy, onClick, className }) => {
   return (
     <Button
       variant="light"
-      className="rounded-pill shadow-sm w-auto"
+      className={`rounded-pill shadow-sm w-auto ${className}`}
       onClick={onClick}
     >
       {label}

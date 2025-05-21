@@ -150,7 +150,7 @@ function PopularEvents() {
                     : 0;
 
                 return (
-                  <div className="col-md-6 d-flex" key={event.id} style={{ height: height }}>
+                  <div className="col-md-6 d-flex" key={event.id} style={{ height }}>
                     <Card
                       image={event.image}
                       title={event.title}

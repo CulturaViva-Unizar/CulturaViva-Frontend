@@ -45,15 +45,35 @@ const InfoCulturalPlace: FC<InfoCulturalPlaceProps> = ({
   );
   const isLoading = isLoadingReviews || isLoadingBookmarks;
   const error = errorReviews || errorBookmarks;
-  const avgRating = useMemo(
-    () => (reviews.length ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length : 0),
+  const parentReviews = useMemo(
+    () => reviews.filter((r) => !r.responseTo),
     [reviews]
   );
+  const avgRating = useMemo(() => {
+    if (!parentReviews || parentReviews.length === 0) return 0;
+
+    const sum = parentReviews.reduce((acc, r) => acc + r.rating, 0);
+
+    const avg = sum / parentReviews.length;
+    return Number(avg.toFixed(2));
+  }, [parentReviews]);
   const ratingDistribution = useMemo(() => {
-    const dist: Record<1 | 2 | 3 | 4 | 5, number> = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
-    reviews.forEach((r) => { if (r.rating >= 1 && r.rating <= 5) dist[r.rating as 1 | 2 | 3 | 4 | 5]++; });
+    const dist: Record<1 | 2 | 3 | 4 | 5, number> = {
+      5: 0,
+      4: 0,
+      3: 0,
+      2: 0,
+      1: 0,
+    };
+
+    parentReviews.forEach((r) => {
+      if (r.rating >= 1 && r.rating <= 5) {
+        dist[r.rating as 1 | 2 | 3 | 4 | 5]++;
+      }
+    });
+
     return dist;
-  }, [reviews]);
+  }, [parentReviews]);
   const mapsUrl = culturalPlace.location
     ? `https://www.google.com/maps/search/?api=1&query=${culturalPlace.coordinates?.latitude},${culturalPlace.coordinates?.longitude}`
     : undefined;
@@ -114,6 +134,7 @@ const InfoCulturalPlace: FC<InfoCulturalPlaceProps> = ({
       <Rating
         rating={avgRating}
         totalReviews={reviews.length}
+        totalRatedReviews={parentReviews.length}
         ratingDistribution={ratingDistribution}
       />
       <hr />

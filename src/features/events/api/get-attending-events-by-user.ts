@@ -15,6 +15,7 @@ export const getAttendingEventsByUser = async (
   if (request.eventDate) {
     params.append("date", request.eventDate);
   }
+
   if (request.eventCategory) {
     params.append("category", request.eventCategory);
   }

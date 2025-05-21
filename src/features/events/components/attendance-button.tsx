@@ -34,11 +34,12 @@ export const AttendanceButton: FC<AttendanceButtonProps> = ({
         onSuccess: () => {
           setIsAttending(false);
           setTotalAssistants((prev: number) => prev - 1);
-          Swal.fire(
-            "Eliminado",
-            "Has dejado de asistir a esta exposición.",
-            "success"
-          );
+          Swal.fire({
+            title: "Eliminado",
+            text: "Has dejado de asistir a esta exposición.",
+            icon: "success",
+            timer: 1500
+          });
         },
         onError: (err) => {
           Swal.fire("Error", err.message, "error");
@@ -58,11 +59,12 @@ export const AttendanceButton: FC<AttendanceButtonProps> = ({
       });
       setIsAttending(true);
       setTotalAssistants((prev: number) => prev + 1);
-      Swal.fire(
-        "¡Asistencia confirmada!",
-        "Has confirmado tu asistencia a esta exposición.",
-        "success"
-      );
+      Swal.fire({
+        title: "¡Asistencia confirmada!",
+        text: "Has confirmado tu asistencia a esta exposición.",
+        icon: "success",
+        timer: 1500
+      });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       Swal.fire("Error", err, "error");

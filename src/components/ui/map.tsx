@@ -114,7 +114,9 @@ const Map: React.FC<MapProps> = ({ events, culturalPlaces }) => {
       zoomControl={false}
     >
       {userPosition && <FlyToPosition position={userPosition} />}
-      <ZoomControl position="bottomright" />
+      {window.innerWidth > 768 && (
+        <ZoomControl position="bottomright" />
+      )}
       <TileLayer
         attribution="&copy; OpenStreetMap contributors"
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

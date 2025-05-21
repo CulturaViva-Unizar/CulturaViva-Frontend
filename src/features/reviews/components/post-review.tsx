@@ -37,7 +37,12 @@ const PostReview: FC<PostReviewProps> = ({ itemId, itemType }) => {
 
     setMyRating(0);
     setComment("");
-    Swal.fire("¡Gracias!", "Tu reseña ha sido añadida.", "success");
+    Swal.fire({
+      title: "¡Gracias!",
+      text: "Tu reseña ha sido añadida.",
+      icon: "success",
+      timer: 1500
+    });
   };
 
   return (

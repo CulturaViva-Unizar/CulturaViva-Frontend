@@ -6,6 +6,7 @@ import { useLogin } from "../../../lib/auth";
 import Swal from "sweetalert2";
 import axios, { AxiosError } from "axios";
 import { LoginUserRequest } from "../../../types/api";
+import { useQueryClient } from "@tanstack/react-query";
 
 type LoginFormProps = {
   onSuccess: () => void;
@@ -29,8 +30,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
     defaultValues: { email: "", password: "" },
   });
 
+  const queryClient = useQueryClient();
+
   const login = useLogin({
     onSuccess: () => {
+      queryClient.clear();
       Swal.fire({
         title: "¡Bienvenido!",
         text: "Has iniciado sesión correctamente",

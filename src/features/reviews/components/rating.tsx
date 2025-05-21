@@ -4,6 +4,7 @@ import { RatingStars } from "./rating-stars";
 interface RatingProps {
   rating: number;
   totalReviews: number;
+  totalRatedReviews: number;
   ratingDistribution: {
     5: number;
     4: number;
@@ -16,9 +17,10 @@ interface RatingProps {
 export const Rating: React.FC<RatingProps> = ({
   rating,
   totalReviews,
+  totalRatedReviews,
   ratingDistribution,
 }) => {
-  const getPercentage = (count: number) => (count / totalReviews) * 100;
+  const getPercentage = (count: number) => (count / totalRatedReviews) * 100;
 
   return (
     <div className="d-flex align-items-center">

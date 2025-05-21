@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from "react-router";
+import { Outlet, useLocation, useNavigate } from "react-router";
 import { GoBackBtn } from "../../../components/ui/go-back-btn";
 import SearchBar from "../../../components/ui/search-bar";
 import { UserMenu } from "../../../components/ui/user-menu";
@@ -19,13 +19,19 @@ function Chats() {
   } = useGetChatsByUser(user.data!.id);
 
   const location = useLocation();
-  const [selectedChat, setSelectedChat] = useState(false);
+  const [selectedChat, setSelectedChat] = useState<string | null>(null);
   const [searchText, setSearchText] = useState<string>("");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    setSelectedChat(location.pathname !== paths.app.chats.getHref());
+    const pathname = location.pathname;
+
+    const segments = pathname.split("/");
+    const idFromSplit = segments.length > 3 ? segments[3] : null;
+
+    setSelectedChat(idFromSplit);
     window.scrollTo(0, 0);
-  }, [location]);
+  }, [location.pathname]);
 
   // Filtrar chats según searchText
   const filteredChats = useMemo(
@@ -44,11 +50,13 @@ function Chats() {
     return <ErrorMessage message="Error al cargar los chats" />;
   }
 
+  console.log(selectedChat);
+
   return (
     <div className="p-3 p-md-4">
       <div className={`row mb-4 ${selectedChat ? "d-none d-md-flex" : ""}`}>
         <div className="col h-100">
-          <GoBackBtn />
+          <GoBackBtn onClick={() =>  navigate(selectedChat ? paths.app.chats.getHref() : paths.home.getHref())} />
         </div>
         <h1 className="col-8 text-center">Chats</h1>
         <UserMenu className="col text-end" />
@@ -76,7 +84,7 @@ function Chats() {
                   key={chat.id}
                   username={chat.user.name}
                   to={`${chat.id}`}
-                  active={selectedChat}
+                  active={selectedChat === chat.id}
                 />
               ))
             ) : (

@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../../lib/api-client";
+import { useUser } from "../../../lib/auth";
 
 const deleteReviewFromEvent = async (
   commentId: string,
@@ -16,6 +17,7 @@ const deleteReviewFromEvent = async (
 
 export const useDeleteReviewFromEvent = () => {
   const qc = useQueryClient();
+  const user = useUser();
   return useMutation<
     void,
     Error,
@@ -24,8 +26,12 @@ export const useDeleteReviewFromEvent = () => {
     mutationFn: ({ commentId, motivo, eventId }) =>
       deleteReviewFromEvent(commentId, motivo, eventId),
     onSuccess: (_, { eventId }) => {
-      qc.removeQueries({ queryKey: ["reviews", eventId] });
-      qc.removeQueries({ queryKey: ["analytics", "comments"] });
+      qc.invalidateQueries({ queryKey: ["reviews", eventId] });
+      qc.invalidateQueries({ queryKey: ["replies", eventId] });
+      qc.invalidateQueries({ queryKey: ["analytics", "comments"] });
+      qc.removeQueries({ queryKey: ["events"] });
+      qc.removeQueries({ queryKey: ["culturalPlaces"] });
+      qc.removeQueries({ queryKey: ["bookmarks", user.data?.id] });
     },
   });
 };
