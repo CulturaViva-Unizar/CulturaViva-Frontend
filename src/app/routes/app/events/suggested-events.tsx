@@ -5,7 +5,7 @@ import { paths } from "../../../../config/paths";
 import { Event } from "../../../../features/events/types/models";
 import { useGetSuggestedEvents } from "../../../../features/events/api/get-suggested-events";
 import { GetSuggestedEventsRequest } from "../../../../types/api";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useUser } from "../../../../lib/auth";
 import { useQueries } from "@tanstack/react-query";
 import { getReviewsByEvent } from "../../../../features/reviews/api/get-reviews-by-event";
@@ -17,7 +17,23 @@ function SuggestedEvents() {
   const user = useUser();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const height = window.innerWidth < 768 ? 320 : 250;
+  const [height, setHeight] = useState(getHeightValue());
+
+  function getHeightValue() {
+    return window.innerWidth < 768 ? 320 : 250;
+  }
+  
+  useEffect(() => {
+    const onResize = () => {
+      setHeight(getHeightValue());
+    };
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
+
   const request: GetSuggestedEventsRequest = useMemo(
     () => ({
       type: "Event",

@@ -8,7 +8,7 @@ import { useGetEvents } from "../../../../features/events/api/get-events";
 import LoadingIndicator from "../../../../components/ui/loading-indicator";
 import { ErrorMessage } from "../../../../components/errors/error-message";
 import { GetEventsRequest } from "../../../../types/api";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { DatePicker } from "../../../../components/ui/date-picker";
 import { useQueries } from "@tanstack/react-query";
@@ -24,7 +24,23 @@ function Events() {
   const [category, setCategory] = useState<string>("");
   const [date, setDate] = useState<Date | null>(null);
   const [orderBy, setOrderBy] = useState<string>("desc");
-  const height = window.innerWidth < 768 ? 320 : 250;
+  const [height, setHeight] = useState(getHeightValue());
+
+  function getHeightValue() {
+    return window.innerWidth < 768 ? 320 : 250;
+  }
+  
+  useEffect(() => {
+    const onResize = () => {
+      setHeight(getHeightValue());
+    };
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
+
   const request: GetEventsRequest = useMemo(
     () => ({
       name: searchText,

@@ -74,7 +74,9 @@ export const ReplyItem: React.FC<ReplyItemProps> = ({
     const existing = chats.find((c: Chat) => c.user.id === userId);
 
     if (existing) {
-      navigate(paths.app.chats.chat.getHref(existing.id));
+      navigate(paths.app.chats.chat.getHref(existing.id), {
+        state: { username: existing.user.name },
+      });
     } else {
       createChat(
         { user: userId },

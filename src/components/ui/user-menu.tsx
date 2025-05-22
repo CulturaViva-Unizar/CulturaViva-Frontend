@@ -15,13 +15,12 @@ import {
   faUserTie,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useLogout, useUser } from "../../lib/auth";
 import { paths } from "../../config/paths";
 import Swal from "sweetalert2";
 import { useQueryClient } from "@tanstack/react-query";
-import { TokenService } from "../../lib/token-service";
 
 interface UserMenuProps {
   className?: string;
@@ -33,7 +32,23 @@ export const UserMenu: FC<UserMenuProps> = ({ className = "" }) => {
   const user = useUser();
   const logout = useLogout();
   const navigate = useNavigate();
-  const maxHeight = window.innerWidth < 768 ? 42 : 56;
+  const [maxHeight, setMaxHeight] = useState(getHeightValue());
+
+  function getHeightValue() {
+    return window.innerWidth < 768 ? 42 : 56;
+  }
+  
+  useEffect(() => {
+    const onResize = () => {
+      setMaxHeight(getHeightValue());
+    };
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
+
   const queryClient = useQueryClient();
   
   const handleLogout = () => {

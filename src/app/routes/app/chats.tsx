@@ -50,8 +50,6 @@ function Chats() {
     return <ErrorMessage message="Error al cargar los chats" />;
   }
 
-  console.log(selectedChat);
-
   return (
     <div className="p-3 p-md-4">
       <div className={`row mb-4 ${selectedChat ? "d-none d-md-flex" : ""}`}>

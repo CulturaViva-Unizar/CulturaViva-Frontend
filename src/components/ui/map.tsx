@@ -106,6 +106,23 @@ const Map: React.FC<MapProps> = ({ events, culturalPlaces }) => {
     );
   }, []);
 
+  const [notMobile, setNotMobile] = useState(isNotMobile());
+
+  function isNotMobile() {
+    return window.innerWidth > 768;
+  }
+  
+  useEffect(() => {
+    const onResize = () => {
+      setNotMobile(isNotMobile());
+    };
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
+  
   return (
     <MapContainer
       center={center}
@@ -114,7 +131,7 @@ const Map: React.FC<MapProps> = ({ events, culturalPlaces }) => {
       zoomControl={false}
     >
       {userPosition && <FlyToPosition position={userPosition} />}
-      {window.innerWidth > 768 && (
+      {notMobile && (
         <ZoomControl position="bottomright" />
       )}
       <TileLayer

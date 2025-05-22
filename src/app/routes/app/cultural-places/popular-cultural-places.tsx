@@ -1,7 +1,7 @@
 import { Select } from "../../../../components/ui/select";
 import { Card } from "../../../../components/ui/card";
 import BootstrapPagination from "../../../../components/ui/bootstrap-pagination";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import MainLayout from "../../../../components/layouts/main-layout";
 import { useNavigate } from "react-router";
 import { paths } from "../../../../config/paths";
@@ -20,10 +20,26 @@ function PopularCulturalPlaces() {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [category, setCategory] = useState<string>("");
-  const height = window.innerWidth < 768 ? 200 : 180;
   const [culturalPlaceCategories, setCulturalPlaceCategories] = useState<
     string[]
   >([]);
+  const [height, setHeight] = useState(getHeightValue());
+
+  function getHeightValue() {
+    return window.innerWidth < 768 ? 200 : 180;
+  }
+  
+  useEffect(() => {
+    const onResize = () => {
+      setHeight(getHeightValue());
+    };
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
+
 
   const request: GetPopularCulturalPlacesRequest = useMemo(
     () => ({

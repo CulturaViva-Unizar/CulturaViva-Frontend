@@ -13,12 +13,21 @@ export const Drawer: FC<DrawerProps> = ({
   onClose,
   children,
 }) => {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(getIsMobile());
+
+  function getIsMobile() {
+    return window.innerWidth < 768;
+  }
+  
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
+    const onResize = () => {
+      setIsMobile(getIsMobile());
+    };
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
   }, []);
 
   const [expanded, setExpanded] = useState(false);
@@ -35,7 +44,7 @@ export const Drawer: FC<DrawerProps> = ({
     <Offcanvas
       show={show}
       onHide={onClose}
-      placement={window.innerWidth < 768 ? "bottom" : "start"}
+      placement={isMobile ? "bottom" : "start"}
     >
       <Offcanvas.Body>
         {children}
@@ -67,7 +76,7 @@ export const Drawer: FC<DrawerProps> = ({
     <Offcanvas
       show={show}
       onHide={onClose}
-      placement={window.innerWidth < 768 ? "bottom" : "start"}
+      placement={isMobile ? "bottom" : "start"}
     >
       <Offcanvas.Body>
         <div {...swipeHandlers} style={sheetStyle}>

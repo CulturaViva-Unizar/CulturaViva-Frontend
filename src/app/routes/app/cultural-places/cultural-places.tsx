@@ -8,7 +8,7 @@ import { useGetCulturalPlaces } from "../../../../features/cultural-places/api/g
 import { CulturalPlace } from "../../../../features/cultural-places/types/models";
 import { ErrorMessage } from "../../../../components/errors/error-message";
 import LoadingIndicator from "../../../../components/ui/loading-indicator";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQueries } from "@tanstack/react-query";
 import { getReviewsByCulturalPlace } from "../../../../features/reviews/api/get-reviews-by-cultural-place";
 import BootstrapPagination from "../../../../components/ui/bootstrap-pagination";
@@ -21,7 +21,22 @@ function CulturalPlaces() {
   const [searchText, setSearchText] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [orderBy, setOrderBy] = useState<string>("desc");
-  const height = window.innerWidth < 768 ? 200 : 180;
+  const [height, setHeight] = useState(getHeightValue());
+
+  function getHeightValue() {
+    return window.innerWidth < 768 ? 200 : 180;
+  }
+  
+  useEffect(() => {
+    const onResize = () => {
+      setHeight(getHeightValue());
+    };
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
 
   const request = useMemo(
     () => ({

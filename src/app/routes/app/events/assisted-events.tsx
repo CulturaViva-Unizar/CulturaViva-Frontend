@@ -2,7 +2,7 @@ import { Select } from "../../../../components/ui/select";
 import { Card } from "../../../../components/ui/card";
 import PieChart from "../../../../components/ui/pie-chart";
 import BootstrapPagination from "../../../../components/ui/bootstrap-pagination";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import MainLayout from "../../../../components/layouts/main-layout";
 import { useNavigate } from "react-router";
 import { paths } from "../../../../config/paths";
@@ -23,7 +23,22 @@ function AssistedEvents() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [category, setCategory] = useState<string>("");
   const [eventCategories, setEventCategories] = useState<string[]>([]);
-  const height = window.innerWidth < 768 ? 320 : 250;
+  const [height, setHeight] = useState(getHeightValue());
+
+  function getHeightValue() {
+    return window.innerWidth < 768 ? 320 : 250;
+  }
+  
+  useEffect(() => {
+    const onResize = () => {
+      setHeight(getHeightValue());
+    };
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
 
   const request: GetPaginatedEventsRequest = useMemo(
     () => ({

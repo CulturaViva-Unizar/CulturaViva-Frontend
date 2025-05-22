@@ -30,7 +30,22 @@ function ChatConversation() {
   const { messages: socketMessages, sendMessage } = useChat(chatId ?? "");
   const endRef = useRef<HTMLDivElement | null>(null);
   const [text, setText] = useState("");
-  const height = window.innerWidth < 768 ? "95vh" : "85vh";
+  const [height, setHeight] = useState(getHeightValue());
+
+  function getHeightValue() {
+    return window.innerWidth < 768 ? "95vh" : "85vh";
+  }
+  
+  useEffect(() => {
+    const onResize = () => {
+      setHeight(getHeightValue());
+    };
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
 
   const allMessages = [...initialMessages, ...socketMessages].sort(
     (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
