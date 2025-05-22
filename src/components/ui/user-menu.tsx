@@ -54,7 +54,7 @@ export const UserMenu: FC<UserMenuProps> = ({ className = "" }) => {
   const handleLogout = () => {
     logout.mutate(undefined, {
       onSuccess: () => {
-        queryClient.clear();
+        navigate(paths.app.getHref());
         
         Swal.fire({
           title: "¡Hasta luego!",
@@ -62,7 +62,8 @@ export const UserMenu: FC<UserMenuProps> = ({ className = "" }) => {
           icon: "success",
           timer: 1500,
         });
-        navigate(paths.app.getHref());
+
+        queryClient.clear();
       }
     });
   };
