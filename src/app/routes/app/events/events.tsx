@@ -71,7 +71,7 @@ function Events() {
 
   const categoryOptions = [
     { value: "", label: "Categoría" },
-    ...(eventCategories?.map((cat) => ({
+    ...(eventCategories?.filter(cat => cat !== "").map((cat) => ({
       value: cat,
       label: cat,
     })) ?? []),

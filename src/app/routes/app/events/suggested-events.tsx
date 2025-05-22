@@ -84,7 +84,7 @@ function SuggestedEvents() {
                 : 0;
 
             return (
-              <div className="col-md-4" style={{ height }}>
+              <div key={event.id} className="col-md-4" style={{ height }}>
                 <Card
                   image={event.image}
                   title={event.title}

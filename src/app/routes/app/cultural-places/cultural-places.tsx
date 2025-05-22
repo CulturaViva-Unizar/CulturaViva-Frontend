@@ -60,9 +60,11 @@ function CulturalPlaces() {
     error: errorCulturalPlaceCategories,
   } = useGetCulturalPlaceCategories();
 
+
+
   const categoryOptions = [
     { value: "", label: "Categoría" },
-    ...(culturalPlaceCategories?.map((cat) => ({
+    ...(culturalPlaceCategories?.filter(cat => cat !== "").map((cat) => ({
       value: cat,
       label: cat,
     })) ?? []),

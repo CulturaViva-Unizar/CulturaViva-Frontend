@@ -54,7 +54,7 @@ function Chats() {
     <div className="p-3 p-md-4">
       <div className={`row mb-4 ${selectedChat ? "d-none d-md-flex" : ""}`}>
         <div className="col h-100">
-          <GoBackBtn onClick={() =>  navigate(selectedChat ? paths.app.chats.getHref() : paths.home.getHref())} />
+          <GoBackBtn onClick={() => navigate(selectedChat ? paths.app.chats.getHref() : paths.home.getHref())} />
         </div>
         <h1 className="col-8 text-center">Chats</h1>
         <UserMenu className="col text-end" />

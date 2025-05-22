@@ -77,7 +77,9 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({
         { user: userId },
         {
           onSuccess: (newChat) => {
-            navigate(paths.app.chats.chat.getHref(newChat.id));
+            navigate(paths.app.chats.chat.getHref(newChat.id), {
+              state: { username }
+            });
           },
         }
       );

@@ -90,10 +90,20 @@ function Bookmarks() {
   });
 
   const eventCategoriesOptions =
-    eventCategories?.map((cat) => ({ value: cat, label: cat })) ?? [];
+    eventCategories
+      ?.filter(cat => cat !== "")
+      .map((cat) => ({
+        value: cat,
+        label: cat,
+      })) ?? [];
 
   const culturalPlaceCategoriesOptions =
-    culturalPlaceCategories?.map((cat) => ({ value: cat, label: cat })) ?? [];
+    culturalPlaceCategories
+      ?.filter(cat => cat !== "")
+      .map((cat) => ({
+        value: cat,
+        label: cat,
+      })) ?? [];
 
   const categoryOptions = [
     { value: "", label: "Categoría" },
@@ -188,7 +198,7 @@ function Bookmarks() {
             const avgRating =
               parentReviews.length > 0
                 ? parentReviews.reduce((sum, r) => sum + r.rating, 0) /
-                  parentReviews.length
+                parentReviews.length
                 : 0;
 
             return (

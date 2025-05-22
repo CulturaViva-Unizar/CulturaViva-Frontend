@@ -1,5 +1,5 @@
 import { useState, FormEvent, useEffect, useRef } from "react";
-import { useLocation, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { useGetMessagesByChat } from "../../../features/chats/api/get-messages-by-chat";
 import { useChat } from "../../../features/chats/hooks/useChat";
 import { useUser } from "../../../lib/auth";
@@ -10,8 +10,10 @@ import { Message } from "../../../components/ui/message";
 import LoadingIndicator from "../../../components/ui/loading-indicator";
 import { ErrorMessage } from "../../../components/errors/error-message";
 import { formatDate } from "../../../utils/date";
+import { paths } from "../../../config/paths";
 
 function ChatConversation() {
+  const navigate = useNavigate();
   const { chatId } = useParams<{ chatId: string }>();
   const location = useLocation();
   const { username } = (location.state || {}) as { username?: string };
@@ -85,7 +87,7 @@ function ChatConversation() {
       {/* Header */}
       <div className="row">
         <div className="col h-100 d-flex d-md-none">
-          <GoBackBtn />
+          <GoBackBtn onClick={() => navigate(paths.app.chats.getHref())} />
         </div>
         <h2 className="col-10 col-md-12 text-center">Chat {username}</h2>
       </div>

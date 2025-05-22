@@ -49,16 +49,20 @@ export const Navbar: React.FC<NavBarProps> = ({
   } = useGetCulturalPlaceCategories();
 
   const eventCategoriesOptions =
-    eventCategories?.map((cat) => ({
-      value: cat,
-      label: cat,
-    })) ?? [];
+    eventCategories
+      ?.filter(cat => cat !== "")
+      .map((cat) => ({
+        value: cat,
+        label: cat,
+      })) ?? [];
 
   const culturalPlaceCategoriesOptions =
-    culturalPlaceCategories?.map((cat) => ({
-      value: cat,
-      label: cat,
-    })) ?? [];
+    culturalPlaceCategories
+      ?.filter(cat => cat !== "")
+      .map((cat) => ({
+        value: cat,
+        label: cat,
+      })) ?? [];
 
   const categoryOptions = [
     { value: "", label: "Categoría" },

@@ -121,7 +121,7 @@ function UpcomingEvents() {
 
   const categoryOptions = [
     { value: "", label: "Categoría" },
-    ...(eventCategories?.map((cat) => ({
+    ...(eventCategories?.filter(cat => cat !== "").map((cat) => ({
       value: cat,
       label: cat,
     })) ?? []),
@@ -175,7 +175,7 @@ function UpcomingEvents() {
                       : 0;
 
                   return (
-                    <div className="col-md-6 d-flex" style={{ height }}>
+                    <div key={event.id} className="col-md-6 d-flex" style={{ height }}>
                       <Card
                         image={event.image}
                         title={event.title}

@@ -119,7 +119,7 @@ function PopularEvents() {
 
   const categoryOptions = [
     { value: "", label: "Categoría" },
-    ...(eventCategories?.map((cat) => ({ value: cat, label: cat })) ?? []),
+    ...(eventCategories?.filter(cat => cat !== "").map((cat) => ({ value: cat, label: cat })) ?? []),
   ];
 
   const isLoading = isLoadingEvents || isLoadingAnalytics;

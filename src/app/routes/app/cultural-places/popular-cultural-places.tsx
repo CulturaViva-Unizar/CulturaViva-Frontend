@@ -121,7 +121,7 @@ function PopularCulturalPlaces() {
 
   const categoryOptions = [
     { value: "", label: "Categoría" },
-    ...(culturalPlaceCategories?.map((cat) => ({ value: cat, label: cat })) ??
+    ...(culturalPlaceCategories?.filter(cat => cat !== "").map((cat) => ({ value: cat, label: cat })) ??
       []),
   ];
 
